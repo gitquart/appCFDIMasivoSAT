@@ -1,0 +1,9 @@
+Solicitudes de descarga
+
+Intento 1
+emisor:   332c9953-c899-4628-be96-6e57ef57867f
+receptor: 88afce35-ffb3-4e75-91a5-08c1dadb3430
+
+Intento 2
+emisor: 935d1fbb-6530-4945-86c9-d4bb1606e996
+receptor: ac3646b9-c09f-43e4-bcb6-a16d1d9124ac

@@ -6,6 +6,7 @@ from cfdiclient import DescargaMasiva
 import datetime
 import os
 import json
+import base64
 
 FIEL_KEY = ''
 FIEL_CER = ''
@@ -33,8 +34,8 @@ def solicitaDescarga():
     #Ejemplo de respuesta  {'mensaje': 'Solicitud Aceptada', 'cod_estatus': '5000', 'id_solicitud': 'be2a3e76-684f-416a-afdf-0f9378c346be'}
     descarga = SolicitaDescarga(fiel)
     token = autenticacion()
-    fecha_inicial = datetime.datetime(2020, 1, 1)
-    fecha_final = datetime.datetime(2020, 12, 31)
+    fecha_inicial = datetime.datetime(2020, 2, 1)
+    fecha_final = datetime.datetime(2020, 2, 29)
     rfc_emisor = 'QCG190521ND3'
     rfc_receptor = 'QCG190521ND3'
     # Emitidos
@@ -48,23 +49,25 @@ def solicitaDescarga():
     return lsSolicitud
 
 
-def verificaSolicitudDescarga():
+def verificaSolicitudDescarga(id_solicitud):
     #Ejemplo re respuesta  {'estado_solicitud': '3', 'numero_cfdis': '8', 'cod_estatus': '5000', 'paquetes': ['a4897f62-a279-4f52-bc35-03bde4081627_01'], 'codigo_estado_solicitud': '5000', 'mensaje': 'Solicitud Aceptada'}   
     v_descarga = VerificaSolicitudDescarga(fiel)
     token = autenticacion()
-    id_solicitud = solicitaDescarga()[0]
     result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
     lsPaquete=[result['paquetes']]
 
     return lsPaquete
 
-def descargarPaquete():
+def descargarPaquete(id_paquete):
     #ejemplo de respuesta # {'cod_estatus': '', 'mensaje': '', 'paquete_b64': 'eyJhbG=='} 
     descarga = DescargaMasiva(fiel)
     token = autenticacion()
-    id_paquete = verificaSolicitudDescarga()[0]
     result = descarga.descargar_paquete(token, rfc_solicitante, id_paquete)
-    print(result)
+    paquete=result['paquete_b64']
+    data = base64.b64decode(paquete)
+    valorFinal=data.decode('utf-8')
+    print(valorFinal)
+
    
     
 
