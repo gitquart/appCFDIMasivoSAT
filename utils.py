@@ -32,7 +32,7 @@ def solicitaDescarga():
     fiel = Fiel(cer_der, key_der, FIEL_PAS)
     descarga = SolicitaDescarga(fiel)
 
-    token = 'eyJh'
+    token = autenticacion()
     rfc_solicitante = 'XAXX010101000'
     fecha_inicial = datetime.datetime(2018, 1, 1)
     fecha_final = datetime.datetime(2018, 12, 31)
