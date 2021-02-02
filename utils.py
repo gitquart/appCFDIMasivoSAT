@@ -7,6 +7,7 @@ import os
 import json
 import base64
 import zipfile
+from xml.dom import minidom
 
 
 FIEL_KEY = ''
@@ -79,7 +80,14 @@ def readBase64FromZIP(file):
         zip_ref = zipfile.ZipFile(file+".zip", 'r')
         zip_ref.close()
     else:
+        extractAndReadZIP()
         print('No file found')    
+
+def extractAndReadZIP():
+    with zipfile.ZipFile('C:\\Users\\1098350515\\Documents\\testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip','r') as myZip:
+        for xml in myZip.namelist():
+            cfdi=minidom.parse(xml)
+            print('...')      
     
     
 

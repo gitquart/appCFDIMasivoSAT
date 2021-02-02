@@ -19,7 +19,8 @@ if op=='solicitar' or op=='verificar':
         print(item)
 
 if op=='descargar':
-    paquete=tool.descargarPaquete('EC162D98-292A-4673-8085-A1D2CFD725F8_01')
+    #paquete=tool.descargarPaquete('EC162D98-292A-4673-8085-A1D2CFD725F8_01')
+    tool.readBase64FromZIP(None)
     print('ZIP is ready')
   
 
