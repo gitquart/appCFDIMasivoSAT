@@ -8,7 +8,9 @@ import json
 import base64
 import zipfile
 from xml.dom import minidom
+from xml.etree import ElementTree as ET
 import pandas as pd
+import uuid
 
 
 FIEL_KEY = ''
@@ -87,26 +89,24 @@ def readBase64FromZIP(file):
 def extractAndReadZIP():
     directory='C:\\Users\\1098350515\\Documents\\testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip'
     myZip=zipfile.ZipFile(directory,'r')
-    lsComprobante=['Fecha','LugarExpedicion','Moneda','NoCertificado','SubTotal','TipoDeComprobante','Total']
-    lsEmisor=['Nombre','RegimenFiscal','Rfc']
-    lsReceptor=['Nombre','Rfc','UsoCFDI']
-    lsConcepto=['Cantidad','ClaveProdServ','ClaveUnidad','Descripcion','Importe','ValorUnitario']
-    #I add coumn ID in lsPago to relate Pago and its detail
-    lsPago=['FechaPago','FormaDePagoP','MonedaP','Monto','ID']
-    dfCfdi=pd.DataFrame(columns=lsColumns)
+    lsColumns=[]
+    lsRows=[]
+    tagPrefix='{http://www.sat.gob.mx/cfd/3}'
     for xml in myZip.namelist():
+        #Each xml represent a row of dataframe (Serie)
+        lsSerie=[]
         doc_xml=myZip.open(xml)
-        cfdi = minidom.parse(doc_xml)
-        #Comprobante
-        nodeComprobante=cfdi.getElementsByTagName('cfdi:Comprobante')
-        for item in nodeComprobante:
-            valor=item.getAttribute('Moneda')
+        root = ET.parse(doc_xml).getroot()
         #Start reading fields
+        #No hay un patrón específico
+        #La única forma de estructurarlo es, si tiene hijos, en algún nodo hijo existe detalle
+        for item in root.iter():
+            #The only one FORCELY with children in Comprobante
+            for child in root:
+                print(child)
 
-        #Renaming Columns
-        dfCfdi.rename(columns={ dfCfdi.columns[1]: "your value" }, inplace = True)
-        print('...')
-  
+        dfCfdi=pd.DataFrame(columns=lsColumns,)        
+          
              
     
     
