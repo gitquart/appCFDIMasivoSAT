@@ -8,6 +8,7 @@ import json
 import base64
 import zipfile
 from xml.dom import minidom
+import pandas as pd
 
 
 FIEL_KEY = ''
@@ -84,10 +85,29 @@ def readBase64FromZIP(file):
         print('No file found')    
 
 def extractAndReadZIP():
-    with zipfile.ZipFile('C:\\Users\\1098350515\\Documents\\testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip','r') as myZip:
-        for xml in myZip.namelist():
-            cfdi=minidom.parse(xml)
-            print('...')      
+    directory='C:\\Users\\1098350515\\Documents\\testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip'
+    myZip=zipfile.ZipFile(directory,'r')
+    lsComprobante=['Fecha','LugarExpedicion','Moneda','NoCertificado','SubTotal','TipoDeComprobante','Total']
+    lsEmisor=['Nombre','RegimenFiscal','Rfc']
+    lsReceptor=['Nombre','Rfc','UsoCFDI']
+    lsConcepto=['Cantidad','ClaveProdServ','ClaveUnidad','Descripcion','Importe','ValorUnitario']
+    #I add coumn ID in lsPago to relate Pago and its detail
+    lsPago=['FechaPago','FormaDePagoP','MonedaP','Monto','ID']
+    dfCfdi=pd.DataFrame(columns=lsColumns)
+    for xml in myZip.namelist():
+        doc_xml=myZip.open(xml)
+        cfdi = minidom.parse(doc_xml)
+        #Comprobante
+        nodeComprobante=cfdi.getElementsByTagName('cfdi:Comprobante')
+        for item in nodeComprobante:
+            valor=item.getAttribute('Moneda')
+        #Start reading fields
+
+        #Renaming Columns
+        dfCfdi.rename(columns={ dfCfdi.columns[1]: "your value" }, inplace = True)
+        print('...')
+  
+             
     
     
 
