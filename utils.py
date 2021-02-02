@@ -7,6 +7,8 @@ import datetime
 import os
 import json
 import base64
+import zipfile
+
 
 FIEL_KEY = ''
 FIEL_CER = ''
@@ -34,8 +36,8 @@ def solicitaDescarga():
     #Ejemplo de respuesta  {'mensaje': 'Solicitud Aceptada', 'cod_estatus': '5000', 'id_solicitud': 'be2a3e76-684f-416a-afdf-0f9378c346be'}
     descarga = SolicitaDescarga(fiel)
     token = autenticacion()
-    fecha_inicial = datetime.datetime(2020, 2, 1)
-    fecha_final = datetime.datetime(2020, 2, 29)
+    fecha_inicial = datetime.datetime(2020, 4, 1)
+    fecha_final = datetime.datetime(2020, 4, 30)
     rfc_emisor = 'QCG190521ND3'
     rfc_receptor = 'QCG190521ND3'
     # Emitidos
@@ -64,9 +66,27 @@ def descargarPaquete(id_paquete):
     token = autenticacion()
     result = descarga.descargar_paquete(token, rfc_solicitante, id_paquete)
     paquete=result['paquete_b64']
-    data = base64.b64decode(paquete)
-    valorFinal=data.decode('utf-8')
-    print(valorFinal)
+    data = readBase64FromText(paquete)
+    
+    return data
+   
+
+"""
+readBase64FromZIP: Reads the package in base64 from SAT and returns the zip file (the zip file is actually)
+created on the go.
+"""
+def readBase64FromZIP(file): 
+    with open('output_file.zip', 'wb') as result:
+        result.write(base64.b64decode(file))
+    zip_ref = zipfile.ZipFile("output_file.zip", 'r')
+    zip_ref.close()
+    
+    
+
+
+    
+        
+
 
    
     
