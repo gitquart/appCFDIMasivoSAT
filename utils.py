@@ -91,19 +91,32 @@ def extractAndReadZIP():
     myZip=zipfile.ZipFile(directory,'r')
     lsColumns=[]
     lsRows=[]
-    tagPrefix='{http://www.sat.gob.mx/cfd/3}'
     for xml in myZip.namelist():
         #Each xml represent a row of dataframe (Serie)
         lsSerie=[]
+        lsColumns=[]
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
         #Start reading fields
         #No hay un patrón específico
         #La única forma de estructurarlo es, si tiene hijos, en algún nodo hijo existe detalle
-        for item in root.iter():
+        for node in root.iter():
             #The only one FORCELY with children in Comprobante
-            for child in root:
-                print(child)
+            #Get attributes of current Node
+            
+            for attr in node.attrib:
+                print(attr)
+            if 'Comprobante' not in node.tag: 
+                #Get attributes of current Node
+                for attr in node.attrib:
+                    print(attr)    
+                for child in node:
+                    print(child)
+                    print(child.attrib)
+                    for children in child:
+                        print('...')
+                        print(children.attrib)
+             
 
         dfCfdi=pd.DataFrame(columns=lsColumns,)        
           
