@@ -3,7 +3,6 @@ from cfdiclient import Fiel
 from cfdiclient import SolicitaDescarga
 from cfdiclient import VerificaSolicitudDescarga
 from cfdiclient import DescargaMasiva
-import datetime
 import os
 import json
 import base64
@@ -32,12 +31,10 @@ def autenticacion():
 
     return token
 
-def solicitaDescarga():
+def solicitaDescarga(fecha_inicial,fecha_final):
     #Ejemplo de respuesta  {'mensaje': 'Solicitud Aceptada', 'cod_estatus': '5000', 'id_solicitud': 'be2a3e76-684f-416a-afdf-0f9378c346be'}
     descarga = SolicitaDescarga(fiel)
     token = autenticacion()
-    fecha_inicial = datetime.datetime(2020, 4, 1)
-    fecha_final = datetime.datetime(2020, 4, 30)
     rfc_emisor = 'QCG190521ND3'
     rfc_receptor = 'QCG190521ND3'
     # Emitidos
@@ -66,7 +63,7 @@ def descargarPaquete(id_paquete):
     token = autenticacion()
     result = descarga.descargar_paquete(token, rfc_solicitante, id_paquete)
     paquete=result['paquete_b64']
-    data = readBase64FromText(paquete)
+    data = readBase64FromZIP(paquete)
     
     return data
    
@@ -76,10 +73,13 @@ readBase64FromZIP: Reads the package in base64 from SAT and returns the zip file
 created on the go.
 """
 def readBase64FromZIP(file): 
-    with open('output_file.zip', 'wb') as result:
-        result.write(base64.b64decode(file))
-    zip_ref = zipfile.ZipFile("output_file.zip", 'r')
-    zip_ref.close()
+    if file is not None:
+        with open('output_file.zip', 'wb') as result:
+            result.write(base64.b64decode(file))
+        zip_ref = zipfile.ZipFile("output_file.zip", 'r')
+        zip_ref.close()
+    else:
+        print('No file found')    
     
     
 

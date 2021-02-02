@@ -1,9 +1,6 @@
 Solicitudes de descarga
 
-Intento 1
-emisor:   332c9953-c899-4628-be96-6e57ef57867f
-receptor: 88afce35-ffb3-4e75-91a5-08c1dadb3430
+junio 2019 a dic 2020
 
-Intento 2
-emisor: 935d1fbb-6530-4945-86c9-d4bb1606e996
-receptor: ac3646b9-c09f-43e4-bcb6-a16d1d9124ac
+ec162d98-292a-4673-8085-a1d2cfd725f8 - EC162D98-292A-4673-8085-A1D2CFD725F8_01
+bc08c520-9079-4466-a50c-6c4e6929560e
