@@ -74,9 +74,9 @@ created on the go.
 """
 def readBase64FromZIP(file): 
     if file is not None:
-        with open('output_file.zip', 'wb') as result:
+        with open(file+'.zip', 'wb') as result:
             result.write(base64.b64decode(file))
-        zip_ref = zipfile.ZipFile("output_file.zip", 'r')
+        zip_ref = zipfile.ZipFile(file+".zip", 'r')
         zip_ref.close()
     else:
         print('No file found')    
