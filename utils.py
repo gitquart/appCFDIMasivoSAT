@@ -89,14 +89,15 @@ def readBase64FromZIP(file):
 def extractAndReadZIP():
     directory='C:\\Users\\1098350515\\Documents\\testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip'
     myZip=zipfile.ZipFile(directory,'r')
-    lsColumns=[]
-    lsRows=[]
     for xml in myZip.namelist():
         #Each xml represent a row of dataframe (Serie)
         lsSerie=[]
         lsColumns=[]
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
+        #Every column and serie will be appended this way
+        lsColumns.append('ID')
+        lsSerie.append(str(uuid.uuid4()))
         #Start reading fields
         #No hay un patrón específico
         #La única forma de estructurarlo es, si tiene hijos, en algún nodo hijo existe detalle
@@ -118,7 +119,7 @@ def extractAndReadZIP():
                         print(children.attrib)
              
 
-        dfCfdi=pd.DataFrame(columns=lsColumns,)        
+        dfCfdi=pd.DataFrame(data=lsSerie,columns=lsColumns)        
           
              
     
