@@ -127,8 +127,6 @@ def extractAndReadZIP():
         #Each xml represent a row of dataframe (Serie)
         chunkName=xml.split('.')
         fileName=chunkName[0]
-        lsSerie=[]
-        lsColumns=[]
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
         #Every column and serie will be appended this way
@@ -158,6 +156,8 @@ def extractAndReadZIP():
                         sheet_name='Main'
                         bMain=True
                         break
+            #Adding ID        
+            dataToDataFrame('ID',fileName,sheet_name)        
             for attr in node.attrib:        
                 dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
             if 'Comprobante' not in tableName: 
