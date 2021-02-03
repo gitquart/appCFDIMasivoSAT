@@ -91,35 +91,71 @@ def extractAndReadZIP():
     myZip=zipfile.ZipFile(directory,'r')
     for xml in myZip.namelist():
         #Each xml represent a row of dataframe (Serie)
+        chunkName=xml.split('.')
+        fileName=chunkName[0]
         lsSerie=[]
         lsColumns=[]
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
         #Every column and serie will be appended this way
         lsColumns.append('ID')
-        lsSerie.append(str(uuid.uuid4()))
+        lsSerie.append(fileName)
+        sheet_name=''
         #Start reading fields
         #No hay un patrón específico
         #La única forma de estructurarlo es, si tiene hijos, en algún nodo hijo existe detalle
         for node in root.iter():
-            #The only one FORCELY with children in Comprobante
-            #Get attributes of current Node
-            
+            #The only one FORCELY with children is Comprobante
+            #Get the name of the node (it will be the prefix of each columns)
+            #Column = attribute
+            #Node= Table
+            chunk=str(node.tag).split('}')
+            tableName=chunk[1]
+            #Get attributes of current Node (get columns of current table)
             for attr in node.attrib:
-                print(attr)
-            if 'Comprobante' not in node.tag: 
+                if attr=='TipoDeComprobante':
+                    if node.get(attr)=='I' or node.get(attr)=='E':
+                        sheet_name='Ingresos_Egresos'
+                    elif node.get(attr)=='P' :
+                        sheet_name='Pago'
+                    else:
+                        sheet_name='Main'
+
+                lsColumns.append(tableName+'_'+attr)
+                lsSerie.append(node.get(attr))
+            if 'Comprobante' not in tableName: 
                 #Get attributes of current Node
                 for attr in node.attrib:
-                    print(attr)    
-                for child in node:
-                    print(child)
-                    print(child.attrib)
-                    for children in child:
-                        print('...')
-                        print(children.attrib)
+                    lsColumns.append(tableName+'_'+attr)
+                    lsSerie.append(node.get(attr))  
+                #Level 1 of children      
+                for child1 in node:
+                    for attr in child1.attrib:
+                        lsColumns.append(tableName+'_'+attr)
+                        lsSerie.append(node.get(attr))
+                    #Level 2 of children     
+                    for child2 in child1:
+                        for attr in child2.attrib:
+                            lsColumns.append(tableName+'_'+attr)
+                            lsSerie.append(node.get(attr))
+                    #Level 3 of children     
+                    for child3 in child2:
+                        for attr in child3.attrib:
+                            lsColumns.append(tableName+'_'+attr)
+                            lsSerie.append(node.get(attr))
+                    #Level 4 of children     
+                    for child4 in child3:
+                        for attr in child4.attrib:
+                            lsColumns.append(tableName+'_'+attr)
+                            lsSerie.append(node.get(attr))
+                    #Level 5 of children     
+                    for child5 in child4:
+                        for attr in child5.attrib:
+                            lsColumns.append(tableName+'_'+attr)
+                            lsSerie.append(node.get(attr))        
              
-
-        dfCfdi=pd.DataFrame(data=lsSerie,columns=lsColumns)        
+        dfCfdi=pd.DataFrame([lsSerie],columns=lsColumns)       
+        dfCfdi.to_excel('C:\\Users\\1098350515\\Documents\\'+fileName+'.xlsx',sheet_name=sheet_name)      
           
              
     
