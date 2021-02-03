@@ -92,23 +92,28 @@ def readBase64FromZIP(file):
 def dataToDataFrame(column,value,sheet_name):
     if sheet_name=='Ingresos_Egresos':
         #dataIE
-        if column in dataIE:
-            dataIE[column].append(value)
-        else:
-            dataIE[column]=[]    
+        if column not in dataIE:
+            dataIE[column]=[] 
+        dataIE[column].append(value)   
+
     elif sheet_name=='Pago':
         #dataPago
-        if column in dataPago:
-            dataPago[column].append(value)
-        else:
-            dataPago[column]=[]   
+        if column not in dataPago:
+            dataPago[column]=[] 
+        dataPago[column].append(value)    
     else:
-        #dataMain - this is the default value   
+        #dataMain - this is the default value  
+        if column not in dataMain:
+            dataMain[column]=[] 
+        dataMain[column].append(value)  
 
 
 def extractAndReadZIP():
     directory='C:\\Users\\1098350515\\Documents\\testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip'
     myZip=zipfile.ZipFile(directory,'r')
+    dataIE.clear()
+    dataPago.clear()
+    dataMain.clear()
     #Dictionaries for every kind of "tipo de comprobante"
     for xml in myZip.namelist():
         #Each xml represent a row of dataframe (Serie)
@@ -135,47 +140,50 @@ def extractAndReadZIP():
                 if attr=='TipoDeComprobante':
                     if node.get(attr)=='I' or node.get(attr)=='E':
                         sheet_name='Ingresos_Egresos'
+                        break
                     elif node.get(attr)=='P' :
                         sheet_name='Pago'
+                        break
                     else:
                         sheet_name='Main'
-
-                if tableName+'_'+attr in 
-                lsColumns.append(tableName+'_'+attr)
-                lsSerie.append(node.get(attr))
+                        break
+            for attr in node.attrib:        
+                dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
             if 'Comprobante' not in tableName: 
                 #Get attributes of current Node
                 for attr in node.attrib:
-                    lsColumns.append(tableName+'_'+attr)
-                    lsSerie.append(node.get(attr))  
+                    dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name) 
                 #Level 1 of children      
                 for child1 in node:
                     for attr in child1.attrib:
-                        lsColumns.append(tableName+'_'+attr)
-                        lsSerie.append(node.get(attr))
+                        dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
                     #Level 2 of children     
                     for child2 in child1:
                         for attr in child2.attrib:
-                            lsColumns.append(tableName+'_'+attr)
-                            lsSerie.append(node.get(attr))
+                            dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
                     #Level 3 of children     
                     for child3 in child2:
                         for attr in child3.attrib:
-                            lsColumns.append(tableName+'_'+attr)
-                            lsSerie.append(node.get(attr))
+                            dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
                     #Level 4 of children     
                     for child4 in child3:
                         for attr in child4.attrib:
-                            lsColumns.append(tableName+'_'+attr)
-                            lsSerie.append(node.get(attr))
+                            dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
                     #Level 5 of children     
                     for child5 in child4:
                         for attr in child5.attrib:
-                            lsColumns.append(tableName+'_'+attr)
-                            lsSerie.append(node.get(attr))        
-             
-        dfCfdi=pd.DataFrame([lsSerie],columns=lsColumns)       
-        dfCfdi.to_excel('C:\\Users\\1098350515\\Documents\\'+fileName+'.xlsx',sheet_name=sheet_name)      
+                            dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)      
+
+    data=''
+    if sheet_name=='Ingresos_Egresos':     
+        data=dataIE;
+    elif sheet_name='Pago':
+        data=dataPago
+    else:
+        data=dataMain    
+
+    dfCfdi=pd.DataFrame.from_dict(data)       
+    dfCfdi.to_excel('C:\\Users\\1098350515\\Documents\\'+fileName+'.xlsx',sheet_name=sheet_name)      
           
              
     
