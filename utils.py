@@ -10,11 +10,14 @@ import zipfile
 from xml.dom import minidom
 from xml.etree import ElementTree as ET
 import pandas as pd
-import uuid
 
+#For practical purposes, each table or sheet in excel, will be managed by a dictionary (data) and a flag
 dataIE={}
 dataPago={}
 dataMain={}
+bIE=False
+bPago=False
+bMain=False
 FIEL_KEY = ''
 FIEL_CER = ''
 FIEL_PAS = 'chuy1987'
@@ -30,6 +33,7 @@ for file in os.listdir(pathToFiel):
 cer_der = open(pathToFiel+'\\'+FIEL_CER, 'rb').read()
 key_der = open(pathToFiel+'\\'+FIEL_KEY, 'rb').read()  
 fiel = Fiel(cer_der, key_der, FIEL_PAS)      
+
 
 def autenticacion():
     auth = Autenticacion(fiel)
@@ -108,9 +112,13 @@ def dataToDataFrame(column,value,sheet_name):
         dataMain[column].append(value)  
 
 
+
 def extractAndReadZIP():
     directory='C:\\Users\\1098350515\\Documents\\testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip'
     myZip=zipfile.ZipFile(directory,'r')
+    bIE=False
+    bPago=False
+    bMain=False
     dataIE.clear()
     dataPago.clear()
     dataMain.clear()
@@ -140,12 +148,15 @@ def extractAndReadZIP():
                 if attr=='TipoDeComprobante':
                     if node.get(attr)=='I' or node.get(attr)=='E':
                         sheet_name='Ingresos_Egresos'
+                        bIE=True
                         break
                     elif node.get(attr)=='P' :
                         sheet_name='Pago'
+                        bPago=True
                         break
                     else:
                         sheet_name='Main'
+                        bMain=True
                         break
             for attr in node.attrib:        
                 dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
@@ -174,16 +185,24 @@ def extractAndReadZIP():
                         for attr in child5.attrib:
                             dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)      
 
-    data=''
-    if sheet_name=='Ingresos_Egresos':     
-        data=dataIE;
-    elif sheet_name='Pago':
-        data=dataPago
-    else:
-        data=dataMain    
+    
+    #End of the process of all xml in a zip
+    writer = pd.ExcelWriter('C:\\Users\\1098350515\\Documents\\cfdi.xlsx', engine='xlsxwriter')
+    if bIE:     
+        dfCfdi=pd.DataFrame.from_dict(dataIE,orient='index')
+        dfCfdiIE=dfCfdi.transpose()
+        dfCfdiIE.to_excel(writer,sheet_name='Ingresos_Egresos')
+    if bPago:     
+        dfCfdi=pd.DataFrame.from_dict(dataPago,orient='index')
+        dfCfdiPago=dfCfdi.transpose()
+        dfCfdiPago.to_excel(writer,sheet_name='Pago')
+    if bMain:     
+        dfCfdi=pd.DataFrame.from_dict(dataMain,orient='index') 
+        dfCfdi=dfCfdi.transpose()
+        dfCfdiMain.to_excel(writer,sheet_name='Main')   
 
-    dfCfdi=pd.DataFrame.from_dict(data)       
-    dfCfdi.to_excel('C:\\Users\\1098350515\\Documents\\'+fileName+'.xlsx',sheet_name=sheet_name)      
+    writer.save()    
+        
           
              
     
