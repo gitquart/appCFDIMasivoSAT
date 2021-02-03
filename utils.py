@@ -12,7 +12,9 @@ from xml.etree import ElementTree as ET
 import pandas as pd
 import uuid
 
-
+dataIE={}
+dataPago={}
+dataMain={}
 FIEL_KEY = ''
 FIEL_CER = ''
 FIEL_PAS = 'chuy1987'
@@ -86,9 +88,28 @@ def readBase64FromZIP(file):
         extractAndReadZIP()
         print('No file found')    
 
+
+def dataToDataFrame(column,value,sheet_name):
+    if sheet_name=='Ingresos_Egresos':
+        #dataIE
+        if column in dataIE:
+            dataIE[column].append(value)
+        else:
+            dataIE[column]=[]    
+    elif sheet_name=='Pago':
+        #dataPago
+        if column in dataPago:
+            dataPago[column].append(value)
+        else:
+            dataPago[column]=[]   
+    else:
+        #dataMain - this is the default value   
+
+
 def extractAndReadZIP():
     directory='C:\\Users\\1098350515\\Documents\\testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip'
     myZip=zipfile.ZipFile(directory,'r')
+    #Dictionaries for every kind of "tipo de comprobante"
     for xml in myZip.namelist():
         #Each xml represent a row of dataframe (Serie)
         chunkName=xml.split('.')
@@ -98,8 +119,6 @@ def extractAndReadZIP():
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
         #Every column and serie will be appended this way
-        lsColumns.append('ID')
-        lsSerie.append(fileName)
         sheet_name=''
         #Start reading fields
         #No hay un patrón específico
@@ -121,6 +140,7 @@ def extractAndReadZIP():
                     else:
                         sheet_name='Main'
 
+                if tableName+'_'+attr in 
                 lsColumns.append(tableName+'_'+attr)
                 lsSerie.append(node.get(attr))
             if 'Comprobante' not in tableName: 
