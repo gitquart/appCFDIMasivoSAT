@@ -163,13 +163,12 @@ def extractAndReadZIP():
                             bMain=True
                             break
             #To add a column and field into dataframe, you must have already a sheet_name        
-            #Adding ID       
-            #dataToDataFrame('ID',fileName,sheet_name)     
+            #Adding ID           
             for attr in node.attrib:
                 dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)        
-            #End of node iteration        
-            
+            #End of node iteration            
         contDocs+=1
+        #End of each document (xml) iteration
     #End of the process of all xml in a zip
     writer = pd.ExcelWriter('C:\\Users\\1098350515\\Documents\\cfdi.xlsx', engine='xlsxwriter')
     if bIE:     
