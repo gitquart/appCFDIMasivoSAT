@@ -122,6 +122,7 @@ def extractAndReadZIP():
     dataIE.clear()
     dataPago.clear()
     dataMain.clear()
+    contDocs=0
     #Dictionaries for every kind of "tipo de comprobante"
     for xml in myZip.namelist():
         #Each xml represent a row of dataframe (Serie)
@@ -135,14 +136,17 @@ def extractAndReadZIP():
         #No hay un patrón específico
         #La única forma de estructurarlo es, si tiene hijos, en algún nodo hijo existe detalle
         for node in root.iter():
+
             #The only one FORCELY with children is Comprobante
             #Get the name of the node (it will be the prefix of each columns)
             #Column = attribute
             #Node= Table
+            #root.iter() brings ALL the nodes in the xml file, ALL means even CHILDREN
             chunk=str(node.tag).split('}')
             tableName=chunk[1]
             #Get attributes of current Node (get columns of current table)
             for attr in node.attrib:
+                dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
                 if attr=='TipoDeComprobante':
                     if node.get(attr)=='I' or node.get(attr)=='E':
                         sheet_name='Ingresos_Egresos'
@@ -157,35 +161,10 @@ def extractAndReadZIP():
                         bMain=True
                         break
             #Adding ID        
-            dataToDataFrame('ID',fileName,sheet_name)        
-            for attr in node.attrib:        
-                dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
-            if 'Comprobante' not in tableName: 
-                #Get attributes of current Node
-                for attr in node.attrib:
-                    dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name) 
-                #Level 1 of children      
-                for child1 in node:
-                    for attr in child1.attrib:
-                        dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
-                    #Level 2 of children     
-                    for child2 in child1:
-                        for attr in child2.attrib:
-                            dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
-                    #Level 3 of children     
-                    for child3 in child2:
-                        for attr in child3.attrib:
-                            dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
-                    #Level 4 of children     
-                    for child4 in child3:
-                        for attr in child4.attrib:
-                            dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
-                    #Level 5 of children     
-                    for child5 in child4:
-                        for attr in child5.attrib:
-                            dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)      
-
-    
+            dataToDataFrame('ID',fileName,sheet_name)         
+            #End of node iteration        
+            
+        contDocs+=1
     #End of the process of all xml in a zip
     writer = pd.ExcelWriter('C:\\Users\\1098350515\\Documents\\cfdi.xlsx', engine='xlsxwriter')
     if bIE:     
@@ -201,7 +180,8 @@ def extractAndReadZIP():
         dfCfdi=dfCfdi.transpose()
         dfCfdiMain.to_excel(writer,sheet_name='Main')   
 
-    writer.save()    
+    writer.save() 
+    print('Files processed in ZIP file:',str(contDocs))   
         
           
              
