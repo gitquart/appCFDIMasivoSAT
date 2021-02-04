@@ -103,32 +103,59 @@ def extractAndReadZIP():
     #Creating the workbook (database)
     wb=excelpy.Workbook() 
     contDocs=0
+    #dicTableFields is a dictionary with the following structura key:table, value: list of fields
+    dicTableFields={}
     #Dictionaries for every kind of "tipo de comprobante"
+    #First, get all the columns for all the tables
     for xml in myZip.namelist():
         #Each xml represent a row of dataframe (Serie)
         chunkName=xml.split('.')
         fileName=chunkName[0]
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
-        #root.iter() brings ALL the nodes in the xml file, ALL means even CHILDREN
+        for node in root.iter():
+            #Column = attribute , Node= Table
+            #Get attributes (columns) of current Node (table) 
+            #Split the node (table) name because all come as "{something}Node" and {content} is not needed
+            chunk=str(node.tag).split('}')
+            tableName=chunk[1]  
+            for attr in node.attrib:
+                if tableName not in dicTableFields:
+                    dicTableFields[tableName]=[attr]
+                else:
+                    if attr not in dicTableFields[tableName]:
+                        dicTableFields[tableName].append(attr)            
+            #End of node iteration 
+    #Second, when got all fields from all xml, print them in spread sheet
+    for key in dicTableFields:
+        if key not in wb.sheetnames:
+            wb.create_sheet(key)
+        lsFields=[]    
+        for val in dicTableFields[key]:
+            lsFields.append(val)
+        wb[key].append(lsFields) 
+    wb.save(directory+excel_fileName)           
+
+    #Third, read information and insert where belongs  
+    for xml in myZip.namelist():
         for node in root.iter():
             #Column = attribute , Node= Table
             #Get attributes (columns) of current Node (table) 
             #Split the node (table) name because all come as "{something}Node" and {content} is not needed
             chunk=str(node.tag).split('}')
             tableName=chunk[1]   
-            
-            #To add a column and field into dataframe, you must have already a sheet_name                
-            
+            lsAttr=[]    
             for attr in node.attrib:
                 if tableName not in wb.sheetnames:
                     wb.create_sheet(tableName)
+                lsAttr.append(attr)     
+                wb[tableName].append(lsAttr)   
                         
             #End of node iteration  
-              
-            wb.save(directory+excel_fileName)      
+                       
         contDocs+=1
         #End of each document (xml) iteration in a zip
+        wb.save(directory+excel_fileName)
 
     #All xml processed at this point    
     """
