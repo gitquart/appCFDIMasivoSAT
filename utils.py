@@ -126,6 +126,7 @@ def extractAndReadZIP():
     #Dictionaries for every kind of "tipo de comprobante"
     for xml in myZip.namelist():
         #Each xml represent a row of dataframe (Serie)
+        bTipoComprobante=False
         chunkName=xml.split('.')
         fileName=chunkName[0]
         doc_xml=myZip.open(xml)
@@ -136,7 +137,6 @@ def extractAndReadZIP():
         #No hay un patrón específico
         #La única forma de estructurarlo es, si tiene hijos, en algún nodo hijo existe detalle
         for node in root.iter():
-
             #The only one FORCELY with children is Comprobante
             #Get the name of the node (it will be the prefix of each columns)
             #Column = attribute
@@ -145,39 +145,44 @@ def extractAndReadZIP():
             chunk=str(node.tag).split('}')
             tableName=chunk[1]
             #Get attributes of current Node (get columns of current table)
+            #Get TipoComprobante olny once
+            if not bTipoComprobante:
+                bTipoComprobante=True
+                for attr in node.attrib:
+                    if attr=='TipoDeComprobante':
+                        if node.get(attr)=='I' or node.get(attr)=='E':
+                            sheet_name='Ingresos_Egresos'
+                            bIE=True
+                            break
+                        elif node.get(attr)=='P':
+                            sheet_name='Pago'
+                            bPago=True
+                            break
+                        else:
+                            sheet_name='Main'
+                            bMain=True
+                            break
+            #To add a column and field into dataframe, you must have already a sheet_name        
+            #Adding ID       
+            #dataToDataFrame('ID',fileName,sheet_name)     
             for attr in node.attrib:
-                dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)
-                if attr=='TipoDeComprobante':
-                    if node.get(attr)=='I' or node.get(attr)=='E':
-                        sheet_name='Ingresos_Egresos'
-                        bIE=True
-                        break
-                    elif node.get(attr)=='P' :
-                        sheet_name='Pago'
-                        bPago=True
-                        break
-                    else:
-                        sheet_name='Main'
-                        bMain=True
-                        break
-            #Adding ID        
-            dataToDataFrame('ID',fileName,sheet_name)         
+                dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)        
             #End of node iteration        
             
         contDocs+=1
     #End of the process of all xml in a zip
     writer = pd.ExcelWriter('C:\\Users\\1098350515\\Documents\\cfdi.xlsx', engine='xlsxwriter')
     if bIE:     
-        dfCfdi=pd.DataFrame.from_dict(dataIE,orient='index')
-        dfCfdiIE=dfCfdi.transpose()
+        df=pd.DataFrame.from_dict(dataIE,orient='index')
+        dfCfdiIE=df.transpose()
         dfCfdiIE.to_excel(writer,sheet_name='Ingresos_Egresos')
     if bPago:     
-        dfCfdi=pd.DataFrame.from_dict(dataPago,orient='index')
-        dfCfdiPago=dfCfdi.transpose()
+        df=pd.DataFrame.from_dict(dataPago,orient='index')
+        dfCfdiPago=df.transpose()
         dfCfdiPago.to_excel(writer,sheet_name='Pago')
     if bMain:     
-        dfCfdi=pd.DataFrame.from_dict(dataMain,orient='index') 
-        dfCfdi=dfCfdi.transpose()
+        df=pd.DataFrame.from_dict(dataMain,orient='index') 
+        dfCfdiMain=df.transpose()
         dfCfdiMain.to_excel(writer,sheet_name='Main')   
 
     writer.save() 
