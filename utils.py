@@ -10,6 +10,7 @@ import zipfile
 from xml.dom import minidom
 from xml.etree import ElementTree as ET
 import pandas as pd
+import openpyxl as excelpy 
 
 #For practical purposes, each table or sheet in excel, will be managed by a dictionary (data) and a flag
 dataIE={}
@@ -93,99 +94,47 @@ def readBase64FromZIP(file):
         print('No file found')    
 
 
-def dataToDataFrame(column,value,sheet_name):
-    if sheet_name=='Ingresos_Egresos':
-        #dataIE
-        if column not in dataIE:
-            dataIE[column]=[] 
-        dataIE[column].append(value)   
-
-    elif sheet_name=='Pago':
-        #dataPago
-        if column not in dataPago:
-            dataPago[column]=[] 
-        dataPago[column].append(value)    
-    else:
-        #dataMain - this is the default value  
-        if column not in dataMain:
-            dataMain[column]=[] 
-        dataMain[column].append(value)  
-
-
 
 def extractAndReadZIP():
-    directory='C:\\Users\\1098350515\\Documents\\testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip'
-    myZip=zipfile.ZipFile(directory,'r')
-    bIE=False
-    bPago=False
-    bMain=False
-    dataIE.clear()
-    dataPago.clear()
-    dataMain.clear()
+    directory='C:\\Users\\1098350515\\Documents\\'
+    myZip=zipfile.ZipFile(directory+'testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip','r')
+    #The zip's file name will be the name of excel file name, like the "Database"
+    excel_fileName=os.path.splitext(os.path.split(myZip.filename)[1])[0]+'.xlsx'
+    #Creating the workbook (database)
+    wb=excelpy.Workbook() 
     contDocs=0
     #Dictionaries for every kind of "tipo de comprobante"
     for xml in myZip.namelist():
         #Each xml represent a row of dataframe (Serie)
-        bTipoComprobante=False
         chunkName=xml.split('.')
         fileName=chunkName[0]
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
-        #Every column and serie will be appended this way
-        sheet_name=''
-        #Start reading fields
-        #No hay un patrón específico
         #root.iter() brings ALL the nodes in the xml file, ALL means even CHILDREN
         for node in root.iter():
-            #Get the name of the node (it will be the prefix of each columns)
-            #Column = attribute
-            #Node= Table
-            #Get attributes of current Node (get columns of current table)
-            #Get TipoComprobante olny once
-            if not bTipoComprobante:
-                bTipoComprobante=True
-                for attr in node.attrib:
-                    if attr=='TipoDeComprobante':
-                        if node.get(attr)=='I' or node.get(attr)=='E':
-                            sheet_name='Ingresos_Egresos'
-                            bIE=True
-                            break
-                        elif node.get(attr)=='P':
-                            sheet_name='Pago'
-                            bPago=True
-                            break
-                        else:
-                            sheet_name='Main'
-                            bMain=True
-                            break
-
+            #Column = attribute , Node= Table
+            #Get attributes (columns) of current Node (table) 
+            #Split the node (table) name because all come as "{something}Node" and {content} is not needed
             chunk=str(node.tag).split('}')
-            tableName=chunk[1]            
+            tableName=chunk[1]   
+            
             #To add a column and field into dataframe, you must have already a sheet_name                
+            
             for attr in node.attrib:
-                #Adding ID   
-                dataToDataFrame('ID',fileName,sheet_name)
-                dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)        
-            #End of node iteration            
+                if tableName not in wb.sheetnames:
+                    wb.create_sheet(tableName)
+                        
+            #End of node iteration  
+              
+            wb.save(directory+excel_fileName)      
         contDocs+=1
         #End of each document (xml) iteration in a zip
 
     #All xml processed at this point    
+    """
     writer = pd.ExcelWriter('C:\\Users\\1098350515\\Documents\\cfdi.xlsx', engine='xlsxwriter')
-    if bIE:     
-        df=pd.DataFrame.from_dict(dataIE,orient='index')
-        dfCfdiIE=df.transpose()
-        dfCfdiIE.to_excel(writer,sheet_name='Ingresos_Egresos',index=False)
-    if bPago:     
-        df=pd.DataFrame.from_dict(dataPago,orient='index')
-        dfCfdiPago=df.transpose()
-        dfCfdiPago.to_excel(writer,sheet_name='Pago',index=False)
-    if bMain:     
-        df=pd.DataFrame.from_dict(dataMain,orient='index') 
-        dfCfdiMain=df.transpose()
-        dfCfdiMain.to_excel(writer,sheet_name='Main',index=False)   
-
     writer.save() 
+    """
     print('Files processed in ZIP file:',str(contDocs))   
         
           
