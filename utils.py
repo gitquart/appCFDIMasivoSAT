@@ -135,15 +135,11 @@ def extractAndReadZIP():
         sheet_name=''
         #Start reading fields
         #No hay un patrón específico
-        #La única forma de estructurarlo es, si tiene hijos, en algún nodo hijo existe detalle
+        #root.iter() brings ALL the nodes in the xml file, ALL means even CHILDREN
         for node in root.iter():
-            #The only one FORCELY with children is Comprobante
             #Get the name of the node (it will be the prefix of each columns)
             #Column = attribute
             #Node= Table
-            #root.iter() brings ALL the nodes in the xml file, ALL means even CHILDREN
-            chunk=str(node.tag).split('}')
-            tableName=chunk[1]
             #Get attributes of current Node (get columns of current table)
             #Get TipoComprobante olny once
             if not bTipoComprobante:
@@ -162,27 +158,32 @@ def extractAndReadZIP():
                             sheet_name='Main'
                             bMain=True
                             break
-            #To add a column and field into dataframe, you must have already a sheet_name        
-            #Adding ID           
+
+            chunk=str(node.tag).split('}')
+            tableName=chunk[1]            
+            #To add a column and field into dataframe, you must have already a sheet_name                
             for attr in node.attrib:
+                #Adding ID   
+                dataToDataFrame('ID',fileName,sheet_name)
                 dataToDataFrame(tableName+'_'+attr,node.get(attr),sheet_name)        
             #End of node iteration            
         contDocs+=1
-        #End of each document (xml) iteration
-    #End of the process of all xml in a zip
+        #End of each document (xml) iteration in a zip
+
+    #All xml processed at this point    
     writer = pd.ExcelWriter('C:\\Users\\1098350515\\Documents\\cfdi.xlsx', engine='xlsxwriter')
     if bIE:     
         df=pd.DataFrame.from_dict(dataIE,orient='index')
         dfCfdiIE=df.transpose()
-        dfCfdiIE.to_excel(writer,sheet_name='Ingresos_Egresos')
+        dfCfdiIE.to_excel(writer,sheet_name='Ingresos_Egresos',index=False)
     if bPago:     
         df=pd.DataFrame.from_dict(dataPago,orient='index')
         dfCfdiPago=df.transpose()
-        dfCfdiPago.to_excel(writer,sheet_name='Pago')
+        dfCfdiPago.to_excel(writer,sheet_name='Pago',index=False)
     if bMain:     
         df=pd.DataFrame.from_dict(dataMain,orient='index') 
         dfCfdiMain=df.transpose()
-        dfCfdiMain.to_excel(writer,sheet_name='Main')   
+        dfCfdiMain.to_excel(writer,sheet_name='Main',index=False)   
 
     writer.save() 
     print('Files processed in ZIP file:',str(contDocs))   
