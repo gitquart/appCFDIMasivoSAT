@@ -101,7 +101,13 @@ def extractAndReadZIP():
     #The zip's file name will be the name of excel file name, like the "Database"
     excel_fileName=os.path.splitext(os.path.split(myZip.filename)[1])[0]+'.xlsx'
     #Creating the workbook (database)
+    #Create the sheets: Ingreso_Egreso,Pago,Resto
     wb=excelpy.Workbook() 
+    wb.create_sheet('Ingreso_Egreso')
+    wb.create_sheet('Pago')
+    resto_sheet = wb['Sheet']
+    resto_sheet.title = 'Resto'
+    wb.save(directory+excel_fileName)
     contDocs=0
     #dicTableFields is a dictionary with the following structura key:table, value: list of fields
     dicTableFields={}
@@ -117,24 +123,32 @@ def extractAndReadZIP():
             #Column = attribute , Node= Table
             #Get attributes (columns) of current Node (table) 
             #Split the node (table) name because all come as "{something}Node" and {content} is not needed
+            #If the number of nodes > 1 then not get its fields, we only want 1 row
             chunk=str(node.tag).split('}')
-            tableName=chunk[1]  
-            for attr in node.attrib:
-                if tableName not in dicTableFields:
-                    dicTableFields[tableName]=[attr]
-                else:
-                    if attr not in dicTableFields[tableName]:
-                        dicTableFields[tableName].append(attr)            
+            tableName=chunk[1] 
+            numOfNodes=len(node.getchildren())
+            if (numOfNodes<2) or (numOfNodes>1 and tableName=='Comprobante'):
+                chunk=str(node.tag).split('}')
+                tableName=chunk[1]  
+                #As all the fields will be in one single sheet, it can occur two fields with the same
+                #name ex: Rfc and Rfc (Emisor and recipient), then it's needed to add prefix tableName
+                for attr in node.attrib:
+                    fieldName=tableName+'_'+attr
+                    if tableName not in dicTableFields:
+                        dicTableFields[tableName]=[fieldName]
+                    else:
+                        if fieldName not in dicTableFields[tableName]:
+                            dicTableFields[tableName].append(fieldName)            
             #End of node iteration 
     #Second, when got all fields from all xml, print them in spread sheet
+    lsFields=[] 
     for key in dicTableFields:
-        if key not in wb.sheetnames:
-            wb.create_sheet(key)
-        lsFields=[]    
         for val in dicTableFields[key]:
             lsFields.append(val)
-        wb[key].append(lsFields) 
-    wb.save(directory+excel_fileName)           
+    for sheet in wb.sheetnames:
+        wb[sheet].append(lsFields)
+    wb.save(directory+excel_fileName)     
+               
 
     #Third, read information and insert where belongs  
     for xml in myZip.namelist():
