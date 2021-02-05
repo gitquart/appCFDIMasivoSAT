@@ -141,6 +141,17 @@ def extractAndReadZIP():
     for key in dicTableFields:
         for val in dicTableFields[key]:
             lsFields.append(val)
+    #Test: remove fields that may be noisy (or any field you want)
+    lsRemove=['Comprobante_{http://www.w3.org/2001/XMLSchema-instance}schemaLocation',
+             'TimbreFiscalDigital_{http://www.w3.org/2001/XMLSchema-instance}schemaLocation',
+             'TimbreFiscalDigital_UUID',
+             'TimbreFiscalDigital_Version',
+             'TimbreFiscalDigital_SelloCFD',
+             'TimbreFiscalDigital_NoCertificadoSAT',
+             'TimbreFiscalDigital_SelloSAT'] 
+    for field in lsRemove:
+        lsFields.remove(field)     
+
     for sheet in wb.sheetnames:
         wb[sheet].append(lsFields)
     wb.save(directory+excel_fileName)     
@@ -169,6 +180,7 @@ def extractAndReadZIP():
         #The field leads all the insertion
         #bFieldAddedToRow is a flag to know if the field has been proccesed, it might be found in xml or not
         bFieldAddedToRow=False
+        tableName=''
         for field in lsFields:
             bNotFoundInXmlYet=False
             if field=='ID':
