@@ -10,7 +10,8 @@ import zipfile
 from xml.dom import minidom
 from xml.etree import ElementTree as ET
 import pandas as pd
-import openpyxl as excelpy 
+import openpyxl as excelpy
+from lxml import etree 
 
 #For practical purposes, each table or sheet in excel, will be managed by a dictionary (data) and a flag
 dataIE={}
@@ -114,7 +115,6 @@ def extractAndReadZIP():
     #Dictionaries for every kind of "tipo de comprobante"
     #First, get all the columns for all the tables
     for xml in myZip.namelist():
-        #Each xml represent a row of dataframe (Serie)
         chunkName=xml.split('.')
         fileName=chunkName[0]
         doc_xml=myZip.open(xml)
@@ -140,6 +140,7 @@ def extractAndReadZIP():
                         if fieldName not in dicTableFields[tableName]:
                             dicTableFields[tableName].append(fieldName)            
             #End of node iteration 
+
     #Second, when got all fields from all xml, print them in spread sheet
     lsFields=[] 
     #I add the ID (xlm name)
@@ -158,6 +159,14 @@ def extractAndReadZIP():
         #"Resto" is the default spread sheet
         sheetPrint='Resto'
         doc_xml=myZip.open(xml)
+        #Let's what parser it's better
+        tree = etree.parse(doc_xml)
+        value=tree.xpath('/Comprobante')
+        rootMinidom=minidom.parse(doc_xml)
+        test=rootMinidom.getElementsByTagName('cfdi:Comprobante')[0]
+        ls=test.attributes
+        for attribute in ls:
+            print(attribute)   
         root = ET.parse(doc_xml).getroot()
         for node in root.iter():
             if node.get('TipoDeComprobante')=='I' or node.get('TipoDeComprobante')=='E':
@@ -172,29 +181,27 @@ def extractAndReadZIP():
         #Example of a field in lsFields : "Comprobante_Version" -> "tableName_Field"
         #One row per xml
         lsRow=[]
-        bRestartNode=False 
+        bNextField=False 
+        #The field leads all the insertion
         for field in lsFields:
             if field=='ID':
                 lsRow.append(xml)
                 continue
-            for node in root.iter():
-                if bRestartNode:
-                    bRestartNode=False
+            for node in root.getiterator():
+                if bNextField:
+                    bNextField=False
                     break
                 chunk=str(node.tag).split('}')
                 tableName=chunk[1]       
                 for attr in node.attrib:
+                    if bNextField:
+                        break
                     fieldName=tableName+'_'+attr
-                    bAttrFound=False
                     if fieldName==field:
-                        lsRow.append(node.get(attr))
-                        bRestartNode=True
-                        bAttrFound=True
-                        break 
-                    if not bAttrFound:
+                        lsRow.append(node.get(attr)) 
+                    else:
                         lsRow.append('No value') 
-                        bRestartNode=False
-                        break               
+                    bNextField=True             
                 #End of node iteration 
             #End of fiel iteration
 
