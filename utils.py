@@ -170,6 +170,7 @@ def extractAndReadZIP():
         #bFieldAddedToRow is a flag to know if the field has been proccesed, it might be found in xml or not
         bFieldAddedToRow=False
         for field in lsFields:
+            bNotFoundInXmlYet=False
             if field=='ID':
                 lsRow.append(xml)
                 continue
@@ -186,12 +187,15 @@ def extractAndReadZIP():
                     if fieldName==field:
                         #Current "Field" found in the xml, add to Row , break and look for next "Field"
                         lsRow.append(node.get(attr)) 
-                        bFieldAddedToRow=True  
+                        bFieldAddedToRow=True
+                        bNotFoundInXmlYet=False  
                         break
-                if not bFieldAddedToRow:
-                    lsRow.append('Sin valor')
-                    bFieldAddedToRow=False 
-                    break
+                    else:
+                        bNotFoundInXmlYet=True
+            if bNotFoundInXmlYet:
+                lsRow.append('Sin valor')
+                bFieldAddedToRow=False 
+    
 
                 #End of node iteration 
             #End of fiel iteration
