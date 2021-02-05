@@ -142,6 +142,8 @@ def extractAndReadZIP():
             #End of node iteration 
     #Second, when got all fields from all xml, print them in spread sheet
     lsFields=[] 
+    #I add the ID (xlm name)
+    lsFields.append('ID')
     for key in dicTableFields:
         for val in dicTableFields[key]:
             lsFields.append(val)
@@ -149,24 +151,57 @@ def extractAndReadZIP():
         wb[sheet].append(lsFields)
     wb.save(directory+excel_fileName)     
                
-
-    #Third, read information and insert where belongs  
+  
+    #Third, read information and insert where belongs 
+    #"Resto" is the default spread sheet
+    sheetPrint='Resto'
+    bTipoComprobante=False 
     for xml in myZip.namelist():
-        for node in root.iter():
-            #Column = attribute , Node= Table
-            #Get attributes (columns) of current Node (table) 
-            #Split the node (table) name because all come as "{something}Node" and {content} is not needed
-            chunk=str(node.tag).split('}')
-            tableName=chunk[1]   
-            lsAttr=[]    
-            for attr in node.attrib:
-                if tableName not in wb.sheetnames:
-                    wb.create_sheet(tableName)
-                lsAttr.append(attr)     
-                wb[tableName].append(lsAttr)   
-                        
-            #End of node iteration  
-                       
+        #Get field TipoDeComprobante to knwo where sheet to print
+        if not bTipoComprobante:
+            for node in root.iter():
+                for attr in node.attrib:
+                    if node.get('TipoDeComprobante')=='I' or node.get('TipoDeComprobante')=='E':
+                        sheetPrint='Ingreso_Egreso'
+                        bTipoComprobante=True
+                        break
+                    elif  node.get('TipoDeComprobante')=='P':
+                        sheetPrint='Pago'
+                        bTipoComprobante=True
+                        break
+        #End of TipoComprobante iteration        
+
+        #Start to read the fields from lsFields=[]
+        #Example of a field in lsFields : "Comprobante_Version" -> "tableName_Field"
+        #One row per xml
+        lsRow=[]
+        bRestartNode=False 
+        for field in lsFields:
+            if field=='ID':
+                lsRow.append(xml)
+            for node in root.iter():
+                if bRestartNode:
+                    bRestartNode=False
+                    break
+                chunk=str(node.tag).split('}')
+                tableName=chunk[1]       
+                for attr in node.attrib:
+                    fieldName=tableName+'_'+attr
+                    bAttrFound=False
+                    if fieldName==field:
+                        lsRow.append(node.get(attr))
+                        bRestartNode=True
+                        bAttrFound=True
+                        break 
+                if not bAttrFound:
+                    lsRow.append('No value') 
+                    bRestartNode=False
+                    break               
+                #End of node iteration 
+            #End of fiel iteration
+
+        #Append the whole xml in a single row            
+        wb[sheetPrint].append(lsRow)                 
         contDocs+=1
         #End of each document (xml) iteration in a zip
         wb.save(directory+excel_fileName)
