@@ -191,10 +191,10 @@ def extractAndReadZIP():
                         bRestartNode=True
                         bAttrFound=True
                         break 
-                if not bAttrFound:
-                    lsRow.append('No value') 
-                    bRestartNode=False
-                    break               
+                    if not bAttrFound:
+                        lsRow.append('No value') 
+                        bRestartNode=False
+                        break               
                 #End of node iteration 
             #End of fiel iteration
 
