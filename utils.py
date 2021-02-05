@@ -152,23 +152,20 @@ def extractAndReadZIP():
     wb.save(directory+excel_fileName)     
                
   
-    #Third, read information and insert where belongs 
-    #"Resto" is the default spread sheet
-    sheetPrint='Resto'
-    bTipoComprobante=False 
+    #Third, read information and insert where belongs  
     for xml in myZip.namelist():
         #Get field TipoDeComprobante to knwo where sheet to print
-        if not bTipoComprobante:
-            for node in root.iter():
-                for attr in node.attrib:
-                    if node.get('TipoDeComprobante')=='I' or node.get('TipoDeComprobante')=='E':
-                        sheetPrint='Ingreso_Egreso'
-                        bTipoComprobante=True
-                        break
-                    elif  node.get('TipoDeComprobante')=='P':
-                        sheetPrint='Pago'
-                        bTipoComprobante=True
-                        break
+        #"Resto" is the default spread sheet
+        sheetPrint='Resto'
+        doc_xml=myZip.open(xml)
+        root = ET.parse(doc_xml).getroot()
+        for node in root.iter():
+            if node.get('TipoDeComprobante')=='I' or node.get('TipoDeComprobante')=='E':
+                sheetPrint='Ingreso_Egreso'
+                break
+            elif  node.get('TipoDeComprobante')=='P':
+                sheetPrint='Pago'
+                break
         #End of TipoComprobante iteration        
 
         #Start to read the fields from lsFields=[]
@@ -179,6 +176,7 @@ def extractAndReadZIP():
         for field in lsFields:
             if field=='ID':
                 lsRow.append(xml)
+                continue
             for node in root.iter():
                 if bRestartNode:
                     bRestartNode=False
@@ -207,10 +205,6 @@ def extractAndReadZIP():
         wb.save(directory+excel_fileName)
 
     #All xml processed at this point    
-    """
-    writer = pd.ExcelWriter('C:\\Users\\1098350515\\Documents\\cfdi.xlsx', engine='xlsxwriter')
-    writer.save() 
-    """
     print('Files processed in ZIP file:',str(contDocs))   
         
           
