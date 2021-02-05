@@ -13,13 +13,6 @@ import pandas as pd
 import openpyxl as excelpy
 from lxml import etree 
 
-#For practical purposes, each table or sheet in excel, will be managed by a dictionary (data) and a flag
-dataIE={}
-dataPago={}
-dataMain={}
-bIE=False
-bPago=False
-bMain=False
 FIEL_KEY = ''
 FIEL_CER = ''
 FIEL_PAS = 'chuy1987'
@@ -159,14 +152,6 @@ def extractAndReadZIP():
         #"Resto" is the default spread sheet
         sheetPrint='Resto'
         doc_xml=myZip.open(xml)
-        #Let's what parser it's better
-        tree = etree.parse(doc_xml)
-        value=tree.xpath('/Comprobante')
-        rootMinidom=minidom.parse(doc_xml)
-        test=rootMinidom.getElementsByTagName('cfdi:Comprobante')[0]
-        ls=test.attributes
-        for attribute in ls:
-            print(attribute)   
         root = ET.parse(doc_xml).getroot()
         for node in root.iter():
             if node.get('TipoDeComprobante')=='I' or node.get('TipoDeComprobante')=='E':
@@ -181,27 +166,33 @@ def extractAndReadZIP():
         #Example of a field in lsFields : "Comprobante_Version" -> "tableName_Field"
         #One row per xml
         lsRow=[]
-        bNextField=False 
         #The field leads all the insertion
+        #bFieldAddedToRow is a flag to know if the field has been proccesed, it might be found in xml or not
+        bFieldAddedToRow=False
         for field in lsFields:
             if field=='ID':
                 lsRow.append(xml)
                 continue
+            #Look for the "field" all over the xml
             for node in root.getiterator():
-                if bNextField:
-                    bNextField=False
+                if bFieldAddedToRow:
+                    bFieldAddedToRow=False
                     break
                 chunk=str(node.tag).split('}')
                 tableName=chunk[1]       
                 for attr in node.attrib:
-                    if bNextField:
-                        break
+                    bFieldAddedToRow=False
                     fieldName=tableName+'_'+attr
                     if fieldName==field:
+                        #Current "Field" found in the xml, add to Row , break and look for next "Field"
                         lsRow.append(node.get(attr)) 
-                    else:
-                        lsRow.append('No value') 
-                    bNextField=True             
+                        bFieldAddedToRow=True  
+                        break
+                if not bFieldAddedToRow:
+                    lsRow.append('Sin valor')
+                    bFieldAddedToRow=False 
+                    break
+
                 #End of node iteration 
             #End of fiel iteration
 
