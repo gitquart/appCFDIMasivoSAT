@@ -148,7 +148,12 @@ def extractAndReadZIP():
              'TimbreFiscalDigital_Version',
              'TimbreFiscalDigital_SelloCFD',
              'TimbreFiscalDigital_NoCertificadoSAT',
-             'TimbreFiscalDigital_SelloSAT'] 
+             'TimbreFiscalDigital_SelloSAT',
+             'Traslado_Base',
+             'Traslado_Impuesto',
+             'Traslado_TipoFactor',
+             'Traslado_TasaOCuota',
+             'Traslado_Importe' ] 
     for field in lsRemove:
         lsFields.remove(field)     
 
@@ -180,9 +185,9 @@ def extractAndReadZIP():
         #The field leads all the insertion
         #bFieldAddedToRow is a flag to know if the field has been proccesed, it might be found in xml or not
         bFieldAddedToRow=False
+        bNotFoundInXmlYet=False
         tableName=''
         for field in lsFields:
-            bNotFoundInXmlYet=False
             if field=='ID':
                 lsRow.append(xml)
                 continue
@@ -207,6 +212,7 @@ def extractAndReadZIP():
             if bNotFoundInXmlYet:
                 lsRow.append('Sin valor')
                 bFieldAddedToRow=False 
+                bNotFoundInXmlYet=False
     
 
                 #End of node iteration 
