@@ -187,6 +187,8 @@ def extractAndReadZIP():
         bFieldAddedToRow=False
         bNotFoundInXmlYet=False
         tableName=''
+        #Notes about "Algorith of reading fields": It's working well as it is, but is printing TotalFields-1, don't know why
+        #Algorith of reading fields
         for field in lsFields:
             if field=='ID':
                 lsRow.append(xml)
