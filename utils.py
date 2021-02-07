@@ -14,6 +14,7 @@ import openpyxl as excelpy
 from lxml import etree 
 
 prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
+prefixXSI='{http://www.w3.org/2001/XMLSchema-instance}'
 FIEL_KEY = ''
 FIEL_CER = ''
 FIEL_PAS = 'chuy1987'
@@ -143,11 +144,14 @@ def extractAndReadZIP():
         for val in dicTableFields[key]:
             lsFields.append(val)
     #Test: remove fields that may be noisy (or any field you want)
-    lsRemove=['Comprobante_{http://www.w3.org/2001/XMLSchema-instance}schemaLocation',
-             'TimbreFiscalDigital_{http://www.w3.org/2001/XMLSchema-instance}schemaLocation',
-             'TimbreFiscalDigital_UUID',
-             'TimbreFiscalDigital_Version',
-             'TimbreFiscalDigital_SelloCFD',
+    lsRemove=['Comprobante_'+prefixXSI+'schemaLocation',
+              'Comprobante_Certificado',
+              'Comprobante_NoCertificado',
+              'Comprobante_Sello',
+              'TimbreFiscalDigital_'+prefixXSI+'schemaLocation',
+              'TimbreFiscalDigital_UUID',
+              'TimbreFiscalDigital_Version',
+              'TimbreFiscalDigital_SelloCFD',
              'TimbreFiscalDigital_NoCertificadoSAT',
              'TimbreFiscalDigital_SelloSAT',
              'Traslado_Base',
@@ -203,9 +207,6 @@ def extractAndReadZIP():
                     lsRow.append(currentNode.get(column))
                 else:
                     lsRow.append('Sin valor')    
-
-
-           
             #End of field iteration
 
         #Append the whole xml in a single row            
