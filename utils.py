@@ -13,6 +13,7 @@ import pandas as pd
 import openpyxl as excelpy
 from lxml import etree 
 
+prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
 FIEL_KEY = ''
 FIEL_CER = ''
 FIEL_PAS = 'chuy1987'
@@ -162,63 +163,50 @@ def extractAndReadZIP():
     wb.save(directory+excel_fileName)     
                
   
-    #Third, read information and insert where belongs  
+    #Third, read information and insert where belongs 
+    #Conclusiones: 
+    # getroot() : Gets the root of the xml, then use getRoot to get "Comprobante"
+    # root.find(.//...): gets any node inside the root, use this to any other node except the root
     for xml in myZip.namelist():
         #Get field TipoDeComprobante to knwo where sheet to print
         #"Resto" is the default spread sheet
         sheetPrint='Resto'
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
-        for node in root.iter():
-            if node.get('TipoDeComprobante')=='I' or node.get('TipoDeComprobante')=='E':
-                sheetPrint='Ingreso_Egreso'
-                break
-            elif  node.get('TipoDeComprobante')=='P':
-                sheetPrint='Pago'
-                break
-        #End of TipoComprobante iteration        
+        if root.get('TipoDeComprobante')=='I' or node.get('TipoDeComprobante')=='E':
+            sheetPrint='Ingreso_Egreso'
+        elif  root.get('TipoDeComprobante')=='P':
+            sheetPrint='Pago'      
 
         #Start to read the fields from lsFields=[]
         #Example of a field in lsFields : "Comprobante_Version" -> "tableName_Field"
         #One row per xml
         lsRow=[]
         #The field leads all the insertion
-        #bFieldAddedToRow is a flag to know if the field has been proccesed, it might be found in xml or not
-        bFieldAddedToRow=False
-        bNotFoundInXmlYet=False
-        tableName=''
         #Notes about "Algorith of reading fields": It's working well as it is, but is printing TotalFields-1, don't know why
         #Algorith of reading fields
         for field in lsFields:
+            #ID case
             if field=='ID':
                 lsRow.append(xml)
                 continue
-            #Look for the "field" all over the xml
-            for node in root.getiterator():
-                if bFieldAddedToRow:
-                    bFieldAddedToRow=False
-                    break
-                chunk=str(node.tag).split('}')
-                tableName=chunk[1]       
-                for attr in node.attrib:
-                    bFieldAddedToRow=False
-                    fieldName=tableName+'_'+attr
-                    if fieldName==field:
-                        #Current "Field" found in the xml, add to Row , break and look for next "Field"
-                        lsRow.append(node.get(attr)) 
-                        bFieldAddedToRow=True
-                        bNotFoundInXmlYet=False  
-                        break
-                    else:
-                        bNotFoundInXmlYet=True
-            if bNotFoundInXmlYet:
-                lsRow.append('Sin valor')
-                bFieldAddedToRow=False 
-                bNotFoundInXmlYet=False
-    
+            #Rest of cases
+            chunks=field.split('_')
+            table=chunks[0]
+            column=chunks[1]
+            if table=='Comprobante':
+                lsRow.append(root.get(column))
+            else:
+                #All normal cases, but also set here special cases that are not Root
+                currentNode=root.find('.//'+prefixCFDI+table)
+                if currentNode is not None:
+                    lsRow.append(currentNode.get(column))
+                else:
+                    lsRow.append('Sin valor')    
 
-                #End of node iteration 
-            #End of fiel iteration
+
+           
+            #End of field iteration
 
         #Append the whole xml in a single row            
         wb[sheetPrint].append(lsRow)                 
