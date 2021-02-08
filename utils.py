@@ -15,8 +15,8 @@ from lxml import etree
 from InternalControl import cInternalControl
 
 objControl=cInternalControl()
-prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
-prefixXSI='{http://www.w3.org/2001/XMLSchema-instance}'
+prefixCFDI=objControl.prefixCFDI
+prefixXSI=objControl.prefixXSI
 FIEL_KEY = ''
 FIEL_CER = ''
 FIEL_PAS = 'chuy1987'
@@ -147,7 +147,8 @@ def extractAndReadZIP():
             lsFields.append(val)
     
     for field in objControl.lsRemove:
-        lsFields.remove(field)     
+        if field in lsFields:
+            lsFields.remove(field)     
 
     for sheet in wb.sheetnames:
         wb[sheet].append(lsFields)
