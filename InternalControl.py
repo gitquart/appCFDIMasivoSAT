@@ -2,6 +2,8 @@ class cInternalControl:
     excel_dir='' 
     prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
     prefixXSI='{http://www.w3.org/2001/XMLSchema-instance}'
+    prefixTFD='{http://www.sat.gob.mx/TimbreFiscalDigital}'
+    lsPrefix=[prefixCFDI,prefixXSI,prefixTFD]
     #Test: remove fields that may be noisy (or any field you want)
     lsRemove=[
                #Comprobante

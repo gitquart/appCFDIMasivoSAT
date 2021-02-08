@@ -15,8 +15,6 @@ from lxml import etree
 from InternalControl import cInternalControl
 
 objControl=cInternalControl()
-prefixCFDI=objControl.prefixCFDI
-prefixXSI=objControl.prefixXSI
 FIEL_KEY = ''
 FIEL_CER = ''
 FIEL_PAS = 'chuy1987'
@@ -186,14 +184,35 @@ def extractAndReadZIP():
             table=chunks[0]
             column=chunks[1]
             if table=='Comprobante':
-                lsRow.append(root.get(column))
+                if column in root.attrib:
+                    lsRow.append(root.get(column))
+                else: 
+                    #Table found, but no column found
+                    lsRow.append(0)   
             else:
-                #All normal cases, but also set here special cases that are not Root
-                currentNode=root.find('.//'+prefixCFDI+table)
-                if currentNode is not None:
-                    lsRow.append(currentNode.get(column))
+                lsNode=regresaNodoEncontrado(table)
+                #Find the right prefix for table
+                if len(lsNode)==1:
+                    if column in lsNode[0].attrib:
+                    lsRow.append(lsNode[0].get(column))
                 else:
-                    lsRow.append('Sin valor')    
+                    #Table found, but no column found
+                    lsRow.append(0)
+
+                elif len(lsNode)>1:
+                    #More than 1 table_column found with the same name in XML
+                    for node in root.findall('.//'+objControl.prefixCFDI+table):
+                        if len(node.attrib)>0: 
+                            #If this table has attributes, read it, other wise skip it becase
+                            #if the column doesn't have fields, it means it holds children
+                            if column in node.attrib:
+                                lsRow.append(node.get(column))
+                            else:
+                                #Table found, but no column found
+                                lsRow.append(0)    
+                else:
+                    #No table name found
+                    lsRow.append(0)  
             #End of field iteration
 
         #Append the whole xml in a single row            
@@ -203,7 +222,14 @@ def extractAndReadZIP():
         wb.save(directory+excel_fileName)
 
     #All xml processed at this point    
-    print('Files processed in ZIP file:',str(contDocs))   
+    print('Files processed in ZIP file:',str(contDocs)) 
+
+#regresaNodoEncontrado: regresa nodo (tabla) si existe en en XML
+def regresaNodoEncontrado(table):
+    for prefix in objControl.lsPrefix:
+        lsNode=root.findall('.//'+prefix+table) 
+        if len(lsNode)>0:
+            return lsNode     
         
           
              
