@@ -12,7 +12,9 @@ from xml.etree import ElementTree as ET
 import pandas as pd
 import openpyxl as excelpy
 from lxml import etree 
+from InternalControl import cInternalControl
 
+objControl=cInternalControl()
 prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
 prefixXSI='{http://www.w3.org/2001/XMLSchema-instance}'
 FIEL_KEY = ''
@@ -93,7 +95,7 @@ def readBase64FromZIP(file):
 
 def extractAndReadZIP():
     directory='C:\\Users\\1098350515\\Documents\\'
-    myZip=zipfile.ZipFile(directory+'testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip','r')
+    myZip=zipfile.ZipFile(directory+'CFDI\\testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip','r')
     #The zip's file name will be the name of excel file name, like the "Database"
     excel_fileName=os.path.splitext(os.path.split(myZip.filename)[1])[0]+'.xlsx'
     #Creating the workbook (database)
@@ -138,28 +140,13 @@ def extractAndReadZIP():
 
     #Second, when got all fields from all xml, print them in spread sheet
     lsFields=[] 
-    #I add the ID (xlm name)
-    lsFields.append('ID')
+    #I add the ID (nombre archivo) (xlm name)
+    lsFields.append('nombrearchivo')
     for key in dicTableFields:
         for val in dicTableFields[key]:
             lsFields.append(val)
-    #Test: remove fields that may be noisy (or any field you want)
-    lsRemove=['Comprobante_'+prefixXSI+'schemaLocation',
-              'Comprobante_Certificado',
-              'Comprobante_NoCertificado',
-              'Comprobante_Sello',
-              'TimbreFiscalDigital_'+prefixXSI+'schemaLocation',
-              'TimbreFiscalDigital_UUID',
-              'TimbreFiscalDigital_Version',
-              'TimbreFiscalDigital_SelloCFD',
-             'TimbreFiscalDigital_NoCertificadoSAT',
-             'TimbreFiscalDigital_SelloSAT',
-             'Traslado_Base',
-             'Traslado_Impuesto',
-             'Traslado_TipoFactor',
-             'Traslado_TasaOCuota',
-             'Traslado_Importe' ] 
-    for field in lsRemove:
+    
+    for field in objControl.lsRemove:
         lsFields.remove(field)     
 
     for sheet in wb.sheetnames:
@@ -187,11 +174,10 @@ def extractAndReadZIP():
         #One row per xml
         lsRow=[]
         #The field leads all the insertion
-        #Notes about "Algorith of reading fields": It's working well as it is, but is printing TotalFields-1, don't know why
         #Algorith of reading fields
         for field in lsFields:
             #ID case
-            if field=='ID':
+            if field=='nombrearchivo':
                 lsRow.append(xml)
                 continue
             #Rest of cases
