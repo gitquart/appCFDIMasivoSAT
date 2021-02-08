@@ -184,32 +184,19 @@ def extractAndReadZIP():
             table=chunks[0]
             column=chunks[1]
             if table=='Comprobante':
-                if column in root.attrib:
-                    lsRow.append(root.get(column))
-                else: 
-                    #Table found, but no column found
-                    lsRow.append(0)   
+                addColumnIfFound(root,column,lsRow,0)  
             else:
-                lsNode=regresaNodoEncontrado(table)
                 #Find the right prefix for table
+                lsNode=returnFoundNode(root,table)
                 if len(lsNode)==1:
-                    if column in lsNode[0].attrib:
-                    lsRow.append(lsNode[0].get(column))
-                else:
-                    #Table found, but no column found
-                    lsRow.append(0)
-
+                    addColumnIfFound(lsNode[0],column,lsRow,0)
                 elif len(lsNode)>1:
                     #More than 1 table_column found with the same name in XML
                     for node in root.findall('.//'+objControl.prefixCFDI+table):
                         if len(node.attrib)>0: 
                             #If this table has attributes, read it, other wise skip it becase
                             #if the column doesn't have fields, it means it holds children
-                            if column in node.attrib:
-                                lsRow.append(node.get(column))
-                            else:
-                                #Table found, but no column found
-                                lsRow.append(0)    
+                            addColumnIfFound(node,column,lsRow,0)
                 else:
                     #No table name found
                     lsRow.append(0)  
@@ -224,12 +211,25 @@ def extractAndReadZIP():
     #All xml processed at this point    
     print('Files processed in ZIP file:',str(contDocs)) 
 
-#regresaNodoEncontrado: regresa nodo (tabla) si existe en en XML
-def regresaNodoEncontrado(table):
+
+def addColumnIfFound(table,column,lsRow,notFoundValue):
+    if column in table.attrib:
+        lsRow.append(table.get(column))
+    else:
+        #Table found, but no column found
+        lsRow.append(notFoundValue)    
+
+#returnFoundNode: regresa nodo (tabla) si existe en en XML
+def returnFoundNode(root,table):
+    lsNode=[]
+    result=[]
     for prefix in objControl.lsPrefix:
         lsNode=root.findall('.//'+prefix+table) 
         if len(lsNode)>0:
-            return lsNode     
+            result=lsNode
+            break
+    #If the code reaches this point, it means the Node doesn't exit in the XML, therefore return an empty list
+    return result            
         
           
              
