@@ -15,7 +15,7 @@ class cInternalControl:
               'TimbreFiscalDigital_SelloCFD',
              'TimbreFiscalDigital_NoCertificadoSAT',
              'TimbreFiscalDigital_SelloSAT',
-             'TimbreFiscalDigital_FechaTimbrado'
+             'TimbreFiscalDigital_FechaTimbrado',
              'TimbreFiscalDigital_RfcProvCertif',
               #Traslado
              'Traslado_Base',
