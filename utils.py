@@ -92,8 +92,8 @@ def readBase64FromZIP(file):
 
 
 def extractAndReadZIP():
-    directory='C:\\Users\\1098350515\\Documents\\'
-    myZip=zipfile.ZipFile(directory+'CFDI\\testZIP\\EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip','r')
+    objControl=cInternalControl()
+    myZip=zipfile.ZipFile(objControl.directory+objControl.zipToRead,'r')
     #The zip's file name will be the name of excel file name, like the "Database"
     excel_fileName=os.path.splitext(os.path.split(myZip.filename)[1])[0]+'.xlsx'
     #Creating the workbook (database)
@@ -150,7 +150,7 @@ def extractAndReadZIP():
 
     for sheet in wb.sheetnames:
         wb[sheet].append(lsFields)
-    wb.save(directory+excel_fileName)     
+    wb.save(objControl.directory+excel_fileName)     
                
   
     #Third, read information and insert where belongs 

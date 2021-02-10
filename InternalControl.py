@@ -1,5 +1,7 @@
 class cInternalControl:
-    excel_dir='' 
+    #Folder for extractAndReadZIP()
+    directory='C:\\Users\\1098350515\\Documents\\'
+    zipToRead='EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip' 
     prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
     prefixXSI='{http://www.w3.org/2001/XMLSchema-instance}'
     prefixTFD='{http://www.sat.gob.mx/TimbreFiscalDigital}'
