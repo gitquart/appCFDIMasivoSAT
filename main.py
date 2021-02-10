@@ -16,8 +16,8 @@ op=int(op)
 
 if op==1:
     print('Solicitar...')
-    fecha_inicial = datetime.datetime(2019, 6, 1)
-    fecha_final = datetime.datetime(2020, 12, 31)
+    fecha_inicial = datetime.datetime(2014, 1, 1)
+    fecha_final = datetime.datetime(2014, 12, 31)
     lsvalor=tool.solicitaDescarga(fecha_inicial,fecha_final)
 if op==2:    
     #ejemplo :ec162d98-292a-4673-8085-a1d2cfd725f8

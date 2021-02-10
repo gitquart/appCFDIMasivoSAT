@@ -81,9 +81,9 @@ created on the go.
 """
 def readBase64FromZIP(file): 
     if file is not None:
-        with open(file+'.zip', 'wb') as result:
+        with open(objControl.directory+'output.zip', 'wb') as result:
             result.write(base64.b64decode(file))
-        zip_ref = zipfile.ZipFile(file+".zip", 'r')
+        zip_ref = zipfile.ZipFile(objControl.directory+"output.zip", 'r')
         zip_ref.close()
 
 
