@@ -1,8 +1,9 @@
 #Tutorial de descarga CFDI masivamente : https://pypi.org/project/cfdiclient/
 import utils as tool
 import datetime
+from InternalControl import cInternalControl
 
-
+objControl=cInternalControl()
 #Solicitar,Verificar,Descargar
 op='descargar'
 
@@ -20,7 +21,7 @@ if op=='solicitar' or op=='verificar':
 
 if op=='descargar':
     #paquete=tool.descargarPaquete('EC162D98-292A-4673-8085-A1D2CFD725F8_01')
-    tool.readBase64FromZIP(None)
+    tool.readBase64FromZIP(objControl.zipToRead)
     print('ZIP is ready')
   
 

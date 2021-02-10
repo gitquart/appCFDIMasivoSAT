@@ -91,9 +91,9 @@ def readBase64FromZIP(file):
 
 
 
-def extractAndReadZIP():
+def extractAndReadZIP(zipToRead):
     objControl=cInternalControl()
-    myZip=zipfile.ZipFile(objControl.directory+objControl.zipToRead,'r')
+    myZip=zipfile.ZipFile(objControl.directory+zipToRead,'r')
     #The zip's file name will be the name of excel file name, like the "Database"
     excel_fileName=os.path.splitext(os.path.split(myZip.filename)[1])[0]+'.xlsx'
     #Creating the workbook (database)
