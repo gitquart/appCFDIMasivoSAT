@@ -14,11 +14,15 @@ import openpyxl as excelpy
 from lxml import etree 
 from InternalControl import cInternalControl
 
+#Datos  a modificar
+rfc_emisor = 'QCG190521ND3'
+rfc_receptor = 'QCG190521ND3'
+rfc_solicitante = 'QCG190521ND3'
+FIEL_PAS = 'chuy1987'
+#Fin -Datos  a modificar
 objControl=cInternalControl()
 FIEL_KEY = ''
 FIEL_CER = ''
-FIEL_PAS = 'chuy1987'
-rfc_solicitante = 'QCG190521ND3'
 pathToFiel=os.getcwd()+'\\FIEL'
 for file in os.listdir(pathToFiel):
     if file.endswith('.key'):
@@ -42,8 +46,6 @@ def solicitaDescarga(fecha_inicial,fecha_final):
     #Ejemplo de respuesta  {'mensaje': 'Solicitud Aceptada', 'cod_estatus': '5000', 'id_solicitud': 'be2a3e76-684f-416a-afdf-0f9378c346be'}
     descarga = SolicitaDescarga(fiel)
     token = autenticacion()
-    rfc_emisor = 'QCG190521ND3'
-    rfc_receptor = 'QCG190521ND3'
     # Emitidos
     result = descarga.solicitar_descarga(token, rfc_solicitante, fecha_inicial, fecha_final, rfc_emisor=rfc_emisor)
     id_solicitud_emisor=result['id_solicitud']
