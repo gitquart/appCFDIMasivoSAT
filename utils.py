@@ -14,13 +14,11 @@ import openpyxl as excelpy
 from lxml import etree 
 from InternalControl import cInternalControl
 
-#Datos  a modificar
-rfc_emisor = 'QCG190521ND3'
-rfc_receptor = 'QCG190521ND3'
-rfc_solicitante = 'QCG190521ND3'
-FIEL_PAS = 'chuy1987'
-#Fin -Datos  a modificar
 objControl=cInternalControl()
+rfc_emisor = objControl.rfc_emisor
+rfc_receptor = objControl.rfc_receptor
+rfc_solicitante = objControl.rfc_solicitante
+FIEL_PAS = objControl.FIEL_PAS
 FIEL_KEY = ''
 FIEL_CER = ''
 pathToFiel=os.getcwd()+'\\FIEL'

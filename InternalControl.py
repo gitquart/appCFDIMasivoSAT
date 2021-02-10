@@ -1,4 +1,12 @@
 class cInternalControl:
+    
+    #Data to change per user
+    rfc_emisor = 'QCG190521ND3'
+    rfc_receptor = 'QCG190521ND3'
+    rfc_solicitante = 'QCG190521ND3'
+    FIEL_PAS = 'chuy1987'
+
+    #Progra, variables
     #Folder for extractAndReadZIP()
     directory='C:\\Users\\1098350515\\Documents\\'
     zipToRead='EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip' 
