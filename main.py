@@ -25,6 +25,12 @@ if op==2:
     strid_v=input()
     lsvalor=tool.verificaSolicitudDescarga(strid_v)
 if op==1 or op==2:
+    accion=''
+    if op==1:
+        accion='Solicitud'
+    if op==2:
+        accion='Verificación'    
+    print('Imprimiendo IDs de ',accion)
     for item in lsvalor:
         print(item)
 
