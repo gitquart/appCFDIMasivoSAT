@@ -85,10 +85,6 @@ def readBase64FromZIP(file):
             result.write(base64.b64decode(file))
         zip_ref = zipfile.ZipFile(file+".zip", 'r')
         zip_ref.close()
-    else:
-        extractAndReadZIP()
-        print('No file found')    
-
 
 
 def extractAndReadZIP(zipToRead):
@@ -103,7 +99,7 @@ def extractAndReadZIP(zipToRead):
     wb.create_sheet('Pago')
     resto_sheet = wb['Sheet']
     resto_sheet.title = 'Resto'
-    wb.save(directory+excel_fileName)
+    wb.save(objControl.directory+excel_fileName)
     contDocs=0
     #dicTableFields is a dictionary with the following structura key:table, value: list of fields
     dicTableFields={}
@@ -206,7 +202,7 @@ def extractAndReadZIP(zipToRead):
         wb[sheetPrint].append(lsRow)                 
         contDocs+=1
         #End of each document (xml) iteration in a zip
-        wb.save(directory+excel_fileName)
+        wb.save(objControl.directory+excel_fileName)
 
     #All xml processed at this point    
     print('Files processed in ZIP file:',str(contDocs)) 
