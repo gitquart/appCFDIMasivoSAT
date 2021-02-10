@@ -20,14 +20,18 @@ if op==1:
     fecha_final = datetime.datetime(2020, 12, 31)
     lsvalor=tool.solicitaDescarga(fecha_inicial,fecha_final)
 if op==2:    
-    print('Verificar...')
-    lsvalor=tool.verificaSolicitudDescarga('ec162d98-292a-4673-8085-a1d2cfd725f8')
+    #ejemplo :ec162d98-292a-4673-8085-a1d2cfd725f8
+    print('Introduce el ID a verificar:')
+    strid_v=input()
+    lsvalor=tool.verificaSolicitudDescarga(strid_v)
 if op==1 or op==2:
     for item in lsvalor:
         print(item)
 
 if op==3:
-    res=tool.descargarPaquete('')
+    print('Introduce el ID a descargar:')
+    strid_d=input()
+    res=tool.descargarPaquete(strid_d)
     print('ZIP is ready')
 if op==4:    
     tool.extractAndReadZIP(objControl.zipToRead)
