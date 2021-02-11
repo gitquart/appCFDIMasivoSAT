@@ -9,6 +9,8 @@ class cInternalControl:
     #Progra, variables
     #Folder for extractAndReadZIP()
     directory='C:\\Users\\1098350515\\Documents\\'
+    #zipToRead is the name of zip that will be created from download
+    #and also the one to read to transform to excel
     zipToRead='JC_2014B.zip' 
     prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
     prefixXSI='{http://www.w3.org/2001/XMLSchema-instance}'
