@@ -31,9 +31,8 @@ for file in os.listdir(pathToFiel):
         continue 
 cer_der = open(pathToFiel+'\\'+FIEL_CER, 'rb').read()
 key_der = open(pathToFiel+'\\'+FIEL_KEY, 'rb').read()  
-fiel = Fiel(cer_der, key_der, FIEL_PAS)      
-
-
+fiel = Fiel(cer_der, key_der, FIEL_PAS) 
+   
 def autenticacion():
     auth = Autenticacion(fiel)
     token = auth.obtener_token()

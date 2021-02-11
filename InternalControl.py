@@ -1,10 +1,10 @@
 class cInternalControl:
     
     #----Data to change per user----
-    rfc_emisor = 'JCB100702TQ1'
-    rfc_receptor = 'JCB100702TQ1'
-    rfc_solicitante = 'JCB100702TQ1'
-    FIEL_PAS = 'JCB100702TQ1'
+    rfc_emisor = 'MAMX510306S58'
+    rfc_receptor = 'MAMX510306S58'
+    rfc_solicitante = 'MAMX510306S58'
+    FIEL_PAS = 'mariae51'
     #Folder for extractAndReadZIP()
     directory='C:\\Users\\1098350515\\Documents\\'
     #zipToRead is the name of zip that will be created from download
