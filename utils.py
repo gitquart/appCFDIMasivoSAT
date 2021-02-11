@@ -144,7 +144,15 @@ def extractAndReadZIP(zipToRead):
             lsFields.remove(field)     
 
     for sheet in wb.sheetnames:
-        wb[sheet].append(lsFields)    
+        wb[sheet].append(lsFields)  
+    #Rename columns in excel if necessary
+    #As the excel doesn't have values but the header row, then don't need to add any more logic
+    #Rename the columns you want and that's it.
+    for sheet in wb.sheetnames:
+        for row in wb[sheet].rows:
+            for cell in row:
+                #Rename any column you want here
+                print(cell.value)      
 
 
     wb.save(objControl.directory+excel_fileName)     
