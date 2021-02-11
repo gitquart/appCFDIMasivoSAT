@@ -16,6 +16,32 @@ class cInternalControl:
     prefixXSI='{http://www.w3.org/2001/XMLSchema-instance}'
     prefixTFD='{http://www.sat.gob.mx/TimbreFiscalDigital}'
     lsPrefix=[prefixCFDI,prefixXSI,prefixTFD]
+    #lsCustomFields has the list of fields that a user may want for himself
+    #customizing the excel result, if it is empty, the code must display the normal set of fields
+    lsCustomFields=[
+        'Comprobante_Fecha',
+        'Comprobante_Serie',
+        'Comprobante_Folio',
+        'Comprobante_MetodoPago',
+        'Comprobante_TipoDeComprobante',
+        'Receptor_UsoCFDI',
+        'Comprobante_SubTotal',
+        'Impuestos_TotalImpuestosRetenidos',
+        'Impuestos_TotalImpuestosTrasladados',
+        'Comprobante_Total',
+        'Comprobante_LugarExpedicion',
+        'Comprobante_Moneda',
+        'Comprobante_TipoCambio',
+        'Comprobante_Descuento',
+        'Comprobante_FormaPago',
+        'Comprobante_CondicionesDePago',
+        'Comprobante_Version',
+        'Emisor_Rfc',
+        'Receptor_Rfc',
+        'Emisor_Nombre',
+        'Receptor_Nombre',
+        'TimbreFiscalDigital_UUID'
+    ]
     #Test: remove fields that may be noisy (or any field you want)
     lsRemove=[
                #Comprobante
@@ -68,8 +94,10 @@ class cInternalControl:
              'Concepto_Importe',
              'Concepto_NoIdentificacion',
              'Concepto_Unidad',
-             'Concepto_Descuento'
-
+             'Concepto_Descuento',
+             #Emisor
+             'Emisor_RegimenFiscal'
               ] 
+
 
     

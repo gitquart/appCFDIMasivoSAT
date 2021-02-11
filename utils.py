@@ -94,10 +94,10 @@ def extractAndReadZIP(zipToRead):
     #Creating the workbook (database)
     #Create the sheets: Ingreso_Egreso,Pago,Resto
     wb=excelpy.Workbook() 
-    wb.create_sheet('Ingreso_Egreso')
-    wb.create_sheet('Pago')
-    resto_sheet = wb['Sheet']
-    resto_sheet.title = 'Resto'
+    wb.create_sheet('Emisor')
+    wb.create_sheet('Receptor')
+    pago_sheet = wb['Sheet']
+    pago_sheet.title = 'Pago'
     wb.save(objControl.directory+excel_fileName)
     contDocs=0
     #dicTableFields is a dictionary with the following structura key:table, value: list of fields
@@ -133,18 +133,24 @@ def extractAndReadZIP(zipToRead):
 
     #Second, when got all fields from all xml, print them in spread sheet
     lsFields=[] 
-    #I add the ID (nombre archivo) (xlm name)
-    lsFields.append('nombrearchivo')
-    for key in dicTableFields:
-        for val in dicTableFields[key]:
-            lsFields.append(val)
-    
+    #Add extra fields here
+    lsFields.append('mes')
+    lsSource=[]
+    if len(objControl.lsCustomFields)==0:
+        lsSource=dicTableFields   
+    else:
+        lsSource=objControl.lsCustomFields    
+
+    lsFields=lsSource
+
     for field in objControl.lsRemove:
         if field in lsFields:
             lsFields.remove(field)     
 
     for sheet in wb.sheetnames:
-        wb[sheet].append(lsFields)
+        wb[sheet].append(lsFields)    
+
+
     wb.save(objControl.directory+excel_fileName)     
                
   
@@ -155,13 +161,19 @@ def extractAndReadZIP(zipToRead):
     for xml in myZip.namelist():
         #Get field TipoDeComprobante to knwo where sheet to print
         #"Resto" is the default spread sheet
-        sheetPrint='Resto'
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
-        if root.get('TipoDeComprobante')=='I' or node.get('TipoDeComprobante')=='E':
-            sheetPrint='Ingreso_Egreso'
-        elif  root.get('TipoDeComprobante')=='P':
-            sheetPrint='Pago'      
+        lsRfcTable=['Emisor','Receptor']
+        for item in lsRfcTable:
+            node=returnFoundNode(root,item)
+            if len(node)>0:
+                rfc_value=node[0].get('Rfc')
+                if rfc_value==objControl.rfcUsuario:
+                    if root.get('TipoDeComprobante')=='I' or root.get('TipoDeComprobante')=='E':
+                        sheetPrint=item
+                    elif  root.get('TipoDeComprobante')=='P':
+                        sheetPrint='Pago' 
+                    break         
 
         #Start to read the fields from lsFields=[]
         #Example of a field in lsFields : "Comprobante_Version" -> "tableName_Field"
@@ -170,7 +182,7 @@ def extractAndReadZIP(zipToRead):
         #The field leads all the insertion
         #Algorith of reading fields
         for field in lsFields:
-            #ID case
+            #Cases
             if field=='nombrearchivo':
                 lsRow.append(xml)
                 continue
