@@ -1,17 +1,16 @@
 class cInternalControl:
     
-    #Data to change per user
+    #----Data to change per user----
     rfc_emisor = 'JCB100702TQ1'
     rfc_receptor = 'JCB100702TQ1'
     rfc_solicitante = 'JCB100702TQ1'
     FIEL_PAS = 'JCB100702TQ1'
-
-    #Progra, variables
     #Folder for extractAndReadZIP()
     directory='C:\\Users\\1098350515\\Documents\\'
     #zipToRead is the name of zip that will be created from download
     #and also the one to read to transform to excel
     zipToRead='JC_2014B.zip' 
+    #----Progra, variables----
     prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
     prefixXSI='{http://www.w3.org/2001/XMLSchema-instance}'
     prefixTFD='{http://www.sat.gob.mx/TimbreFiscalDigital}'
