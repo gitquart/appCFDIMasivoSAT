@@ -4,14 +4,10 @@ from cfdiclient import SolicitaDescarga
 from cfdiclient import VerificaSolicitudDescarga
 from cfdiclient import DescargaMasiva
 import os
-import json
 import base64
 import zipfile
-from xml.dom import minidom
 from xml.etree import ElementTree as ET
-import pandas as pd
 import openpyxl as excelpy
-from lxml import etree 
 from InternalControl import cInternalControl
 
 objControl=cInternalControl()
