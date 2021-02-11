@@ -137,7 +137,9 @@ def extractAndReadZIP(zipToRead):
     else:
         lsSource=objControl.lsCustomFields    
 
-    lsFields=lsSource
+    #I append insetad of just assign the list, because I need the column "mes" in the very beginning
+    for field in lsSource:
+        lsFields.append(field)
 
     for field in objControl.lsRemove:
         if field in lsFields:
@@ -152,7 +154,8 @@ def extractAndReadZIP(zipToRead):
         for row in wb[sheet].rows:
             for cell in row:
                 #Rename any column you want here
-                print(cell.value)      
+                if cell.value=='Comprobante_Fecha':
+                    cell.value='fechafactura' 
 
 
     wb.save(objControl.directory+excel_fileName)     
@@ -187,8 +190,10 @@ def extractAndReadZIP(zipToRead):
         #Algorith of reading fields
         for field in lsFields:
             #Cases
-            if field=='nombrearchivo':
-                lsRow.append(xml)
+            if field=='mes':
+                fechaFactura=root.get('Fecha')
+                monthWord=returnMonthWord(int(fechaFactura.split('-')[1]))
+                lsRow.append(monthWord)
                 continue
             #Rest of cases
             chunks=field.split('_')
@@ -240,7 +245,37 @@ def returnFoundNode(root,table):
             result=lsNode
             break
     #If the code reaches this point, it means the Node doesn't exit in the XML, therefore return an empty list
-    return result            
+    return result  
+
+def returnMonthWord(monthNumber):
+    monthWord=''
+    if monthNumber==1:
+        monthWord='Enero'
+    if monthNumber==2:
+        monthWord='Febrero'
+    if monthNumber==3:
+        monthWord='Marzo'
+    if monthNumber==4:
+        monthWord='Abril'
+    if monthNumber==5:
+        monthWord='Mayo'
+    if monthNumber==6:
+        monthWord='Junio'         
+    if monthNumber==7:
+        monthWord='Julio'
+    if monthNumber==8:
+        monthWord='Agosto'
+    if monthNumber==9:
+        monthWord='Septiembre'  
+    if monthNumber==10:
+        monthWord='Octubre'
+    if monthNumber==11:
+        monthWord='Noviembre'
+    if monthNumber==12:
+        monthWord='Diciembre'                                     
+
+    return monthWord       
+
         
           
              
