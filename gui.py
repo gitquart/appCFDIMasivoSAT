@@ -11,7 +11,12 @@ def returnFolder():
     txtDir.insert(0,folderSelected)
 
 def showMessage(title,content):
-    tkMessageBox.showinfo(title,content)
+    tkMessageBox.showinfo(title=title,message=content)
+
+def solicitarCFDI():
+    
+    showMessage('Mensaje','')
+
 
 
 # window window
@@ -28,14 +33,11 @@ notebook.pack()
 
 # create frames
 fConfiguración = ttk.Frame(notebook, width=590, height=590)
-fProceso = ttk.Frame(notebook, width=590, height=590)
 
 fConfiguración.pack(fill='both', expand=True)
-fProceso.pack(fill='both', expand=True)
 
 # add frames to notebook
-notebook.add(fConfiguración, text='Coniguración')
-notebook.add(fProceso, text='Proceso CFDI')
+notebook.add(fConfiguración, text='Configuración y proceso CFDI')
 
 #Add content to Configuración
 
@@ -90,11 +92,13 @@ lblContInst2["fg"] = "#333333"
 lblContInst2["justify"] = "left"
 texto='2. Dentro del directorio elegido, crea la carpeta "FIEL" con los siguientes archivos:\n\n'
 texto+='A) Archivo *.cer\nB) Archivo *.key\nC) Archivo "datos.txt" donde debes anotar,en dos líneas, RFC y constreseña de FIEL\n\n'
-texto+='3. Al tener los pasos 1 y 2 completos, pasa a la pestaña "Proceso CFDI"'
+texto+='3. Al tener los pasos 1 y 2 haz click en el botón "Soicitar CFDI" y sigue los mensajes \nposteriores'
 lblContInst2["text"] = texto
 lblContInst2.place(x=30,y=200,width=500,height=120)
 
-#Add content to Porceso CFDI
+#Browser-directorio
+btnSolicitar=tk.Button(fConfiguración,command=solicitarCFDI,text='Solicitar CFDI')
+btnSolicitar.place(x=230,y=350,width=100,height=30)
 
 
     
