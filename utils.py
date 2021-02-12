@@ -154,8 +154,7 @@ def extractAndReadZIP(zipToRead):
         for row in wb[sheet].rows:
             for cell in row:
                 #Rename any column you want here
-                if cell.value=='Comprobante_Fecha':
-                    cell.value='fechafactura' 
+                print('No column rename available...')
 
 
     wb.save(objControl.directory+excel_fileName)     
@@ -199,7 +198,7 @@ def extractAndReadZIP(zipToRead):
             chunks=field.split('_')
             table=chunks[0]
             column=chunks[1]
-            if table=='Comprobante':
+            if table=='Comprobante':  
                 addColumnIfFound(root,column,lsRow,0)  
             else:
                 #Find the right prefix for table
@@ -230,7 +229,20 @@ def extractAndReadZIP(zipToRead):
 
 def addColumnIfFound(table,column,lsRow,notFoundValue):
     if column in table.attrib:
-        lsRow.append(table.get(column))
+        #Add all cases here
+        if (column=='SubTotal' or column=='TotalImpuestosRetenidos' or
+            column=='TotalImpuestosTrasladados' or column=='Total'):
+            #Condition if the value is null, then add 0.0
+            if (table.get(column)!=""):
+                lsRow.append(float(table.get(column)))
+            else:
+                lsRow.append(0)
+
+        else:
+            #No special case or string case
+            lsRow.append(table.get(column))
+
+
     else:
         #Table found, but no column found
         lsRow.append(notFoundValue)    
