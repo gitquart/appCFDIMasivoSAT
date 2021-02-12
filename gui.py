@@ -5,7 +5,15 @@ import tkinter.messagebox as tkMessageBox
 import tkinter as tk
 from tkinter import ttk
 
-txtDir=''
+def returnFolder():
+    folderSelected=filedialog.askdirectory()
+    txtDir.delete(0,tk.END)
+    txtDir.insert(0,folderSelected)
+
+def showMessage(title,content):
+    tkMessageBox.showinfo(title,content)
+
+
 
 def main():
     # window window
@@ -26,6 +34,10 @@ def main():
 
     fConfiguración.pack(fill='both', expand=True)
     fProceso.pack(fill='both', expand=True)
+
+     # add frames to notebook
+    notebook.add(fConfiguración, text='Coniguración')
+    notebook.add(fProceso, text='Proceso CFDI')
 
     #Add content to Configuración
 
@@ -75,21 +87,9 @@ def main():
     btnBrowser['text']='...'
     btnBrowser.place(x=440,y=140,width=50,height=30)
     
-    
-
-    # add frames to notebook
-    notebook.add(fConfiguración, text='Coniguración')
-    notebook.add(fProceso, text='Proceso CFDI')
-
-
     window.mainloop()
 
-def returnFolder():
-    folderSelected=filedialog.askdirectory()
-    txtDir.insert(folderSelected)
 
-def showMessage(title,content):
-    tkMessageBox.showinfo(title,content)
 
 
 
