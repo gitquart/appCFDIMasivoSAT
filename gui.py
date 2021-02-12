@@ -1,71 +1,98 @@
 import tkinter as tk
 import tkinter.font as tkFont
-from tkinter import ttk
-
-
+from tkinter import ttk,filedialog
+import tkinter.messagebox as tkMessageBox
 import tkinter as tk
 from tkinter import ttk
 
-# root window
-root = tk.Tk()
-#geometry=widthxheight
-root.geometry('600x600')
-root.resizable(width=False, height=False)
-root.title('Quart CFDI Wizard')
+txtDir=''
 
-# create a notebook
-notebook = ttk.Notebook(root)
-notebook.pack(pady=10, expand=True)
+def main():
+    # window window
+    window = tk.Tk()
+    #geometry=widthxheight
+    window.geometry('600x600')
+    window.resizable(width=False, height=False)
+    window.title('Quart CFDI Wizard')
 
-# create frames
-fConfiguración = ttk.Frame(notebook, width=590, height=590)
-fProceso = ttk.Frame(notebook, width=590, height=590)
+    # create a notebook
+    notebook = ttk.Notebook(window)
+    notebook.pack(pady=10, expand=True)
+    notebook.pack()
 
-fConfiguración.pack(fill='both', expand=True)
-fProceso.pack(fill='both', expand=True)
+    # create frames
+    fConfiguración = ttk.Frame(notebook, width=590, height=590)
+    fProceso = ttk.Frame(notebook, width=590, height=590)
 
-#Add content to Configuración
+    fConfiguración.pack(fill='both', expand=True)
+    fProceso.pack(fill='both', expand=True)
 
-GLabel_478=tk.Label(root)
-ft = tkFont.Font(size=10)
-GLabel_478["font"] = ft
-GLabel_478["fg"] = "#333333"
-GLabel_478["justify"] = "center"
-GLabel_478["text"] = "Instrucciones:"
-GLabel_478.place(x=40,y=70,width=100,height=25)
+    #Add content to Configuración
 
-#Instrucciones
-GLabel_599=tk.Label(root)
-ft = tkFont.Font(size=10)
-GLabel_599["font"] = ft
-GLabel_599["fg"] = "#333333"
-GLabel_599["justify"] = "center"
-GLabel_599["text"] = "Establece el directorio donde estarán los archivos FIEL, descarga y lectura de cfdi.zip"
-GLabel_599.place(x=40,y=100,width=500,height=80)
+    #Título-Instrucciones
+    lblInst=tk.Label(fConfiguración)
+    ft = tkFont.Font(size=10)
+    lblInst["font"] = ft
+    lblInst["fg"] = "#333333"
+    lblInst["justify"] = "center"
+    lblInst["text"] = "Instrucciones:"
+    lblInst.place(x=40,y=70,width=100,height=25)
+  
+
+    #Contenido-Instrucciones
+    lblContInst=tk.Label(fConfiguración)
+    ft = tkFont.Font(size=10)
+    lblContInst["font"] = ft
+    lblContInst["fg"] = "#333333"
+    lblContInst["justify"] = "left"
+    lblContInst["text"] = "Establece el directorio donde estarán los archivos FIEL, descarga y lectura de cfdi.zip"
+    lblContInst.place(x=45,y=100,width=500,height=20)
+  
+
+    #lbl-Directorio
+    lblDir=tk.Label(fConfiguración)
+    ft = tkFont.Font(size=10)
+    lblDir["font"] = ft
+    lblDir["fg"] = "#333333"
+    lblDir["justify"] = "center"
+    lblDir["text"] = "Directorio:"
+    lblDir.place(x=70,y=140,width=100,height=30)
+    
+
+    #Caja de texto-directorio
+    txtDir=tk.Entry(fConfiguración)
+    txtDir["borderwidth"] = "1px"
+    ft = tkFont.Font(size=10)
+    txtDir["font"] = ft
+    txtDir["fg"] = "#333333"
+    txtDir["justify"] = "left"
+    txtDir.place(x=160,y=140,width=272,height=30)
+    #txtDir.insert(0,'Hola')
+    
+
+    #Browser-directorio
+    btnBrowser=tk.Button(fConfiguración,command=returnFolder)
+    btnBrowser['text']='...'
+    btnBrowser.place(x=440,y=140,width=50,height=30)
+    
+    
+
+    # add frames to notebook
+    notebook.add(fConfiguración, text='Coniguración')
+    notebook.add(fProceso, text='Proceso CFDI')
+
+
+    window.mainloop()
+
+def returnFolder():
+    folderSelected=filedialog.askdirectory()
+    txtDir.insert(folderSelected)
+
+def showMessage(title,content):
+    tkMessageBox.showinfo(title,content)
 
 
 
 
-GLabel_883=tk.Label(root)
-ft = tkFont.Font(size=10)
-GLabel_883["font"] = ft
-GLabel_883["fg"] = "#333333"
-GLabel_883["justify"] = "center"
-GLabel_883["text"] = "Directorio:"
-GLabel_883.place(x=70,y=170,width=100,height=30)
-
-GLineEdit_878=tk.Entry(root)
-GLineEdit_878["borderwidth"] = "1px"
-ft = tkFont.Font(size=10)
-GLineEdit_878["font"] = ft
-GLineEdit_878["fg"] = "#333333"
-GLineEdit_878["justify"] = "left"
-GLineEdit_878["text"] = "Entry"
-GLineEdit_878.place(x=160,y=170,width=272,height=30)
-
-# add frames to notebook
-notebook.add(fConfiguración, text='Coniguración')
-notebook.add(fProceso, text='Proceso CFDI')
-
-
-root.mainloop()
+if __name__=='__main__':
+    main()    
