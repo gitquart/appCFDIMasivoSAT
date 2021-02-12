@@ -11,14 +11,34 @@ import openpyxl as excelpy
 from InternalControl import cInternalControl
 
 objControl=cInternalControl()
-rfc_emisor = objControl.rfc_emisor
-rfc_receptor = objControl.rfc_receptor
-rfc_solicitante = objControl.rfc_solicitante
-FIEL_PAS = objControl.FIEL_PAS
+#They are filled wit datos.text
+rfcFromFile=''
+FIEL_PAS = ''
+rfc_emisor= ''
+rfc_receptor=''
+rfc_solicitante=''
+#End-They are filled wit datos.text
 FIEL_KEY = ''
 FIEL_CER = ''
 pathToFiel=os.getcwd()+'\\FIEL'
 for file in os.listdir(pathToFiel):
+    if file == "datos.txt":
+        datostxt = open(pathToFiel+'\\datos.txt', 'r')
+        Lines = datostxt.readlines()
+        count=1
+        for line in Lines:
+            if line!="\n":
+                if count==1:
+                    rfcFromFile=line.strip()
+                    rfc_emisor= rfcFromFile
+                    rfc_receptor=rfcFromFile
+                    rfc_solicitante=rfcFromFile
+                    count+=1
+                    continue
+                if count==2:    
+                    FIEL_PAS=line.strip()
+                    break
+
     if file.endswith('.key'):
         FIEL_KEY=file
         continue
