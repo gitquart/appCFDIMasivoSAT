@@ -50,11 +50,12 @@ lblInst.place(x=40,y=70,width=100,height=25)
   
 #Contenido-Instrucciones
 lblContInst=tk.Label(fConfiguración)
-ft = tkFont.Font(size=10)
+ft = tkFont.Font(size=9)
 lblContInst["font"] = ft
 lblContInst["fg"] = "#333333"
 lblContInst["justify"] = "left"
-lblContInst["text"] = "Establece el directorio donde estarán los archivos FIEL, descarga y lectura de cfdi.zip"
+texto="1.Establece el directorio donde estarán los archivos FIEL, descarga y lectura de cfdi.zip"
+lblContInst["text"] = texto
 lblContInst.place(x=45,y=100,width=500,height=20)
   
 #lbl-Directorio
@@ -80,6 +81,22 @@ txtDir.place(x=160,y=140,width=272,height=30)
 btnBrowser=tk.Button(fConfiguración,command=returnFolder)
 btnBrowser['text']='...'
 btnBrowser.place(x=440,y=140,width=50,height=30)
+
+#Contenido-Instrucciones 2
+lblContInst2=tk.Label(fConfiguración)
+ft = tkFont.Font(size=9)
+lblContInst2["font"] = ft
+lblContInst2["fg"] = "#333333"
+lblContInst2["justify"] = "left"
+texto='2. Dentro del directorio elegido, crea la carpeta "FIEL" con los siguientes archivos:\n\n'
+texto+='A) Archivo *.cer\nB) Archivo *.key\nC) Archivo "datos.txt" donde debes anotar,en dos líneas, RFC y constreseña de FIEL\n\n'
+texto+='3. Al tener los pasos 1 y 2 completos, pasa a la pestaña "Proceso CFDI"'
+lblContInst2["text"] = texto
+lblContInst2.place(x=30,y=200,width=500,height=120)
+
+#Add content to Porceso CFDI
+
+
     
 window.mainloop()
 
