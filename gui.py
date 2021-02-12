@@ -1,5 +1,6 @@
 import tkinter as tk                     
-from tkinter import ttk 
+from tkinter import ttk
+import tkinter.font as tkFont 
   
   
 root = tk.Tk() 
@@ -7,26 +8,18 @@ root.geometry('500x500')
 root.title("CFDI Wizard") 
 tabControl = ttk.Notebook(root) 
   
-tabSolicitar = ttk.Frame(tabControl) 
-tabVerificar = ttk.Frame(tabControl) 
-tabDescargar = ttk.Frame(tabControl)
-tabProcesarZip = ttk.Frame(tabControl)
+tabConfiguracion = ttk.Frame(tabControl) 
+tabProceso = ttk.Frame(tabControl) 
+
   
-tabControl.add(tabSolicitar, text ='Solicitar CFDI') 
-tabControl.add(tabVerificar, text ='Verificar CFDI') 
-tabControl.add(tabDescargar,text='Descargar paquete')
-tabControl.add(tabProcesarZip,text='Procesar ZIP descargado')
+tabControl.add(tabConfiguracion, text ='Configuración') 
+tabControl.add(tabProceso, text ='Proceso CFDI') 
 tabControl.pack(expand = 1, fill ="both") 
-  
-ttk.Label(tabSolicitar,  
-          text ="Solicitar CFDI").grid(column = 0,  
-                               row = 0, 
-                               padx = 30, 
-                               pady = 30)   
-ttk.Label(tabVerificar, 
-          text ="Veriicar estado de CFDI").grid(column = 0, 
-                                    row = 0,  
-                                    padx = 30, 
-                                    pady = 30) 
+
+#Elementos de tabConfiguración 
+
+
+#Elementos de tabProceso  
+
   
 root.mainloop()   

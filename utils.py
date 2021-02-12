@@ -65,7 +65,7 @@ def descargarPaquete(id_paquete):
     token = autenticacion()
     result = descarga.descargar_paquete(token, rfc_solicitante, id_paquete)
     paquete=result['paquete_b64']
-    data = readBase64FromZIP(paquete)
+    data = readBase64FromZIP(paquete,id_paquete)
     
     return data
    
@@ -74,11 +74,11 @@ def descargarPaquete(id_paquete):
 readBase64FromZIP: Reads the package in base64 from SAT and returns the zip file (the zip file is actually)
 created on the go.
 """
-def readBase64FromZIP(file): 
+def readBase64FromZIP(file,id_paquete): 
     if file is not None:
-        with open(objControl.directory+objControl.zipToRead, 'wb') as result:
+        with open(objControl.directory+id_paquete+'.zip', 'wb') as result:
             result.write(base64.b64decode(file))
-        zip_ref = zipfile.ZipFile(objControl.directory+objControl.zipToRead, 'r')
+        zip_ref = zipfile.ZipFile(objControl.directory+id_paquete+'.zip', 'r')
         zip_ref.close()
 
 
