@@ -55,10 +55,7 @@ def verificarCFDI():
     if idSolicitud!='':
         if directory!='':
             res=tool.verificaSolicitudDescarga(idSolicitud,directory)
-            if int(res[0])!=0:
-                showMessage('Mensaje',res[1])
-            else:
-                showMessage('Mensaje',res[1])
+            showMessage('Mensaje',res[1])
         else:
             showMessage('Mensaje','Debes ingresar un directorio')
     else:    

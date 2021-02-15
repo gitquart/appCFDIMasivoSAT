@@ -91,8 +91,11 @@ def verificaSolicitudDescarga(id_solicitud,directory):
         token = autenticacion()
         result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
         if (int(result['numero_cfdis'])>0):
-            descargarPaquete(result['paquetes'],directory)
-            return [1,'Procesamiento exitoso, el resultado se descargó en '+directory+'/'+result['paquetes'][0]+' (zip y xlsx) ']
+            res=descargarPaquete(result['paquetes'],directory)
+            if int(res[0])==1:
+                return [1,'Procesamiento exitoso, el resultado se descargó en '+directory+'/'+result['paquetes'][0]+' (zip y xlsx) ']
+            else:
+                return res    
         else:
             return [0,'El paquete no trae CFDI']    
     else:
@@ -104,8 +107,13 @@ def descargarPaquete(id_paquete,directory):
     token = autenticacion()
     result = descarga.descargar_paquete(token, rfc_solicitante, id_paquete[0])
     paquete=result['paquete_b64']
-    readBase64FromZIP(paquete,id_paquete[0],directory)
-    extractAndReadZIP(directory,id_paquete[0]+'.zip',rfc_solicitante)
+    if paquete is not None:
+        readBase64FromZIP(paquete,id_paquete[0],directory)
+        extractAndReadZIP(directory,id_paquete[0]+'.zip',rfc_solicitante)
+        return [1]
+    else:
+        return [0,'No se descargó CFDI: '+result['mensaje']]
+
 
     
    
