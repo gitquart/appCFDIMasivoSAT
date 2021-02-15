@@ -83,14 +83,19 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory):
         return [0,"El directorio no contiene archivos FIEL"]   
 
 
-def verificaSolicitudDescarga(id_solicitud):
+def verificaSolicitudDescarga(id_solicitud,directory):
     #Ejemplo re respuesta  {'estado_solicitud': '3', 'numero_cfdis': '8', 'cod_estatus': '5000', 'paquetes': ['a4897f62-a279-4f52-bc35-03bde4081627_01'], 'codigo_estado_solicitud': '5000', 'mensaje': 'Solicitud Aceptada'}   
-    v_descarga = VerificaSolicitudDescarga(fiel)
-    token = autenticacion()
-    result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
-    lsPaquete=[result['paquetes']]
-
-    return lsPaquete
+    res=validateFIELFiles(directory)
+    if res>0:
+        v_descarga = VerificaSolicitudDescarga(fiel)
+        token = autenticacion()
+        result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
+        lsPaquete=[result['paquetes']]
+        if (len(lsPaquete)>0):
+            descargarPaquete(lsPaquete[0])
+            return [1,'Procesamiento exitoso, el resultado se descargó en '+directory+'/'+lsPaquete[0]+' (zip y xlsx) ']
+    else:
+        return [0,"El directorio no contiene archivos FIEL"]        
 
 def descargarPaquete(id_paquete):
     #ejemplo de respuesta # {'cod_estatus': '', 'mensaje': '', 'paquete_b64': 'eyJhbG=='} 

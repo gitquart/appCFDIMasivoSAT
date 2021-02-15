@@ -50,7 +50,19 @@ def solicitarCFDI():
         showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')    
 
 def verificarCFDI():
-    showMessage('Mensaje','hOLA')
+    idSolicitud=txtIDVerificar.get()
+    directory=txtDir.get()
+    if idSolicitud!='':
+        if directory!='':
+            res=tool.verificaSolicitudDescarga(idSolicitud,directory)
+            if int(res[0])!=0:
+                showMessage('Mensaje','Procesamiento exitoso')
+            else:
+                showMessage('Mensaje',res[1])
+        else:
+            showMessage('Mensaje','Debes ingresar un directorio')
+    else:    
+        showMessage('Mensaje','Por favor, ingresa un ID de Solicitud')
 
    
 
