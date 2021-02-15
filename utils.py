@@ -20,34 +20,43 @@ rfc_solicitante=''
 #End-They are filled wit datos.text
 FIEL_KEY = ''
 FIEL_CER = ''
-pathToFiel=os.getcwd()+'\\FIEL'
-for file in os.listdir(pathToFiel):
-    if file == "datos.txt":
-        datostxt = open(pathToFiel+'\\datos.txt', 'r')
-        Lines = datostxt.readlines()
-        count=1
-        for line in Lines:
-            if line!="\n":
-                if count==1:
-                    rfcFromFile=line.strip()
-                    rfc_emisor= rfcFromFile
-                    rfc_receptor=rfcFromFile
-                    rfc_solicitante=rfcFromFile
-                    count+=1
-                    continue
-                if count==2:    
-                    FIEL_PAS=line.strip()
-                    break
+fiel=''
+ 
 
-    if file.endswith('.key'):
-        FIEL_KEY=file
-        continue
-    if file.endswith('.cer'):
-        FIEL_CER=file
-        continue 
-cer_der = open(pathToFiel+'\\'+FIEL_CER, 'rb').read()
-key_der = open(pathToFiel+'\\'+FIEL_KEY, 'rb').read()  
-fiel = Fiel(cer_der, key_der, FIEL_PAS) 
+def validateFIELFiles(directory):
+    global rfcFromFile,rfc_emisor,rfc_receptor,rfc_solicitante,fiel,FIEL_CER,FIEL_KEY,FIEL_PAS
+    numFiles=len(os.listdir(directory))
+    for file in os.listdir(directory):
+        if file == "datos.txt":
+            datostxt = open(directory+'/datos.txt', 'r')
+            Lines = datostxt.readlines()
+            count=1
+            for line in Lines:
+                if line!="\n":
+                    if count==1:
+                        rfcFromFile=line.strip()
+                        rfc_emisor= rfcFromFile
+                        rfc_receptor=rfcFromFile
+                        rfc_solicitante=rfcFromFile
+                        count+=1
+                        continue
+                    if count==2:    
+                        FIEL_PAS=line.strip()
+                        break
+
+        if file.endswith('.key'):
+            FIEL_KEY=file
+            continue
+        if file.endswith('.cer'):
+            FIEL_CER=file
+            continue 
+    if FIEL_CER!='' and FIEL_KEY!='':    
+        cer_der = open(directory+'/'+FIEL_CER, 'rb').read()
+        key_der = open(directory+'/'+FIEL_KEY, 'rb').read()  
+        fiel = Fiel(cer_der, key_der, FIEL_PAS)
+    
+    return numFiles
+
    
 def autenticacion():
     auth = Autenticacion(fiel)
@@ -55,19 +64,23 @@ def autenticacion():
 
     return token
 
-def solicitaDescarga(fecha_inicial,fecha_final):
+def solicitaDescarga(fecha_inicial,fecha_final,directory):
     #Ejemplo de respuesta  {'mensaje': 'Solicitud Aceptada', 'cod_estatus': '5000', 'id_solicitud': 'be2a3e76-684f-416a-afdf-0f9378c346be'}
-    descarga = SolicitaDescarga(fiel)
-    token = autenticacion()
-    # Emitidos
-    result = descarga.solicitar_descarga(token, rfc_solicitante, fecha_inicial, fecha_final, rfc_emisor=rfc_emisor)
-    id_solicitud_emisor=result['id_solicitud']
-    # Recibidos
-    result = descarga.solicitar_descarga(token, rfc_solicitante, fecha_inicial, fecha_final, rfc_receptor=rfc_receptor)
-    id_solicitud_receptor=result['id_solicitud']
-    lsSolicitud=[id_solicitud_emisor,id_solicitud_receptor]
+    res=validateFIELFiles(directory)
+    if res>0:
+        descarga = SolicitaDescarga(fiel)
+        token = autenticacion()
+        # Emitidos
+        result = descarga.solicitar_descarga(token, rfc_solicitante, fecha_inicial, fecha_final, rfc_emisor=rfc_emisor)
+        id_solicitud_emisor=result['id_solicitud']
+        # Recibidos
+        result = descarga.solicitar_descarga(token, rfc_solicitante, fecha_inicial, fecha_final, rfc_receptor=rfc_receptor)
+        id_solicitud_receptor=result['id_solicitud']
+        lsSolicitud=[1,id_solicitud_emisor,id_solicitud_receptor]
 
-    return lsSolicitud
+        return lsSolicitud
+    else:
+        return [0,"El directorio no contiene archivos FIEL"]   
 
 
 def verificaSolicitudDescarga(id_solicitud):

@@ -15,7 +15,6 @@ def returnFolder():
     folderSelected=filedialog.askdirectory()
     txtDir.delete(0,tk.END)
     txtDir.insert(0,folderSelected)
-    objControl.directory=folderSelected
 
 
 def showMessage(title,content):
@@ -25,23 +24,28 @@ def solicitarCFDI():
     #Dates on txtDates : dd/mm/yyyy
     fechaInicio=txtFechaInicio.get()
     fechaFin=txtFechaFin.get()
-    if fechaInicio!='' or fechaFin!='' or objControl.directory!='':
+    directory=txtDir.get()
+    if fechaInicio!='' and fechaFin!='' and directory!='' :
         chunksFI=fechaInicio.split('/')
         chunksFF=fechaFin.split('/')
         fecha_inicial = datetime.datetime(int(chunksFI[2]), int(chunksFI[1]), int(chunksFI[0]))
         fecha_final = datetime.datetime(int(chunksFF[2]),int(chunksFF[1]),int(chunksFF[0]))
         lsvalor=[]
-        lsvalor=tool.solicitaDescarga(fecha_inicial,fecha_final)
-        if lsvalor[0]!='':
-            txtID1.insert(0,lsvalor[0])
-        else:
-            txtID1.insert(0,'No trae valor')
-        if lsvalor[1]!='':
-            txtID2.insert(0,lsvalor[1])
-        else:
-            txtID2.insert(0,'No trae valor')    
+        lsvalor=tool.solicitaDescarga(fecha_inicial,fecha_final,directory)
+        res=int(lsvalor[0])
+        if res==1:
+            if lsvalor[1]!='':
+                txtID1.insert(0,lsvalor[0])
+            else:
+                txtID1.insert(0,'No trae valor')
+            if lsvalor[2]!='':
+                txtID2.insert(0,lsvalor[1])
+            else:
+                txtID2.insert(0,'No trae valor') 
 
-        showMessage('Mensaje','hOLA')
+            showMessage('Mensaje','Por favor revisa los IDs de solicitud devueltos')     
+        else:
+            showMessage('Mensaje',lsvalor[1])      
     else:
         showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')    
 
@@ -55,7 +59,7 @@ def verificarCFDI():
 # window window
 window = tk.Tk()
 #geometry=widthxheight
-window.geometry('600x600')
+window.geometry('650x600')
 window.resizable(width=False, height=False)
 window.title('Quart CFDI Wizard')
 
@@ -65,7 +69,7 @@ notebook.pack(pady=10, expand=True)
 notebook.pack()
 
 # create frames
-fConfiguración = ttk.Frame(notebook, width=590, height=590)
+fConfiguración = ttk.Frame(notebook, width=600, height=590)
 fConfiguración.pack(fill='both', expand=True)
 
 # add frames to notebook
@@ -88,10 +92,10 @@ ft = tkFont.Font(size=9)
 lblContInst["font"] = ft
 lblContInst["fg"] = "#333333"
 lblContInst["justify"] = "left"
-texto="1.Crea una carpeta 'FIEL' con los siguientes archivos y elígela en el directorio debajo:\n\n"
+texto="1.Selecciona una carpeta que contenga los siguientes archivos y elígela en el directorio debajo:\n\n"
 texto+='A) Archivo *.cer\nB) Archivo *.key\nC) Archivo "datos.txt" donde debes anotar,en dos líneas, RFC y constreseña de FIEL\n'
 lblContInst["text"] = texto
-lblContInst.place(x=45,y=70,width=500,height=90)
+lblContInst.place(x=45,y=70,width=550,height=90)
   
 #lbl-Directorio
 posYDirectorio=170
