@@ -4,28 +4,37 @@ from tkinter import ttk,filedialog
 import tkinter.messagebox as tkMessageBox
 import tkinter as tk
 from tkinter import ttk
-
-from requests.api import get
 import utils as tool
 import datetime
+from InternalControl import cInternalControl
+
+objControl=cInternalControl()
 
 
 def returnFolder():
     folderSelected=filedialog.askdirectory()
     txtDir.delete(0,tk.END)
     txtDir.insert(0,folderSelected)
+    objControl.directory=folderSelected
+
 
 def showMessage(title,content):
     tkMessageBox.showinfo(title=title,message=content)
 
 def solicitarCFDI():
+    #Dates on txtDates : dd/mm/yyyy
     fechaInicio=txtFechaInicio.get()
     fechaFin=txtFechaFin.get()
-    fecha_inicial = datetime.datetime(2015, 1, 1)
-    fecha_final = datetime.datetime(2015, 12, 31)
-    lsvalor=[]
-    lsvalor=tool.solicitaDescarga(fecha_inicial,fecha_final)
-    showMessage('Mensaje','hOLA')
+    if fechaInicio!='' or fechaFin!='' or objControl.directory!='':
+        chunksFI=fechaInicio.split('/')
+        chunksFF=fechaFin.split('/')
+        fecha_inicial = datetime.datetime(2015, 1, 1)
+        fecha_final = datetime.datetime(2015, 12, 31)
+        lsvalor=[]
+        lsvalor=tool.solicitaDescarga(fecha_inicial,fecha_final)
+        showMessage('Mensaje','hOLA')
+    else:
+        showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')    
 
 def verificarCFDI():
     showMessage('Mensaje','hOLA')
