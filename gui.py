@@ -32,6 +32,15 @@ def solicitarCFDI():
         fecha_final = datetime.datetime(int(chunksFF[2]),int(chunksFF[1]),int(chunksFF[0]))
         lsvalor=[]
         lsvalor=tool.solicitaDescarga(fecha_inicial,fecha_final)
+        if lsvalor[0]!='':
+            txtID1.insert(0,lsvalor[0])
+        else:
+            txtID1.insert(0,'No trae valor')
+        if lsvalor[1]!='':
+            txtID2.insert(0,lsvalor[1])
+        else:
+            txtID2.insert(0,'No trae valor')    
+
         showMessage('Mensaje','hOLA')
     else:
         showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')    
