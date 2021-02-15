@@ -28,8 +28,8 @@ def solicitarCFDI():
     if fechaInicio!='' or fechaFin!='' or objControl.directory!='':
         chunksFI=fechaInicio.split('/')
         chunksFF=fechaFin.split('/')
-        fecha_inicial = datetime.datetime(2015, 1, 1)
-        fecha_final = datetime.datetime(2015, 12, 31)
+        fecha_inicial = datetime.datetime(int(chunksFI[2]), int(chunksFI[1]), int(chunksFI[0]))
+        fecha_final = datetime.datetime(int(chunksFF[2]),int(chunksFF[1]),int(chunksFF[0]))
         lsvalor=[]
         lsvalor=tool.solicitaDescarga(fecha_inicial,fecha_final)
         showMessage('Mensaje','hOLA')
