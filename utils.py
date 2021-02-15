@@ -90,39 +90,41 @@ def verificaSolicitudDescarga(id_solicitud,directory):
         v_descarga = VerificaSolicitudDescarga(fiel)
         token = autenticacion()
         result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
-        lsPaquete=[result['paquetes']]
-        if (len(lsPaquete)>0):
-            descargarPaquete(lsPaquete[0])
-            return [1,'Procesamiento exitoso, el resultado se descargó en '+directory+'/'+lsPaquete[0]+' (zip y xlsx) ']
+        if (int(result['numero_cfdis'])>0):
+            descargarPaquete(result['paquetes'],directory)
+            return [1,'Procesamiento exitoso, el resultado se descargó en '+directory+'/'+result['paquetes'][0]+' (zip y xlsx) ']
+        else:
+            return [0,'El paquete no trae CFDI']    
     else:
         return [0,"El directorio no contiene archivos FIEL"]        
 
-def descargarPaquete(id_paquete):
+def descargarPaquete(id_paquete,directory):
     #ejemplo de respuesta # {'cod_estatus': '', 'mensaje': '', 'paquete_b64': 'eyJhbG=='} 
     descarga = DescargaMasiva(fiel)
     token = autenticacion()
-    result = descarga.descargar_paquete(token, rfc_solicitante, id_paquete)
+    result = descarga.descargar_paquete(token, rfc_solicitante, id_paquete[0])
     paquete=result['paquete_b64']
-    data = readBase64FromZIP(paquete,id_paquete)
+    readBase64FromZIP(paquete,id_paquete[0],directory)
+    extractAndReadZIP(directory,id_paquete[0]+'.zip',rfc_solicitante)
+
     
-    return data
    
 
 """
 readBase64FromZIP: Reads the package in base64 from SAT and returns the zip file (the zip file is actually)
 created on the go.
 """
-def readBase64FromZIP(file,id_paquete): 
+def readBase64FromZIP(file,id_paquete,directory): 
     if file is not None:
-        with open(objControl.directory+id_paquete+'.zip', 'wb') as result:
+        with open(directory+'/'+id_paquete+'.zip', 'wb') as result:
             result.write(base64.b64decode(file))
-        zip_ref = zipfile.ZipFile(objControl.directory+id_paquete+'.zip', 'r')
+        zip_ref = zipfile.ZipFile(directory+'/'+id_paquete+'.zip', 'r')
         zip_ref.close()
 
 
-def extractAndReadZIP(zipToRead):
+def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
     objControl=cInternalControl()
-    myZip=zipfile.ZipFile(objControl.directory+zipToRead,'r')
+    myZip=zipfile.ZipFile(directory+'/'+zipToRead,'r')
     #The zip's file name will be the name of excel file name, like the "Database"
     excel_fileName=os.path.splitext(os.path.split(myZip.filename)[1])[0]+'.xlsx'
     #Creating the workbook (database)
@@ -132,7 +134,7 @@ def extractAndReadZIP(zipToRead):
     wb.create_sheet('Receptor')
     pago_sheet = wb['Sheet']
     pago_sheet.title = 'Pago'
-    wb.save(objControl.directory+excel_fileName)
+    wb.save(directory+'/'+excel_fileName)
     contDocs=0
     #dicTableFields is a dictionary with the following structura key:table, value: list of fields
     dicTableFields={}
@@ -196,7 +198,7 @@ def extractAndReadZIP(zipToRead):
     """            
 
 
-    wb.save(objControl.directory+excel_fileName)     
+    wb.save(directory+'/'+excel_fileName)     
                
   
     #Third, read information and insert where belongs 
@@ -213,7 +215,7 @@ def extractAndReadZIP(zipToRead):
             node=returnFoundNode(root,item)
             if len(node)>0:
                 rfc_value=node[0].get('Rfc')
-                if rfc_value==objControl.rfcUsuario:
+                if rfc_value==rfc_solicitante:
                     if root.get('TipoDeComprobante')=='I' or root.get('TipoDeComprobante')=='E':
                         sheetPrint=item
                     elif  root.get('TipoDeComprobante')=='P':
@@ -260,7 +262,7 @@ def extractAndReadZIP(zipToRead):
         wb[sheetPrint].append(lsRow)                 
         contDocs+=1
         #End of each document (xml) iteration in a zip
-        wb.save(objControl.directory+excel_fileName)
+        wb.save(directory+'/'+excel_fileName)
 
     #All xml processed at this point    
     print('Files processed in ZIP file:',str(contDocs)) 
