@@ -35,11 +35,11 @@ def solicitarCFDI():
         res=int(lsvalor[0])
         if res==1:
             if lsvalor[1]!='':
-                txtID1.insert(0,lsvalor[0])
+                txtID1.insert(0,lsvalor[1])
             else:
                 txtID1.insert(0,'No trae valor')
             if lsvalor[2]!='':
-                txtID2.insert(0,lsvalor[1])
+                txtID2.insert(0,lsvalor[2])
             else:
                 txtID2.insert(0,'No trae valor') 
 
