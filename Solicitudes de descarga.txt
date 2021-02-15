@@ -15,6 +15,13 @@ ID:
 eb729ac8-212d-41dc-bb16-809990710591
 33586710-8fba-44d8-bdda-efd4388bbc41
 
+Fecha Inicial: 2/1/2020
+Fecha Fin: 3/1/2020
+
+ID:
+7a7d5741-5151-4727-a494-82bc97ce544c
+5183c50b-f32e-4d76-bec2-e90253889778
+
 ---------------------------------------------------------------------------
 Tipo de Comprobante  
 I,E  En una tabla (pestaña) "Ingreso/Egreso"

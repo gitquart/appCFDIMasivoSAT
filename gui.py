@@ -43,7 +43,7 @@ def solicitarCFDI():
             else:
                 txtID2.insert(0,'No trae valor') 
 
-            showMessage('Mensaje','Por favor revisa los IDs de solicitud devueltos')     
+            showMessage('Mensaje','Por favor revisa los IDs de solicitud devueltos\nCopia un ID  a la vez en la caja de texto de "Verificar y Descargar CFDI" y haz click en el botón para procesar')     
         else:
             showMessage('Mensaje',lsvalor[1])      
     else:
