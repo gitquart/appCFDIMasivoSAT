@@ -152,7 +152,7 @@ lblContInst3["font"] = ft
 lblContInst3["fg"] = "#333333"
 lblContInst3["justify"] = "left"
 texto='3. Introducir el rango de fechas del CFDI a recuperar\n'
-texto+='4. Hacer click en el botón "Soicitar CFDI" y sigue los mensajes posteriores\n\n'
+texto+='4. Hacer click en el botón "Solicitar CFDI" y sigue los mensajes posteriores\n\n'
 texto+='Escribe las fechas en formato dd/mm/yyyy'
 lblContInst3["text"] = texto
 lblContInst3.place(x=35,y=250,width=450,height=100)
