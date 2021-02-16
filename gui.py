@@ -102,7 +102,7 @@ lblContInst["font"] = ft
 lblContInst["fg"] = "#333333"
 lblContInst["justify"] = "left"
 texto="1.Selecciona una carpeta que contenga los siguientes archivos y elígela en el directorio debajo:\n\n"
-texto+='A) Archivo *.cer\nB) Archivo *.key\nC) Archivo "datos.txt" donde debes anotar,en dos líneas, RFC y constreseña de FIEL\n'
+texto+='A) Archivo *.cer\nB) Archivo *.key\nC) Archivo "datos.txt" donde debes anotar,en dos líneas, RFC y contraseña de FIEL\n'
 lblContInst["text"] = texto
 lblContInst.place(x=45,y=70,width=550,height=90)
   
