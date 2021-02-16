@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter.constants import ACTIVE
 import tkinter.font as tkFont
 from tkinter import ttk,filedialog
 import tkinter.messagebox as tkMessageBox
@@ -22,6 +23,11 @@ def showMessage(title,content):
 
 def solicitarCFDI():
     #Dates on txtDates : dd/mm/yyyy
+    #lsFolderName saves importantd data along its way to name the folder where the zip and xls will be saved
+    #lsFolder elements (by order):[tipo,fechaCompleta,fileName] 
+    lsFolderName=[]
+    tipo=var.get()
+    lsFolderName.append(tipo)
     fechaInicio=txtFechaInicio.get()
     fechaFin=txtFechaFin.get()
     directory=txtDir.get()
@@ -30,31 +36,27 @@ def solicitarCFDI():
         chunksFF=fechaFin.split('/')
         fecha_inicial = datetime.datetime(int(chunksFI[2]), int(chunksFI[1]), int(chunksFI[0]))
         fecha_final = datetime.datetime(int(chunksFF[2]),int(chunksFF[1]),int(chunksFF[0]))
+        strFechaInicial=str(fecha_inicial.day)+str(fecha_inicial.month)+str(fecha_inicial.year)
+        strFechaFin=str(fecha_final.day)+str(fecha_final.month)+str(fecha_final.year)
+        strFechaCompleta=strFechaInicial+'_'+strFechaFin
+        lsFolderName.append(strFechaCompleta)
         lsvalor=[]
-        lsvalor=tool.solicitaDescarga(fecha_inicial,fecha_final,directory)
+        lsvalor=tool.solicitaDescarga(fecha_inicial,fecha_final,directory,lsFolderName)
         res=int(lsvalor[0])
+        #lsValor[1]-> ID solicitud returned, could be Emisor or Receptor
         if res==1:
-            if lsvalor[1]!='':
-                txtID1.insert(0,lsvalor[1])
-            else:
-                txtID1.insert(0,'No trae valor')
-            if lsvalor[2]!='':
-                txtID2.insert(0,lsvalor[2])
-            else:
-                txtID2.insert(0,'No trae valor') 
-
-            showMessage('Mensaje','Por favor revisa los IDs de solicitud devueltos\nCopia un ID  a la vez en la caja de texto de "Verificar y Descargar CFDI" y haz click en el botón para procesar')     
+            #If res is 1 then call then call Verificar 
+            verificarCFDI(lsvalor[1],lsFolderName)    
         else:
             showMessage('Mensaje',lsvalor[1])      
     else:
         showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')    
 
-def verificarCFDI():
-    idSolicitud=txtIDVerificar.get()
+def verificarCFDI(idSolicitud,lsFolderName):
     directory=txtDir.get()
     if idSolicitud!='':
         if directory!='':
-            res=tool.verificaSolicitudDescarga(idSolicitud,directory)
+            res=tool.verificaSolicitudDescarga(idSolicitud,directory,lsFolderName)
             showMessage('Mensaje',res[1])
         else:
             showMessage('Mensaje','Debes ingresar un directorio')
@@ -97,7 +99,7 @@ lblInst.place(x=40,y=30,width=100,height=25)
   
 #Contenido-Instrucciones
 lblContInst=tk.Label(fConfiguración)
-ft = tkFont.Font(size=9)
+ft = tkFont.Font(size=9,weight=tkFont.BOLD)
 lblContInst["font"] = ft
 lblContInst["fg"] = "#333333"
 lblContInst["justify"] = "left"
@@ -106,8 +108,9 @@ texto+='A) Archivo *.cer\nB) Archivo *.key\nC) Archivo "datos.txt" donde debes a
 lblContInst["text"] = texto
 lblContInst.place(x=45,y=70,width=550,height=90)
   
+#Section - Directorio  
 #lbl-Directorio
-posYDirectorio=170
+posYDirectorio=160
 lblDir=tk.Label(fConfiguración)
 ft = tkFont.Font(size=10)
 lblDir["font"] = ft
@@ -130,21 +133,50 @@ btnBrowser=tk.Button(fConfiguración,command=returnFolder)
 btnBrowser['text']='...'
 btnBrowser.place(x=440,y=posYDirectorio,width=50,height=25)
 
+#Fin Section - Directorio
+
+#Section- Emisor o Receptor
 #Contenido-Instrucciones 2
 lblContInst2=tk.Label(fConfiguración)
-ft = tkFont.Font(size=9)
+ft = tkFont.Font(size=9,weight=tkFont.BOLD)
 lblContInst2["font"] = ft
 lblContInst2["fg"] = "#333333"
 lblContInst2["justify"] = "left"
-texto='2. Introducir el rango de fechas del CFDI a recuperar\n'
-texto+='3. Hacer click en el botón "Soicitar CFDI" y sigue los mensajes posteriores\n\n'
-texto+='Escribe las fechas en formato dd/mm/yyyy'
+texto='2. Elegir descargar CFDI como Emisor o Receptor'
 lblContInst2["text"] = texto
-lblContInst2.place(x=20,y=195,width=500,height=120)
+lblContInst2.place(x=40,y=200,width=300,height=40)
 
+#Emisor Radio button
+ft = tkFont.Font(size=10)
+var = tk.StringVar()
+rdbtnEmisor = tk.Radiobutton(fConfiguración, text="Emisor", variable=var, value="Emisor")
+rdbtnEmisor["font"] = ft
+rdbtnEmisor.place(x=200,y=230)
+#Select "emisor" by default
+rdbtnEmisor.select()
+
+#Receptor Radio button
+rdbtnReceptor = tk.Radiobutton(fConfiguración, text="Receptor", variable=var, value="Receptor")
+rdbtnReceptor["font"] = ft
+rdbtnReceptor.place(x=300,y=230)
+
+#Fin Section- Emisor o Receptor
+
+lblContInst3=tk.Label(fConfiguración)
+ft = tkFont.Font(size=9,weight=tkFont.BOLD)
+lblContInst3["font"] = ft
+lblContInst3["fg"] = "#333333"
+lblContInst3["justify"] = "left"
+texto='3. Introducir el rango de fechas del CFDI a recuperar\n'
+texto+='4. Hacer click en el botón "Soicitar CFDI" y sigue los mensajes posteriores\n\n'
+texto+='Escribe las fechas en formato dd/mm/yyyy'
+lblContInst3["text"] = texto
+lblContInst3.place(x=35,y=250,width=450,height=100)
+
+#Section - fechas
 #Rango de fechas
 #lbl Inicial
-posYFechaInicial=300
+posYFechaInicial=340
 lblFechaInicio=tk.Label(fConfiguración)
 ft = tkFont.Font(size=10)
 lblFechaInicio["font"] = ft
@@ -163,7 +195,7 @@ txtFechaInicio["justify"] = "left"
 txtFechaInicio.place(x=150,y=posYFechaInicial,width=100,height=25)
 
 #lbl Final
-posYFechaFin=330
+posYFechaFin=370
 lblFechaFin=tk.Label(fConfiguración)
 ft = tkFont.Font(size=10)
 lblFechaFin["font"] = ft
@@ -181,9 +213,11 @@ txtFechaFin["fg"] = "#333333"
 txtFechaFin["justify"] = "left"
 txtFechaFin.place(x=150,y=posYFechaFin,width=100,height=25)
 
+#Fin Section - fechas
+
 #Btn solicitar
 btnSolicitar=tk.Button(fConfiguración,command=solicitarCFDI,text='Solicitar CFDI')
-btnSolicitar.place(x=110,y=380,width=100,height=25)
+btnSolicitar.place(x=250,y=420,width=100,height=25)
 
 window.mainloop()
 
