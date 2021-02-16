@@ -185,54 +185,6 @@ txtFechaFin.place(x=150,y=posYFechaFin,width=100,height=25)
 btnSolicitar=tk.Button(fConfiguración,command=solicitarCFDI,text='Solicitar CFDI')
 btnSolicitar.place(x=110,y=380,width=100,height=25)
 
-#ID's respuesta de solicitud
-#LBL ID1
-posYID1=420
-ft = tkFont.Font(size=10)
-lblID1=tk.Label(fConfiguración)
-lblID1["font"] = ft
-lblID1["fg"] = "#333333"
-lblID1["justify"] = "left"
-lblID1["text"] = "ID Solicitud 1:"
-lblID1.place(x=50,y=posYID1,width=100,height=25)
-
-#Caja de texto ID 1
-txtID1=tk.Entry(fConfiguración)
-txtID1["borderwidth"] = "1px"
-txtID1["font"] = ft
-txtID1["fg"] = "#333333"
-txtID1["justify"] = "left"
-txtID1.place(x=150,y=posYID1,width=170,height=25)
-
-#lbl ID 2
-posYID2=450
-lblID2=tk.Label(fConfiguración)
-lblID2["font"] = ft
-lblID2["fg"] = "#333333"
-lblID2["justify"] = "left"
-lblID2["text"] = "ID Solicitud 2:"
-lblID2.place(x=50,y=posYID2,width=100,height=25)
-
-#Caja de texto-ID 2
-txtID2=tk.Entry(fConfiguración)
-txtID2["borderwidth"] = "1px"
-txtID2["font"] = ft
-txtID2["fg"] = "#333333"
-txtID2["justify"] = "left"
-txtID2.place(x=150,y=posYID2,width=170,height=25)
-
-#Btn Verificar y descargar CFDI
-btnVerificar=tk.Button(fConfiguración,command=verificarCFDI,text='Verificar y Descargar CFDI')
-btnVerificar.place(x=350,y=380,width=150,height=25)
-
-#Caja de texto-ID Verificación
-txtIDVerificar=tk.Entry(fConfiguración)
-txtIDVerificar["borderwidth"] = "1px"
-txtIDVerificar["font"] = ft
-txtIDVerificar["fg"] = "#333333"
-txtIDVerificar["justify"] = "left"
-txtIDVerificar.place(x=350,y=420,width=170,height=25)
-
 window.mainloop()
 
 
