@@ -21,6 +21,11 @@ def returnFolder():
 def showMessage(title,content):
     tkMessageBox.showinfo(title=title,message=content)
 
+def preguntaSolicitarCFDI():
+    res=tkMessageBox.askyesno(title='Advertencia',message='El procedimiento "Solicitar CFDI" sólo se puede hacer una vez.\n ¿Deseas continuar?')
+    if res:
+        solicitarCFDI()
+
 def solicitarCFDI():
     #Dates on txtDates : dd/mm/yyyy
     #lsFolderName saves importantd data along its way to name the folder where the zip and xls will be saved
@@ -216,7 +221,7 @@ txtFechaFin.place(x=150,y=posYFechaFin,width=100,height=25)
 #Fin Section - fechas
 
 #Btn solicitar
-btnSolicitar=tk.Button(fConfiguración,command=solicitarCFDI,text='Solicitar CFDI')
+btnSolicitar=tk.Button(fConfiguración,command=preguntaSolicitarCFDI,text='Solicitar CFDI')
 btnSolicitar.place(x=250,y=420,width=100,height=25)
 
 window.mainloop()
