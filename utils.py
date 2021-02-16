@@ -108,16 +108,22 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
 
 def descargarPaquete(id_paquete,directory,lsFolderName):
     #ejemplo de respuesta # {'cod_estatus': '', 'mensaje': '', 'paquete_b64': 'eyJhbG=='} 
+    #lsFolder elements (by order):[tipo,fechaCompleta,rfc_solicitante,fileName] 
+    #Folder and file names: RFC_TIPO_FECHAS_ID
     descarga = DescargaMasiva(fiel)
     token = autenticacion()
     result = descarga.descargar_paquete(token, rfc_solicitante, id_paquete[0])
+    lsFolderName.append(rfc_solicitante)
+    lsFolderName.append(id_paquete[0])
     paquete=result['paquete_b64']
     if paquete is not None:
         #if paquete is not None, the create the folder where zip and xls will be saved
-        if not os.path.isdir(directory+'/'+lsFolderName[2]):
-            os.mkdir(directory+'/'+lsFolderName[2])
-        readBase64FromZIP(paquete,id_paquete[0],directory)
-        extractAndReadZIP(directory,id_paquete[0]+'.zip',rfc_solicitante)
+        folderAndFileName='_'.join(lsFolderName)
+        ZipExcelDir=directory+'/'+folderAndFileName
+        if not os.path.isdir(ZipExcelDir):
+            os.mkdir(ZipExcelDir)
+        readBase64FromZIP(paquete,folderAndFileName,ZipExcelDir)
+        extractAndReadZIP(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
         return [1]
     else:
         return [0,'No se descargó CFDI: '+result['mensaje']]
@@ -128,11 +134,11 @@ def descargarPaquete(id_paquete,directory,lsFolderName):
 readBase64FromZIP: Reads the package in base64 from SAT and returns the zip file (the zip file is actually)
 created on the go.
 """
-def readBase64FromZIP(file,id_paquete,directory): 
+def readBase64FromZIP(file,folderAndFileName,directory): 
     if file is not None:
-        with open(directory+'/'+id_paquete+'.zip', 'wb') as result:
+        with open(directory+'/'+folderAndFileName+'.zip', 'wb') as result:
             result.write(base64.b64decode(file))
-        zip_ref = zipfile.ZipFile(directory+'/'+id_paquete+'.zip', 'r')
+        zip_ref = zipfile.ZipFile(directory+'/'+folderAndFileName+'.zip', 'r')
         zip_ref.close()
 
 

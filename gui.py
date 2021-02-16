@@ -24,7 +24,7 @@ def showMessage(title,content):
 def solicitarCFDI():
     #Dates on txtDates : dd/mm/yyyy
     #lsFolderName saves importantd data along its way to name the folder where the zip and xls will be saved
-    #lsFolder elements (by order):[tipo,fechaCompleta,fileName] 
+    #lsFolder elements (by order):[tipo,fechaCompleta,rfc_solicitante,fileName] 
     lsFolderName=[]
     tipo=var.get()
     lsFolderName.append(tipo)
