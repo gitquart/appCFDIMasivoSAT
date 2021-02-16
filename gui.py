@@ -30,13 +30,11 @@ def solicitarCFDI():
     #Dates on txtDates : dd/mm/yyyy
     #lsFolderName saves importantd data along its way to name the folder where the zip and xls will be saved
     #lsFolder elements (by order):[tipo,fechaCompleta,rfc_solicitante,fileName] 
-    lsFolderName=[]
-    tipo=var.get()
-    lsFolderName.append(tipo)
     fechaInicio=txtFechaInicio.get()
     fechaFin=txtFechaFin.get()
     directory=txtDir.get()
     if fechaInicio!='' and fechaFin!='' and directory!='' :
+        tipo=var.get()
         chunksFI=fechaInicio.split('/')
         chunksFF=fechaFin.split('/')
         fecha_inicial = datetime.datetime(int(chunksFI[2]), int(chunksFI[1]), int(chunksFI[0]))
@@ -44,31 +42,13 @@ def solicitarCFDI():
         strFechaInicial=str(fecha_inicial.day)+str(fecha_inicial.month)+str(fecha_inicial.year)
         strFechaFin=str(fecha_final.day)+str(fecha_final.month)+str(fecha_final.year)
         strFechaCompleta=strFechaInicial+'_'+strFechaFin
-        lsFolderName.append(strFechaCompleta)
-        lsvalor=[]
-        lsvalor=tool.solicitaDescarga(fecha_inicial,fecha_final,directory,lsFolderName)
-        res=int(lsvalor[0])
+        res=tool.solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,strFechaCompleta)
         #lsValor[1]-> ID solicitud returned, could be Emisor or Receptor
-        if res==1:
-            #If res is 1 then call then call Verificar 
-            verificarCFDI(lsvalor[1],lsFolderName)    
-        else:
-            showMessage('Mensaje',lsvalor[1])      
+        if int(res[0])==0:
+            showMessage('Mensaje',res[1])
+                 
     else:
         showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')    
-
-def verificarCFDI(idSolicitud,lsFolderName):
-    directory=txtDir.get()
-    if idSolicitud!='':
-        if directory!='':
-            res=tool.verificaSolicitudDescarga(idSolicitud,directory,lsFolderName)
-            showMessage('Mensaje',res[1])
-        else:
-            showMessage('Mensaje','Debes ingresar un directorio')
-    else:    
-        showMessage('Mensaje','Por favor, ingresa un ID de Solicitud')
-
-   
 
 
 
