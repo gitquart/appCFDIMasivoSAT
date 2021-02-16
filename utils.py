@@ -90,8 +90,7 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta):
             result = descarga.solicitar_descarga(token, rfc_solicitante, fecha_inicial, fecha_final, rfc_receptor=rfc_receptor)
         
         res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName)
-        if int(res[0])==0:
-            return res
+        return res
         
     else:
         return [0,"El directorio no contiene archivos FIEL"]   
@@ -121,7 +120,6 @@ def descargarPaquete(id_paquete,directory,lsFolderName):
     descarga = DescargaMasiva(fiel)
     token = autenticacion()
     result = descarga.descargar_paquete(token, rfc_solicitante, id_paquete[0])
-    lsFolderName.append(id_paquete[0])
     paquete=result['paquete_b64']
     if paquete is not None:
         #if paquete is not None, the create the folder where zip and xls will be saved

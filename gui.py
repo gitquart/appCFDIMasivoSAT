@@ -44,8 +44,7 @@ def solicitarCFDI():
         strFechaCompleta=strFechaInicial+'_'+strFechaFin
         res=tool.solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,strFechaCompleta)
         #lsValor[1]-> ID solicitud returned, could be Emisor or Receptor
-        if int(res[0])==0:
-            showMessage('Mensaje',res[1])
+        showMessage('Mensaje',res[1])
                  
     else:
         showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')    
