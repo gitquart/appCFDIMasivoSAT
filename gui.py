@@ -151,11 +151,10 @@ ft = tkFont.Font(size=9,weight=tkFont.BOLD)
 lblContInst3["font"] = ft
 lblContInst3["fg"] = "#333333"
 lblContInst3["justify"] = "left"
-texto='3. Introducir el rango de fechas del CFDI a recuperar\n'
-texto+='4. Hacer click en el botón "Solicitar CFDI" y sigue los mensajes posteriores\n\n'
-texto+='Escribe las fechas en formato dd/mm/yyyy'
+texto='3. Introducir el rango de fechas del CFDI a recuperar\n\n'
+texto+='i.e.: En caso de ser 3 de mayo de 2020, el formato sería de la siguiente manera: 03/05/2020'
 lblContInst3["text"] = texto
-lblContInst3.place(x=35,y=250,width=450,height=100)
+lblContInst3.place(x=38,y=250,width=540,height=100)
 
 #Section - fechas
 #Rango de fechas
@@ -199,9 +198,21 @@ txtFechaFin.place(x=150,y=posYFechaFin,width=100,height=25)
 
 #Fin Section - fechas
 
+#Section - Solicitar CFDI
+lblContInst4=tk.Label(fConfiguración)
+ft = tkFont.Font(size=9,weight=tkFont.BOLD)
+lblContInst4["font"] = ft
+lblContInst4["fg"] = "#333333"
+lblContInst4["justify"] = "left"
+texto='4. Hacer click en el botón "Solicitar CFDI" y sigue los mensajes posteriores\n\n'
+lblContInst4["text"] = texto
+lblContInst4.place(x=30,y=410,width=470,height=50)
+
 #Btn solicitar
 btnSolicitar=tk.Button(fConfiguración,command=preguntaSolicitarCFDI,text='Solicitar CFDI')
-btnSolicitar.place(x=250,y=420,width=100,height=25)
+btnSolicitar.place(x=250,y=450,width=100,height=25)
+
+#Fin Section - Solicitar CFDI
 
 window.mainloop()
 
