@@ -1,7 +1,11 @@
-To open pygubu-designer, just type "pygubu-designer" in terminal.
-Tutorial to create a python executable file: https://datatofish.com/executable-pyinstaller/
+1)To open pygubu-designer, just type "pygubu-designer" in terminal.
+2)Tutorial to create a python executable file: https://datatofish.com/executable-pyinstaller/
 When running the pyinstaller (works very well indeed) it will create in the same folder of the file to convert to exe the following files/folders:
 
 /build
 /dist/yourfile.exe
 yourfile.spec
+
+If you find any troubles when opening your executable of python, open it in terminal
+by just "yourfile.exe" Enter and it will show you the problems.
+In my case it was missing a library.
