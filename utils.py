@@ -1,8 +1,4 @@
-from cfdiclient import Autenticacion
-from cfdiclient import Fiel
-from cfdiclient import SolicitaDescarga
-from cfdiclient import VerificaSolicitudDescarga
-from cfdiclient import DescargaMasiva
+from cfdiclient import Autenticacion,Fiel,SolicitaDescarga,VerificaSolicitudDescarga,DescargaMasiva 
 import os
 import base64
 import zipfile
