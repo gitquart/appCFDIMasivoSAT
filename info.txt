@@ -8,4 +8,4 @@ yourfile.spec
 
 If you find any troubles when opening your executable of python, open it in terminal
 by just "yourfile.exe" Enter and it will show you the problems.
-In my case it was missing a library.
+In my case it was missing "cfdiclient" module, so I just reinstall the requirements.txt in my system and I restarted because the module was already installed but the exe could not read it. Once restarted, it worked.
