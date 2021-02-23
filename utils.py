@@ -263,6 +263,7 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
             #Cases
             if field=='nombreArchivo':
                 lsRow.append(xml)
+                continue
             if field=='mes':
                 fechaFactura=root.get('Fecha')
                 monthWord=returnMonthWord(int(fechaFactura.split('-')[1]))
