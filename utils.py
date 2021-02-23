@@ -198,6 +198,7 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
     #Second, when got all fields from all xml, print them in spread sheet
     lsFields=[] 
     #Add extra fields here
+    lsFields.append('nombreArchivo')
     lsFields.append('mes')
     lsSource=[]
     if len(objControl.lsCustomFields)==0:
@@ -260,6 +261,8 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
         #Algorith of reading fields
         for field in lsFields:
             #Cases
+            if field=='nombreArchivo':
+                lsRow.append(xml)
             if field=='mes':
                 fechaFactura=root.get('Fecha')
                 monthWord=returnMonthWord(int(fechaFactura.split('-')[1]))
