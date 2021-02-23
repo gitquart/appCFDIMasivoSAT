@@ -145,6 +145,7 @@ def readBase64FromZIP(file,folderAndFileName,directory):
 
 def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
     objControl=cInternalControl()
+    #Change / to \\ if neccesary
     myZip=zipfile.ZipFile(directory+'/'+zipToRead,'r')
     #The zip's file name will be the name of excel file name, like the "Database"
     excel_fileName=os.path.splitext(os.path.split(myZip.filename)[1])[0]+'.xlsx'

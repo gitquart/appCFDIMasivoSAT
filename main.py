@@ -40,7 +40,7 @@ if op==3:
     res=tool.descargarPaquete(strid_d)
     print('ZIP is ready')
 if op==4:    
-    tool.extractAndReadZIP(objControl.zipToRead)
+    tool.extractAndReadZIP('C:\\Users\\1098350515\\Desktop\\QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01','QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01.zip','QCG190521ND3')
     
   
 
