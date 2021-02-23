@@ -106,7 +106,12 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
             else:
                 return res    
         else:
-            return [0,'El paquete no trae CFDI, mensaje de web service: '+result['mensaje']]  
+            return [0,'El paquete no trae CFDI, respuesta de web service:\n'+
+                     'Estado de solicitud:'+result['estado_solicitud']+'\n'+
+                     'Número de CFDI:'+result['numero_cfdis']+'\n'+
+                     'Código de estado de la solicitud:'+result['codigo_estado_solicitud']+'\n'+
+                     'Mensaje:'+result['mensaje'] 
+                     ]  
     else:
         return [0,'No se encontró Solicitud'] 
 
