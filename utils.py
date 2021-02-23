@@ -241,6 +241,8 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
                         sheetPrint=item
                     elif  root.get('TipoDeComprobante')=='P':
                         sheetPrint='Pago' 
+                    else:
+                        sheetPrint='Pago'
                     break         
 
         #Start to read the fields from lsFields=[]
