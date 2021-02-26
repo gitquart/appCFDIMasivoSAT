@@ -72,7 +72,7 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta):
     try:
         res=validateFIELFiles(directory)
     except:
-        result=[0,'Hubo un error con los archivos, favor de verificar que los archivos CER y KEY sean los correctos']    
+        result=[0,'Hubo un error con los archivos, favor de verificar que los archivos CER,KEY o datos.txt sean los correctos']    
     if res>0:
         lsfolderName=[]
         lsfolderName.append(rfc_solicitante)
