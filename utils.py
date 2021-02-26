@@ -69,7 +69,10 @@ def autenticacion():
 
 def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta):
     #Ejemplo de respuesta  {'mensaje': 'Solicitud Aceptada', 'cod_estatus': '5000', 'id_solicitud': 'be2a3e76-684f-416a-afdf-0f9378c346be'}
-    res=validateFIELFiles(directory)
+    try:
+        res=validateFIELFiles(directory)
+    except:
+        result=[0,'Hubo un error con los archivos, favor de verificar que los archivos CER y KEY sean los correctos']    
     if res>0:
         lsfolderName=[]
         lsfolderName.append(rfc_solicitante)
