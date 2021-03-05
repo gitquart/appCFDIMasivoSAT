@@ -70,6 +70,7 @@ def autenticacion():
 
 def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Version):
     global VERSION
+    #Get the version so it can be stored in utils.py for the rest of methods
     VERSION=Version
     #Ejemplo de respuesta  {'mensaje': 'Solicitud Aceptada', 'cod_estatus': '5000', 'id_solicitud': 'be2a3e76-684f-416a-afdf-0f9378c346be'}
     try:
@@ -106,6 +107,12 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
         token = autenticacion()
         result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
         if (int(result['numero_cfdis'])>0):
+            #if cfdi number exists (> 0) then postgresql processes can be executed (check, etc)
+            if VERSION=='SQL':
+                #If SQL, check if the rfc_solicitante and dates exist in table, 
+                #if they exist with count =1 then return message "Máximo de intentos"
+                #otherwise go on to descargarPaquete
+                print('...')
             lsFolderName.append(result['paquetes'][0])
             res=descargarPaquete(result['paquetes'],directory,lsFolderName)
             if int(res[0])==1:
