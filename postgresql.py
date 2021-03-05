@@ -7,10 +7,23 @@ PORT='5432'
 PASSWORD='145e55d54668fefb4180a3a143799e38f0270dada403009f88841268bd90ae8c'
 
 
+def getQuery(query):
+    conn = psycopg2.connect(host=HOST,dbname=DBNAME, user=USER, password=PASSWORD,sslmode='require')
+    cursor = conn.cursor()
+    cursor.execute(query)
+    lsResult = cursor.fetchall()
+    cursor.close()
+    conn.close()
 
-conn = psycopg2.connect(host=HOST,dbname=DBNAME, user=USER, password=PASSWORD,sslmode='require')
-cursor = conn.cursor()
-query="SELECT table_name from information_schema.tables where table_schema = 'public' ; "
-cursor.execute(query)
-list_tables = cursor.fetchall()
+    return lsResult
+
+def executeTransaction(cmd):
+    conn = psycopg2.connect(host=HOST,dbname=DBNAME, user=USER, password=PASSWORD,sslmode='require')
+    cursor = conn.cursor()
+    cursor.execute(cmd)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
 
