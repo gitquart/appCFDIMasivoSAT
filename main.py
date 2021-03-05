@@ -39,8 +39,13 @@ if op==3:
     strid_d=input()
     res=tool.descargarPaquete(strid_d)
     print('ZIP is ready')
-if op==4:    
-    tool.extractAndReadZIP('C:\\Users\\1098350515\\Desktop\\QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01','QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01.zip','QCG190521ND3')
+if op==4:
+    print('Choose a version 1.EXCEL 2.SQL')
+    op=input()
+    if int(op)==1:    
+        tool.extractAndReadZIP('C:\\Users\\1098350515\\Desktop\\QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01','QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01.zip','QCG190521ND3')
+    else:
+        tool.extractAndReadZIP_SQL('C:\\Users\\1098350515\\Desktop\\QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01','QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01.zip','QCG190521ND3');    
     
   
 
