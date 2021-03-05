@@ -79,6 +79,11 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
         result=[0,'Hubo un error con los archivos, favor de verificar que los archivos CER,KEY o datos.txt sean los correctos']    
         return result
     if res>0:
+        if VERSION=='SQL':
+            #If SQL, check if the rfc_solicitante, dates and type (emisor or receptor) exist in table, 
+            #if they exist with count =1 then return message "Máximo de intentos"
+            #otherwise go on to descargarPaquete
+            print('...')
         lsfolderName=[]
         lsfolderName.append(rfc_solicitante)
         lsfolderName.append(tipo)
@@ -107,12 +112,6 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
         token = autenticacion()
         result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
         if (int(result['numero_cfdis'])>0):
-            #if cfdi number exists (> 0) then postgresql processes can be executed (check, etc)
-            if VERSION=='SQL':
-                #If SQL, check if the rfc_solicitante and dates exist in table, 
-                #if they exist with count =1 then return message "Máximo de intentos"
-                #otherwise go on to descargarPaquete
-                print('...')
             lsFolderName.append(result['paquetes'][0])
             res=descargarPaquete(result['paquetes'],directory,lsFolderName)
             if int(res[0])==1:
