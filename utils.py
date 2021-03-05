@@ -24,6 +24,7 @@ rfc_solicitante=''
 FIEL_KEY = ''
 FIEL_CER = ''
 fiel=''
+VERSION=''
  
 
 def validateFIELFiles(directory):
@@ -67,7 +68,9 @@ def autenticacion():
 
     return token
 
-def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta):
+def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Version):
+    global VERSION
+    VERSION=Version
     #Ejemplo de respuesta  {'mensaje': 'Solicitud Aceptada', 'cod_estatus': '5000', 'id_solicitud': 'be2a3e76-684f-416a-afdf-0f9378c346be'}
     try:
         res=validateFIELFiles(directory)
@@ -134,7 +137,11 @@ def descargarPaquete(id_paquete,directory,lsFolderName):
         if not os.path.isdir(ZipExcelDir):
             os.mkdir(ZipExcelDir)
         readBase64FromZIP(paquete,folderAndFileName,ZipExcelDir)
-        extractAndReadZIP(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
+        if VERSION=='EXCEL':
+            extractAndReadZIP(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
+        else:
+            extractAndReadZIP_SQL(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
+                
         return [1]
     else:
         return [0,'No se descargó CFDI: '+result['mensaje']]
@@ -151,6 +158,159 @@ def readBase64FromZIP(file,folderAndFileName,directory):
             result.write(base64.b64decode(file))
         zip_ref = zipfile.ZipFile(directory+'/'+folderAndFileName+'.zip', 'r')
         zip_ref.close()
+
+def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
+    objControl=cInternalControl()
+    #Change / to \\ if neccesary
+    myZip=zipfile.ZipFile(directory+'/'+zipToRead,'r')
+    #The zip's file name will be the name of excel file name, like the "Database"
+    excel_fileName=os.path.splitext(os.path.split(myZip.filename)[1])[0]+'.xlsx'
+    #Creating the workbook (database)
+    #Create the sheets: Ingreso_Egreso,Pago,Resto
+    wb=excelpy.Workbook() 
+    wb.create_sheet('Emisor')
+    wb.create_sheet('Receptor')
+    pago_sheet = wb['Sheet']
+    pago_sheet.title = 'Pago'
+    wb.save(directory+'/'+excel_fileName)
+    contDocs=0
+    #dicTableFields is a dictionary with the following structura key:table, value: list of fields
+    dicTableFields={}
+    #Dictionaries for every kind of "tipo de comprobante"
+    #First, get all the columns for all the tables
+    for xml in myZip.namelist():
+        chunkName=xml.split('.')
+        fileName=chunkName[0]
+        doc_xml=myZip.open(xml)
+        root = ET.parse(doc_xml).getroot()
+        for node in root.iter():
+            #Column = attribute , Node= Table
+            #Get attributes (columns) of current Node (table) 
+            #Split the node (table) name because all come as "{something}Node" and {content} is not needed
+            #If the number of nodes > 1 then not get its fields, we only want 1 row
+            chunk=str(node.tag).split('}')
+            tableName=chunk[1] 
+            numOfNodes=len(node.getchildren())
+            if (numOfNodes<2) or (numOfNodes>1 and tableName=='Comprobante'):
+                chunk=str(node.tag).split('}')
+                tableName=chunk[1]  
+                #As all the fields will be in one single sheet, it can occur two fields with the same
+                #name ex: Rfc and Rfc (Emisor and recipient), then it's needed to add prefix tableName
+                for attr in node.attrib:
+                    fieldName=tableName+'_'+attr
+                    if tableName not in dicTableFields:
+                        dicTableFields[tableName]=[fieldName]
+                    else:
+                        if fieldName not in dicTableFields[tableName]:
+                            dicTableFields[tableName].append(fieldName)            
+            #End of node iteration 
+
+    #Second, when got all fields from all xml, print them in spread sheet
+    lsFields=[] 
+    #Add extra fields here
+    lsFields.append('nombreArchivo')
+    lsFields.append('mes')
+    lsSource=[]
+    if len(objControl.lsCustomFields)==0:
+        lsSource=dicTableFields   
+    else:
+        lsSource=objControl.lsCustomFields    
+
+    #I append insetad of just assign the list, because I need the column "mes" in the very beginning
+    for field in lsSource:
+        lsFields.append(field)
+
+    for field in objControl.lsRemove:
+        if field in lsFields:
+            lsFields.remove(field)     
+
+    for sheet in wb.sheetnames:
+        wb[sheet].append(lsFields)  
+    #Rename columns in excel if necessary
+    #As the excel doesn't have values but the header row, then don't need to add any more logic
+    #Rename the columns you want and that's it.
+    """
+    for sheet in wb.sheetnames:
+        for row in wb[sheet].rows:
+            for cell in row:
+                #Rename any column you want here
+    """            
+
+
+    wb.save(directory+'/'+excel_fileName)     
+               
+  
+    #Third, read information and insert where belongs 
+    #Conclusiones: 
+    # getroot() : Gets the root of the xml, then use getRoot to get "Comprobante"
+    # root.find(.//...): gets any node inside the root, use this to any other node except the root
+    for xml in myZip.namelist():
+        #Get field TipoDeComprobante to knwo where sheet to print
+        #"Resto" is the default spread sheet
+        doc_xml=myZip.open(xml)
+        root = ET.parse(doc_xml).getroot()
+        lsRfcTable=['Emisor','Receptor']
+        for item in lsRfcTable:
+            node=returnFoundNode(root,item)
+            if len(node)>0:
+                rfc_value=node[0].get('Rfc')
+                if rfc_value==rfc_solicitante:
+                    if root.get('TipoDeComprobante')=='I' or root.get('TipoDeComprobante')=='E':
+                        sheetPrint=item
+                    elif  root.get('TipoDeComprobante')=='P':
+                        sheetPrint='Pago' 
+                    else:
+                        sheetPrint='Pago'
+                    break         
+
+        #Start to read the fields from lsFields=[]
+        #Example of a field in lsFields : "Comprobante_Version" -> "tableName_Field"
+        #One row per xml
+        lsRow=[]
+        #The field leads all the insertion
+        #Algorith of reading fields
+        for field in lsFields:
+            #Cases
+            if field=='nombreArchivo':
+                lsRow.append(xml)
+                continue
+            if field=='mes':
+                fechaFactura=root.get('Fecha')
+                monthWord=returnMonthWord(int(fechaFactura.split('-')[1]))
+                lsRow.append(monthWord)
+                continue
+            #Rest of cases
+            chunks=field.split('_')
+            table=chunks[0]
+            column=chunks[1]
+            if table=='Comprobante':  
+                addColumnIfFound(root,column,lsRow,0)  
+            else:
+                #Find the right prefix for table
+                lsNode=returnFoundNode(root,table)
+                if len(lsNode)==1:
+                    addColumnIfFound(lsNode[0],column,lsRow,0)
+                elif len(lsNode)>1:
+                    #More than 1 table_column found with the same name in XML
+                    for node in root.findall('.//'+objControl.prefixCFDI+table):
+                        if len(node.attrib)>0: 
+                            #If this table has attributes, read it, other wise skip it becase
+                            #if the column doesn't have fields, it means it holds children
+                            addColumnIfFound(node,column,lsRow,0)
+                else:
+                    #No table name found
+                    lsRow.append(0)  
+            #End of field iteration
+
+        #Append the whole xml in a single row            
+        wb[sheetPrint].append(lsRow)                 
+        contDocs+=1
+        #End of each document (xml) iteration in a zip
+        wb.save(directory+'/'+excel_fileName)
+
+    #All xml processed at this point    
+    print('Files processed in ZIP file:',str(contDocs)) 
+
 
 
 def extractAndReadZIP(directory,zipToRead,rfc_solicitante):

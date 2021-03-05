@@ -11,6 +11,7 @@ from InternalControl import cInternalControl
 
 objControl=cInternalControl()
 
+VERSION='EXCEL'
 
 def returnFolder():
     folderSelected=filedialog.askdirectory()
@@ -47,7 +48,7 @@ def solicitarCFDI():
     strFechaInicial=str(fecha_inicial.day)+str(fecha_inicial.month)+str(fecha_inicial.year)
     strFechaFin=str(fecha_final.day)+str(fecha_final.month)+str(fecha_final.year)
     strFechaCompleta=strFechaInicial+'_'+strFechaFin
-    res=tool.solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,strFechaCompleta)
+    res=tool.solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,strFechaCompleta,VERSION)
     #lsValor[1]-> ID solicitud returned, could be Emisor or Receptor
     showMessage('Mensaje',res[1])
                  
