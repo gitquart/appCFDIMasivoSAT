@@ -22,9 +22,15 @@ def showMessage(title,content):
     tkMessageBox.showinfo(title=title,message=content)
 
 def preguntaSolicitarCFDI():
-    res=tkMessageBox.askyesno(title='Advertencia',message='El procedimiento "Solicitar CFDI" sólo se puede hacer una vez.\n ¿Deseas continuar?')
-    if res:
-        solicitarCFDI()
+    fechaInicio=txtFechaInicio.get()
+    fechaFin=txtFechaFin.get()
+    directory=txtDir.get()
+    if fechaInicio!='' and fechaFin!='' and directory!='' :
+        res=tkMessageBox.askyesno(title='Advertencia',message='El procedimiento "Solicitar CFDI" sólo se puede hacer una vez.\n ¿Deseas continuar?')
+        if res:
+            solicitarCFDI()
+    else:
+        showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')    
 
 def solicitarCFDI():
     #Dates on txtDates : dd/mm/yyyy
@@ -33,22 +39,18 @@ def solicitarCFDI():
     fechaInicio=txtFechaInicio.get()
     fechaFin=txtFechaFin.get()
     directory=txtDir.get()
-    if fechaInicio!='' and fechaFin!='' and directory!='' :
-        tipo=var.get()
-        chunksFI=fechaInicio.split('/')
-        chunksFF=fechaFin.split('/')
-        fecha_inicial = datetime.datetime(int(chunksFI[2]), int(chunksFI[1]), int(chunksFI[0]))
-        fecha_final = datetime.datetime(int(chunksFF[2]),int(chunksFF[1]),int(chunksFF[0]))
-        strFechaInicial=str(fecha_inicial.day)+str(fecha_inicial.month)+str(fecha_inicial.year)
-        strFechaFin=str(fecha_final.day)+str(fecha_final.month)+str(fecha_final.year)
-        strFechaCompleta=strFechaInicial+'_'+strFechaFin
-        res=tool.solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,strFechaCompleta)
-        #lsValor[1]-> ID solicitud returned, could be Emisor or Receptor
-        showMessage('Mensaje',res[1])
-                 
-    else:
-        showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')    
-
+    tipo=var.get()
+    chunksFI=fechaInicio.split('/')
+    chunksFF=fechaFin.split('/')
+    fecha_inicial = datetime.datetime(int(chunksFI[2]), int(chunksFI[1]), int(chunksFI[0]))
+    fecha_final = datetime.datetime(int(chunksFF[2]),int(chunksFF[1]),int(chunksFF[0]))
+    strFechaInicial=str(fecha_inicial.day)+str(fecha_inicial.month)+str(fecha_inicial.year)
+    strFechaFin=str(fecha_final.day)+str(fecha_final.month)+str(fecha_final.year)
+    strFechaCompleta=strFechaInicial+'_'+strFechaFin
+    res=tool.solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,strFechaCompleta)
+    #lsValor[1]-> ID solicitud returned, could be Emisor or Receptor
+    showMessage('Mensaje',res[1])
+            
 
 
 # window window
