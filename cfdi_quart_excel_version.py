@@ -56,7 +56,7 @@ window = tk.Tk()
 #geometry=widthxheight
 window.geometry('650x600')
 window.resizable(width=False, height=False)
-window.title('Quart CFDI Wizard')
+window.title('Quart CFDI Wizard - Excel Version')
 
 # create a notebook
 notebook = ttk.Notebook(window)
@@ -72,6 +72,15 @@ notebook.add(fConfiguración, text='Configuración y proceso CFDI')
 
 #Add content to Configuración
 
+#Título-Versión SQL
+lblVersion=tk.Label(fConfiguración)
+ft = tkFont.Font(size=10,weight=tkFont.BOLD)
+lblVersion["font"] = ft
+lblVersion["fg"] = "blue"
+lblVersion["justify"] = "center"
+lblVersion["text"] = "EXCEL VERSION"
+lblVersion.place(x=240,y=20,width=150,height=35)
+
 #Título-Instrucciones
 lblInst=tk.Label(fConfiguración)
 ft = tkFont.Font(size=10,weight=tkFont.BOLD)
@@ -79,7 +88,7 @@ lblInst["font"] = ft
 lblInst["fg"] = "#333333"
 lblInst["justify"] = "center"
 lblInst["text"] = "Instrucciones:"
-lblInst.place(x=40,y=30,width=100,height=25)
+lblInst.place(x=40,y=60,width=100,height=25)
   
 #Contenido-Instrucciones
 lblContInst=tk.Label(fConfiguración)
@@ -90,11 +99,11 @@ lblContInst["justify"] = "left"
 texto="1.Selecciona una carpeta que contenga los siguientes archivos y elígela en el directorio debajo:\n\n"
 texto+='A) Archivo *.cer\nB) Archivo *.key\nC) Archivo "datos.txt" donde debes anotar,en dos líneas, RFC y contraseña de FIEL\n'
 lblContInst["text"] = texto
-lblContInst.place(x=45,y=70,width=550,height=90)
+lblContInst.place(x=45,y=100,width=550,height=90)
   
 #Section - Directorio  
 #lbl-Directorio
-posYDirectorio=160
+posYDirectorio=190
 lblDir=tk.Label(fConfiguración)
 ft = tkFont.Font(size=10)
 lblDir["font"] = ft
@@ -128,21 +137,21 @@ lblContInst2["fg"] = "#333333"
 lblContInst2["justify"] = "left"
 texto='2. Elegir descargar CFDI como Emisor o Receptor'
 lblContInst2["text"] = texto
-lblContInst2.place(x=40,y=200,width=300,height=40)
+lblContInst2.place(x=40,y=230,width=300,height=40)
 
 #Emisor Radio button
 ft = tkFont.Font(size=10)
 var = tk.StringVar()
 rdbtnEmisor = tk.Radiobutton(fConfiguración, text="Emisor", variable=var, value="Emisor")
 rdbtnEmisor["font"] = ft
-rdbtnEmisor.place(x=200,y=230)
+rdbtnEmisor.place(x=200,y=260)
 #Select "emisor" by default
 rdbtnEmisor.select()
 
 #Receptor Radio button
 rdbtnReceptor = tk.Radiobutton(fConfiguración, text="Receptor", variable=var, value="Receptor")
 rdbtnReceptor["font"] = ft
-rdbtnReceptor.place(x=300,y=230)
+rdbtnReceptor.place(x=300,y=260)
 
 #Fin Section- Emisor o Receptor
 
@@ -154,12 +163,12 @@ lblContInst3["justify"] = "left"
 texto='3. Introducir el rango de fechas del CFDI a recuperar\n\n'
 texto+='i.e.: En caso de ser 3 de mayo de 2020, el formato sería de la siguiente manera: 03/05/2020'
 lblContInst3["text"] = texto
-lblContInst3.place(x=38,y=250,width=540,height=100)
+lblContInst3.place(x=38,y=280,width=540,height=100)
 
 #Section - fechas
 #Rango de fechas
 #lbl Inicial
-posYFechaInicial=340
+posYFechaInicial=370
 lblFechaInicio=tk.Label(fConfiguración)
 ft = tkFont.Font(size=10)
 lblFechaInicio["font"] = ft
@@ -178,7 +187,7 @@ txtFechaInicio["justify"] = "left"
 txtFechaInicio.place(x=150,y=posYFechaInicial,width=100,height=25)
 
 #lbl Final
-posYFechaFin=370
+posYFechaFin=400
 lblFechaFin=tk.Label(fConfiguración)
 ft = tkFont.Font(size=10)
 lblFechaFin["font"] = ft
@@ -206,11 +215,11 @@ lblContInst4["fg"] = "#333333"
 lblContInst4["justify"] = "left"
 texto='4. Hacer click en el botón "Solicitar CFDI" y sigue los mensajes posteriores\n\n'
 lblContInst4["text"] = texto
-lblContInst4.place(x=30,y=410,width=470,height=50)
+lblContInst4.place(x=30,y=440,width=470,height=50)
 
 #Btn solicitar
 btnSolicitar=tk.Button(fConfiguración,command=preguntaSolicitarCFDI,text='Solicitar CFDI')
-btnSolicitar.place(x=250,y=450,width=100,height=25)
+btnSolicitar.place(x=250,y=480,width=100,height=25)
 
 #Fin Section - Solicitar CFDI
 
