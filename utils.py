@@ -5,6 +5,7 @@ import zipfile
 from xml.etree import ElementTree as ET
 import openpyxl as excelpy
 from InternalControl import cInternalControl
+import postgresql as bd
 
 #Important information for this code
 #--------------------------------------------------------------------------
@@ -25,6 +26,7 @@ FIEL_KEY = ''
 FIEL_CER = ''
 fiel=''
 VERSION=''
+ID_CURRENT_SOLICITUD=''
  
 
 def validateFIELFiles(directory):
@@ -69,7 +71,7 @@ def autenticacion():
     return token
 
 def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Version):
-    global VERSION
+    global VERSION,ID_CURRENT_SOLICITUD
     #Get the version so it can be stored in utils.py for the rest of methods
     VERSION=Version
     #Ejemplo de respuesta  {'mensaje': 'Solicitud Aceptada', 'cod_estatus': '5000', 'id_solicitud': 'be2a3e76-684f-416a-afdf-0f9378c346be'}
@@ -80,10 +82,30 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
         return result
     if res>0:
         if VERSION=='SQL':
-            #If SQL, check if the rfc_solicitante, dates and type (emisor or receptor) exist in table, 
-            #if they exist with count =1 then return message "Máximo de intentos"
-            #otherwise go on to descargarPaquete
-            print('...')
+            #1)Check if the user is in table usuario
+            resultSet=bd.getQueryOrExecuteTransaction('select * from usuario;')
+            if len(resultSet)==0:
+                #insert the rfc_solicitante in usuario
+                resultSet=bd.getQueryOrExecuteTransaction("insert  into usuario (rfc_solicitante) values ('"+rfc_solicitante+"') RETURNING id;")
+            #2)Check if the request exists already, otherwise insert it
+            id_usuario=''
+            for item in resultSet[0]:
+                id_usuario=str(item)
+                break 
+            #postresql date= 'yyyy-mm-dd' 
+            fechaInicial=str(fecha_inicial.year)+'-'+str(fecha_inicial.month)+'-'+str(fecha_inicial.day)  
+            fechaFinal= str(fecha_final.year)+'-'+str(fecha_final.month)+'-'+str(fecha_final.day)
+            query="select * from solicitud where id_usuario="+id_usuario+" and fechainicio='"+fechaInicial+"' and fechafin='"+fechaFinal+"' and tipo='"+tipo+"' ; "
+            resultSet=bd.getQueryOrExecuteTransaction(query)
+            if len(resultSet)==0:
+                cmd="insert into solicitud (fechainicio,fechafin,conteo,tipo,id_usuario) values ('"+fechaInicial+"','"+fechaFinal+"',0,'"+tipo+"',"+id_usuario+") returning id;"
+                resultSet=bd.getQueryOrExecuteTransaction(cmd)
+                for item in resultSet[0]:
+                    ID_CURRENT_SOLICITUD=item
+                    break 
+            else:
+                #If the "solicitud" already exists, then return a message "La solicitud sólo puede ser ejecutada 1 vez"
+                return [1,'Mensaje de base de datos: La petición de este CFDI ya ha sido solicitada 1 vez']    
         lsfolderName=[]
         lsfolderName.append(rfc_solicitante)
         lsfolderName.append(tipo)

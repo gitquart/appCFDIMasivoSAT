@@ -7,23 +7,19 @@ PORT='5432'
 PASSWORD='145e55d54668fefb4180a3a143799e38f0270dada403009f88841268bd90ae8c'
 
 
-def getQuery(query):
+def getQueryOrExecuteTransaction(query):
+    #I also return a result if it exists even if it's INSERT for example in case I want to get the last ID.
     conn = psycopg2.connect(host=HOST,dbname=DBNAME, user=USER, password=PASSWORD,sslmode='require')
     cursor = conn.cursor()
     cursor.execute(query)
     lsResult = cursor.fetchall()
+    conn.commit()
     cursor.close()
     conn.close()
 
     return lsResult
 
-def executeTransaction(cmd):
-    conn = psycopg2.connect(host=HOST,dbname=DBNAME, user=USER, password=PASSWORD,sslmode='require')
-    cursor = conn.cursor()
-    cursor.execute(cmd)
-    conn.commit()
-    cursor.close()
-    conn.close()
+
 
 
 
