@@ -8,6 +8,7 @@ from tkinter import ttk
 import utils as tool
 import datetime
 from InternalControl import cInternalControl
+import sys
 
 objControl=cInternalControl()
 
@@ -29,7 +30,11 @@ def preguntaSolicitarCFDI():
     if fechaInicio!='' and fechaFin!='' and directory!='' :
         res=tkMessageBox.askyesno(title='Advertencia',message='El procedimiento "Solicitar CFDI" sólo se puede hacer una vez.\n ¿Deseas continuar?')
         if res:
-            solicitarCFDI()
+            try:
+                solicitarCFDI()
+            except:
+                showMessage('Error: ',sys.exc_info()[0])    
+
     else:
         showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')    
 

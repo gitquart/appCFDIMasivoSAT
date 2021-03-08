@@ -5,9 +5,7 @@ import zipfile
 from xml.etree import ElementTree as ET
 import openpyxl as excelpy
 from InternalControl import cInternalControl
-import postgresql as 
-import sys
-
+import postgresql as bd
 
 #Important information for this code
 #--------------------------------------------------------------------------
@@ -139,7 +137,10 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
             lsFolderName.append(result['paquetes'][0])
             res=descargarPaquete(result['paquetes'],directory,lsFolderName)
             if int(res[0])==1:
-                return [1,'Procesamiento exitoso, el resultado se descargó en '+directory+'/'+result['paquetes'][0]+' (zip y xlsx) ']
+                if VERSION=='SQL':
+                    return [1,'Procesamiento exitoso, el archivo ZIP con CFDI se descargó en '+directory+'/'+result['paquetes'][0]+' y se cargaron los registros en la base de datos.']
+                else:
+                    return [1,'Procesamiento exitoso, el resultado se descargó en '+directory+'/'+result['paquetes'][0]+' (zip y xlsx) ']
             else:
                 return res    
         else:
@@ -177,16 +178,10 @@ def descargarPaquete(id_paquete,directory,lsFolderName):
             os.mkdir(ZipExcelDir)
         readBase64FromZIP(paquete,folderAndFileName,ZipExcelDir)
         if VERSION=='EXCEL':
-            try:
-                extractAndReadZIP(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
-            except:
-                return [0,sys.exc_info()[0]]     
+            extractAndReadZIP(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)      
         else:
-            try:
-                extractAndReadZIP_SQL(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
-            except:
-                return [0,sys.exc_info()[0]]    
-                
+            extractAndReadZIP_SQL(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
+
         return [1]
     else:
         return [0,'No se descargó CFDI: '+result['mensaje']]
