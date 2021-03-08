@@ -5,7 +5,9 @@ import zipfile
 from xml.etree import ElementTree as ET
 import openpyxl as excelpy
 from InternalControl import cInternalControl
-import postgresql as bd
+import postgresql as 
+import sys
+
 
 #Important information for this code
 #--------------------------------------------------------------------------
@@ -177,7 +179,10 @@ def descargarPaquete(id_paquete,directory,lsFolderName):
         if VERSION=='EXCEL':
             extractAndReadZIP(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
         else:
-            extractAndReadZIP_SQL(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
+            try:
+                extractAndReadZIP_SQL(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
+            except:
+                return [0,sys.exc_info()[0]]    
                 
         return [1]
     else:
