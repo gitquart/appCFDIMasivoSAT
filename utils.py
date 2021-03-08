@@ -83,7 +83,7 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
     if res>0:
         if VERSION=='SQL':
             #1)Check if the user is in table usuario
-            resultSet=bd.getQueryOrExecuteTransaction('select * from usuario;')
+            resultSet=bd.getQueryOrExecuteTransaction("select * from usuario where rfc_solicitante='"+rfc_solicitante+"' RETURNING id ;")
             if len(resultSet)==0:
                 #insert the rfc_solicitante in usuario
                 resultSet=bd.getQueryOrExecuteTransaction("insert  into usuario (rfc_solicitante) values ('"+rfc_solicitante+"') RETURNING id;")
