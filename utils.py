@@ -177,7 +177,10 @@ def descargarPaquete(id_paquete,directory,lsFolderName):
             os.mkdir(ZipExcelDir)
         readBase64FromZIP(paquete,folderAndFileName,ZipExcelDir)
         if VERSION=='EXCEL':
-            extractAndReadZIP(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
+            try:
+                extractAndReadZIP(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
+            except:
+                return [0,sys.exc_info()[0]]     
         else:
             try:
                 extractAndReadZIP_SQL(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
