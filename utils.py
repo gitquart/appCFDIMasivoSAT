@@ -147,7 +147,7 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
             mensaje=''
             if VERSION=='SQL':
                 cmd="update solicitud set conteo=1 where id="+ID_CURRENT_SOLICITUD+";"
-                bd.getQueryOrExecuteTransaction(cmd)
+                bd.getQueryOrExecuteTransaction_NoReturning(cmd)
                 mensaje='El paquete no trae CFDI y se ha registrado la operación en base de datos, respuesta de web service:'
             else:
                 mensaje='El paquete no trae CFDI, respuesta de web service:'
@@ -202,7 +202,7 @@ def readBase64FromZIP(file,folderAndFileName,directory):
 def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
     objControl=cInternalControl()
     #Change / to \\ if neccesary
-    myZip=zipfile.ZipFile(directory+'/'+zipToRead,'r')
+    myZip=zipfile.ZipFile(directory+'\\'+zipToRead,'r')
     contDocs=0
     #dicTableFields is a dictionary with the following structura key:table, value: list of fields
     dicTableFields={}
@@ -300,7 +300,7 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
             if field=='id_solicitud':
                 # Add id_solicitud value
                 #For test case only (when running from main.py)
-                #ID_CURRENT_SOLICITUD='1'
+                ID_CURRENT_SOLICITUD='6'
                 #End "For test case only..."
                 lsRow.append(ID_CURRENT_SOLICITUD) 
                 continue
@@ -322,6 +322,10 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
                             #If this table has attributes, read it, other wise skip it becase
                             #if the column doesn't have fields, it means it holds children
                             addColumnIfFound_SQL(node,column,lsRow,'0')
+                        else:
+                            #The table exists, but it doesn't have the current field
+                            lsRow.append('0') 
+
                 else:
                     #No table name found
                     lsRow.append('0')  
@@ -488,6 +492,9 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
                             #If this table has attributes, read it, other wise skip it becase
                             #if the column doesn't have fields, it means it holds children
                             addColumnIfFound(node,column,lsRow,0)
+                        else:
+                            #The table exists, but it doesn't have the current field
+                            lsRow.append(0)     
                 else:
                     #No table name found
                     lsRow.append(0)  
@@ -553,7 +560,7 @@ def transforValuesToSQLFormat(field,lsFields,lsValuesToTransform):
         if item is field:
             newValue="'"+lsValuesToTransform[index]+"'"
             lsValuesToTransform[index]=newValue
-            continue
+            break
 
 
 
