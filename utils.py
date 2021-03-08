@@ -289,39 +289,44 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
         for field in lsFields:
             #Cases
             if field=='nombreArchivo':
-                lsRow.append("'"+xml+"'")
+                lsRow.append(xml)
                 continue
             if field=='mes':
                 fechaFactura=root.get('Fecha')
                 monthWord=returnMonthWord(int(fechaFactura.split('-')[1]))
-                lsRow.append("'"+monthWord+"'")
+                lsRow.append(monthWord)
+                continue
+            if field=='id_solicitud':
+                # Add id_solicitud value
+                #For test case only (when running from main.py)
+                ID_CURRENT_SOLICITUD='1'
+                #End "For test case only..."
+                lsRow.append(ID_CURRENT_SOLICITUD) 
                 continue
             #Rest of cases
             chunks=field.split('_')
             table=chunks[0]
             column=chunks[1]
             if table=='Comprobante':  
-                addColumnIfFound_SQL(root,column,lsRow,0)  
+                addColumnIfFound_SQL(root,column,lsRow,'0')  
             else:
                 #Find the right prefix for table
                 lsNode=returnFoundNode(root,table)
                 if len(lsNode)==1:
-                    addColumnIfFound_SQL(lsNode[0],column,lsRow,0)
+                    addColumnIfFound_SQL(lsNode[0],column,lsRow,'0')
                 elif len(lsNode)>1:
                     #More than 1 table_column found with the same name in XML
                     for node in root.findall('.//'+objControl.prefixCFDI+table):
                         if len(node.attrib)>0: 
                             #If this table has attributes, read it, other wise skip it becase
                             #if the column doesn't have fields, it means it holds children
-                            addColumnIfFound_SQL(node,column,lsRow,0)
+                            addColumnIfFound_SQL(node,column,lsRow,'0')
                 else:
                     #No table name found
-                    lsRow.append(0)  
+                    lsRow.append('0')  
             #End of field iteration
 
         #Append the whole xml in a single row in sql 
-        # Add id_solicitud value
-        lsRow.append(ID_CURRENT_SOLICITUD) 
         valuesInSatement=",".join(lsRow)          
         finalCmd="insert into "+tableSQL+" "+fieldsInStatement+" values ("+valuesInSatement+") ;"          
         contDocs+=1
@@ -506,20 +511,11 @@ def addColumnIfFound(table,column,lsRow,notFoundValue):
 
 def addColumnIfFound_SQL(table,column,lsRow,notFoundValue):
     if column in table.attrib:
-        #Add all cases here
-        if (column=='SubTotal' or column=='TotalImpuestosRetenidos' or
-            column=='TotalImpuestosTrasladados' or column=='Total' or column=='Comprobante_Descuento'):
-            #Condition if the value is null, then add 0.0
-            if (table.get(column)!=""):
-                lsRow.append(float(table.get(column)))
-            else:
-                lsRow.append(0)
-
-        else:
-            #No special case or string case
+        if (table.get(column)!=""):
             lsRow.append(table.get(column))
-
-
+        else:    
+            lsRow.append('0')
+    
     else:
         #Table found, but no column found
         lsRow.append(notFoundValue)            
