@@ -19,6 +19,16 @@ def getQueryOrExecuteTransaction(query):
 
     return lsResult
 
+def getQueryOrExecuteTransaction_NoReturning(query):
+    #"No Returning" means the command doesn't fetch any value back, like Last Id or whatever
+    conn = psycopg2.connect(host=HOST,dbname=DBNAME, user=USER, password=PASSWORD,sslmode='require')
+    cursor = conn.cursor()
+    cursor.execute(query)
+    conn.commit()
+    cursor.close()
+    conn.close()
+   
+
 
 
 

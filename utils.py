@@ -327,13 +327,26 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
             #End of field iteration
 
         #Append the whole xml in a single row in sql 
+        #Convert lsRow into a correct value list for SQL
+        lsFieldsNotToMatch=['comprobante_subtotal','impuestos_totalimpuestosretenidos','impuestos_totalimpuestostrasladados',
+                        'comprobante_total','comprobante_descuento','id_solicitud']
+        lsFieldsToMatch=[]
+        for field in lsFieldsSQL:
+            if field not in lsFieldsNotToMatch:
+                lsFieldsToMatch.append(field)
+
+        for field in lsFieldsToMatch:                
+            transforValuesToSQLFormat(field,lsFieldsSQL,lsRow)
         valuesInSatement=",".join(lsRow)          
-        finalCmd="insert into "+tableSQL+" "+fieldsInStatement+" values ("+valuesInSatement+") ;"          
+        finalCmd="insert into "+tableSQL+" "+fieldsInStatement+" values ("+valuesInSatement+") ;"  
+        bd.getQueryOrExecuteTransaction_NoReturning(finalCmd)        
         contDocs+=1
         #End of each document (xml) iteration in a zip
         
 
     #All xml processed at this point    
+    cmd="update solicitud set conteo=1 where id="+ID_CURRENT_SOLICITUD+";"
+    bd.getQueryOrExecuteTransaction_NoReturning(cmd)
     print('Files processed in ZIP file:',str(contDocs)) 
 
 
@@ -531,6 +544,17 @@ def returnFoundNode(root,table):
             break
     #If the code reaches this point, it means the Node doesn't exit in the XML, therefore return an empty list
     return result  
+
+def transforValuesToSQLFormat(field,lsFields,lsValuesToTransform):
+    #This method works to match the desired fields
+    #Case to match => item is field
+    for index,item in enumerate(lsFields):
+        if item is field:
+            newValue="'"+lsValuesToTransform[index]+"'"
+            lsValuesToTransform[index]=newValue
+            continue
+
+
 
 def returnMonthWord(monthNumber):
     monthWord=''
