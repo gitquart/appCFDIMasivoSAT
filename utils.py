@@ -492,9 +492,7 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
                             #If this table has attributes, read it, other wise skip it becase
                             #if the column doesn't have fields, it means it holds children
                             addColumnIfFound(node,column,lsRow,0)
-                        else:
-                            #The table exists, but it doesn't have the current field
-                            lsRow.append(0)     
+                        
                 else:
                     #No table name found
                     lsRow.append(0)  
