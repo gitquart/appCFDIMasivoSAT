@@ -202,14 +202,13 @@ def readBase64FromZIP(file,folderAndFileName,directory):
 def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
     objControl=cInternalControl()
     #Change / to \\ if neccesary
-    myZip=zipfile.ZipFile(directory+'\\'+zipToRead,'r')
+    myZip=zipfile.ZipFile(directory+'/'+zipToRead,'r')
     contDocs=0
     #dicTableFields is a dictionary with the following structura key:table, value: list of fields
     dicTableFields={}
     #Dictionaries for every kind of "tipo de comprobante"
     #First, get all the columns for all the tables
     for xml in myZip.namelist():
-        chunkName=xml.split('.')
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
         for node in root.iter():
@@ -266,7 +265,6 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
     # root.find(.//...): gets any node inside the root, use this to any other node except the root
     for xml in myZip.namelist():
         #Get field TipoDeComprobante to knwo where sheet to print
-        #"Resto" is the default spread sheet
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
         lsRfcTable=['Emisor','Receptor']
@@ -302,7 +300,7 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
             if field=='id_solicitud':
                 # Add id_solicitud value
                 #For test case only (when running from main.py)
-                ID_CURRENT_SOLICITUD='1'
+                #ID_CURRENT_SOLICITUD='1'
                 #End "For test case only..."
                 lsRow.append(ID_CURRENT_SOLICITUD) 
                 continue
