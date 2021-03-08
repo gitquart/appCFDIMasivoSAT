@@ -9,7 +9,7 @@ print('---------Menu--------')
 print('1.Solicitar CFDI')
 print('2.Verificar CFDI')
 print('3.Descargar CFDI en ZIP')
-print('4.Extraer ZIP en excel')
+print('4.Extraer ZIP')
 
 op=input()
 op=int(op)
@@ -45,7 +45,7 @@ if op==4:
     if int(op)==1:    
         tool.extractAndReadZIP('C:\\Users\\1098350515\\Desktop\\QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01','QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01.zip','QCG190521ND3')
     else:
-        tool.extractAndReadZIP_SQL('C:\\Users\\1098350515\\Desktop\\QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01','QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01.zip','QCG190521ND3');    
+        tool.extractAndReadZIP_SQL('C:\\Users\\1098350515\\Desktop\\QCG190521ND3_Emisor_112021_3012021_6234AE06-AA85-4100-8631-3C4B9D9A5DDC_01','QCG190521ND3_Emisor_112021_3012021_6234AE06-AA85-4100-8631-3C4B9D9A5DDC_01.zip','QCG190521ND3');    
     
   
 

@@ -199,17 +199,7 @@ def readBase64FromZIP(file,folderAndFileName,directory):
 def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
     objControl=cInternalControl()
     #Change / to \\ if neccesary
-    myZip=zipfile.ZipFile(directory+'/'+zipToRead,'r')
-    #The zip's file name will be the name of excel file name, like the "Database"
-    excel_fileName=os.path.splitext(os.path.split(myZip.filename)[1])[0]+'.xlsx'
-    #Creating the workbook (database)
-    #Create the sheets: Ingreso_Egreso,Pago,Resto
-    wb=excelpy.Workbook() 
-    wb.create_sheet('Emisor')
-    wb.create_sheet('Receptor')
-    pago_sheet = wb['Sheet']
-    pago_sheet.title = 'Pago'
-    wb.save(directory+'/'+excel_fileName)
+    myZip=zipfile.ZipFile(directory+'\\'+zipToRead,'r')
     contDocs=0
     #dicTableFields is a dictionary with the following structura key:table, value: list of fields
     dicTableFields={}
@@ -217,7 +207,6 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
     #First, get all the columns for all the tables
     for xml in myZip.namelist():
         chunkName=xml.split('.')
-        fileName=chunkName[0]
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
         for node in root.iter():
@@ -260,23 +249,14 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
     for field in objControl.lsRemove:
         if field in lsFields:
             lsFields.remove(field)     
-
-    for sheet in wb.sheetnames:
-        wb[sheet].append(lsFields)  
-    #Rename columns in excel if necessary
-    #As the excel doesn't have values but the header row, then don't need to add any more logic
-    #Rename the columns you want and that's it.
-    """
-    for sheet in wb.sheetnames:
-        for row in wb[sheet].rows:
-            for cell in row:
-                #Rename any column you want here
-    """            
-
-
-    wb.save(directory+'/'+excel_fileName)     
-               
-  
+    
+    #Add id_solicitud at the end
+    lsFields.append('id_solicitud')
+    #lsFieldsSQL is the list which contains the name of fields as shown in database, all the fields in tables are
+    # the same as fields but in lower case, this means: "Comprobante_Fecha" turns to "comprobante_fecha"      
+    lsFieldsSQL = [x.lower() for x in lsFields] 
+    #Convert lsFieldsSQL into the way they will appear in statement : insert into... -> (field1,field2,...) 
+    fieldsInStatement='('+','.join(lsFieldsSQL)+')'
     #Third, read information and insert where belongs 
     #Conclusiones: 
     # getroot() : Gets the root of the xml, then use getRoot to get "Comprobante"
@@ -293,11 +273,11 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
                 rfc_value=node[0].get('Rfc')
                 if rfc_value==rfc_solicitante:
                     if root.get('TipoDeComprobante')=='I' or root.get('TipoDeComprobante')=='E':
-                        sheetPrint=item
+                        tableSQL=item
                     elif  root.get('TipoDeComprobante')=='P':
-                        sheetPrint='Pago' 
+                        tableSQL='Pago' 
                     else:
-                        sheetPrint='Pago'
+                        tableSQL='Pago'
                     break         
 
         #Start to read the fields from lsFields=[]
@@ -305,45 +285,48 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
         #One row per xml
         lsRow=[]
         #The field leads all the insertion
-        #Algorith of reading fields
+        #Algorithm of reading fields
         for field in lsFields:
             #Cases
             if field=='nombreArchivo':
-                lsRow.append(xml)
+                lsRow.append("'"+xml+"'")
                 continue
             if field=='mes':
                 fechaFactura=root.get('Fecha')
                 monthWord=returnMonthWord(int(fechaFactura.split('-')[1]))
-                lsRow.append(monthWord)
+                lsRow.append("'"+monthWord+"'")
                 continue
             #Rest of cases
             chunks=field.split('_')
             table=chunks[0]
             column=chunks[1]
             if table=='Comprobante':  
-                addColumnIfFound(root,column,lsRow,0)  
+                addColumnIfFound_SQL(root,column,lsRow,0)  
             else:
                 #Find the right prefix for table
                 lsNode=returnFoundNode(root,table)
                 if len(lsNode)==1:
-                    addColumnIfFound(lsNode[0],column,lsRow,0)
+                    addColumnIfFound_SQL(lsNode[0],column,lsRow,0)
                 elif len(lsNode)>1:
                     #More than 1 table_column found with the same name in XML
                     for node in root.findall('.//'+objControl.prefixCFDI+table):
                         if len(node.attrib)>0: 
                             #If this table has attributes, read it, other wise skip it becase
                             #if the column doesn't have fields, it means it holds children
-                            addColumnIfFound(node,column,lsRow,0)
+                            addColumnIfFound_SQL(node,column,lsRow,0)
                 else:
                     #No table name found
                     lsRow.append(0)  
             #End of field iteration
 
-        #Append the whole xml in a single row            
-        wb[sheetPrint].append(lsRow)                 
+        #Append the whole xml in a single row in sql 
+        # Add id_solicitud value
+        lsRow.append(ID_CURRENT_SOLICITUD) 
+        valuesInSatement=",".join(lsRow)          
+        finalCmd="insert into "+tableSQL+" "+fieldsInStatement+" values ("+valuesInSatement+") ;"          
         contDocs+=1
         #End of each document (xml) iteration in a zip
-        wb.save(directory+'/'+excel_fileName)
+        
 
     #All xml processed at this point    
     print('Files processed in ZIP file:',str(contDocs)) 
@@ -370,8 +353,6 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
     #Dictionaries for every kind of "tipo de comprobante"
     #First, get all the columns for all the tables
     for xml in myZip.namelist():
-        chunkName=xml.split('.')
-        fileName=chunkName[0]
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
         for node in root.iter():
@@ -521,7 +502,27 @@ def addColumnIfFound(table,column,lsRow,notFoundValue):
 
     else:
         #Table found, but no column found
-        lsRow.append(notFoundValue)    
+        lsRow.append(notFoundValue) 
+
+def addColumnIfFound_SQL(table,column,lsRow,notFoundValue):
+    if column in table.attrib:
+        #Add all cases here
+        if (column=='SubTotal' or column=='TotalImpuestosRetenidos' or
+            column=='TotalImpuestosTrasladados' or column=='Total' or column=='Comprobante_Descuento'):
+            #Condition if the value is null, then add 0.0
+            if (table.get(column)!=""):
+                lsRow.append(float(table.get(column)))
+            else:
+                lsRow.append(0)
+
+        else:
+            #No special case or string case
+            lsRow.append(table.get(column))
+
+
+    else:
+        #Table found, but no column found
+        lsRow.append(notFoundValue)            
 
 #returnFoundNode: regresa nodo (tabla) si existe en en XML
 def returnFoundNode(root,table):
