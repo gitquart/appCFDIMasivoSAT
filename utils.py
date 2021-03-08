@@ -101,7 +101,7 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
                 cmd="insert into solicitud (fechainicio,fechafin,conteo,tipo,id_usuario) values ('"+fechaInicial+"','"+fechaFinal+"',0,'"+tipo+"',"+id_usuario+") returning id;"
                 resultSet=bd.getQueryOrExecuteTransaction(cmd)
                 for item in resultSet[0]:
-                    ID_CURRENT_SOLICITUD=item
+                    ID_CURRENT_SOLICITUD=str(item)
                     break 
             else:
                 #If the "solicitud" already exists, then return a message "La solicitud sólo puede ser ejecutada 1 vez"
@@ -141,7 +141,16 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
             else:
                 return res    
         else:
-            return [0,'El paquete no trae CFDI, respuesta de web service:\n'+
+            mensaje=''
+            if VERSION=='SQL':
+                cmd="update solicitud set conteo=1 where id="+ID_CURRENT_SOLICITUD+";"
+                bd.getQueryOrExecuteTransaction(cmd)
+                mensaje='El paquete no trae CFDI y se ha registrado la operación en base de datos, respuesta de web service:'
+            else:
+                mensaje='El paquete no trae CFDI, respuesta de web service:'
+
+            return [
+                     0,mensaje+':\n'+
                      'Estado de solicitud:'+result['estado_solicitud']+'\n'+
                      'Código de estado:'+result['cod_estatus']+'\n'+
                      'Número de CFDI:'+result['numero_cfdis']+'\n'+
