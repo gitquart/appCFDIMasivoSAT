@@ -202,7 +202,7 @@ def readBase64FromZIP(file,folderAndFileName,directory):
 def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
     objControl=cInternalControl()
     #Change / to \\ if neccesary
-    myZip=zipfile.ZipFile(directory+'\\'+zipToRead,'r')
+    myZip=zipfile.ZipFile(directory+'/'+zipToRead,'r')
     contDocs=0
     #dicTableFields is a dictionary with the following structura key:table, value: list of fields
     dicTableFields={}
@@ -300,7 +300,7 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
             if field=='id_solicitud':
                 # Add id_solicitud value
                 #For test case only (when running from main.py)
-                ID_CURRENT_SOLICITUD='6'
+                #ID_CURRENT_SOLICITUD='6'
                 #End "For test case only..."
                 lsRow.append(ID_CURRENT_SOLICITUD) 
                 continue
