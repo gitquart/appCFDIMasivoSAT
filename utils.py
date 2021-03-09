@@ -316,13 +316,15 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
                 if len(lsNode)==1:
                     addColumnIfFound_SQL(lsNode[0],column,lsRow,'0')
                 elif len(lsNode)>1:
-                    #More than 1 table_column found with the same name in XML
+                    #More than 1 table_column (Node) found with the same name in XML
                     for node in root.findall('.//'+objControl.prefixCFDI+table):
+                        bTableWithField=False
                         if len(node.attrib)>0: 
                             #If this table has attributes, read it, other wise skip it becase
                             #if the column doesn't have fields, it means it holds children
                             addColumnIfFound_SQL(node,column,lsRow,'0')
-                        else:
+                            bTableWithField=True
+                        if not bTableWithField:
                             #The table exists, but it doesn't have the current field
                             lsRow.append('0') 
 
