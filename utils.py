@@ -470,9 +470,11 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
                     for possibleValue in ['Ingreso','ingreso','I','i','E','Egreso','egreso','e']:
                         if tipoComprobante==possibleValue:
                             sheetPrint=item
+                            break
                     for possibleValue in ['P','p','Pago','pago']:
                         if tipoComprobante==possibleValue:
                             sheetPrint='Pago'
+                            break
                     if sheetPrint=='Nada': 
                         sheetPrint='Pago'       
 
@@ -487,10 +489,8 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
             if field=='nombreArchivo':
                 lsRow.append(xml)
                 continue
-            if field=='mes':
-                fechaFactura=root.get('Fecha')
-                if fechaFactura is None:
-                    fechaFactura=root.get('fecha')
+            if field=='mes': 
+                fechaFactura=returnValueFromPossibleColumnsIfFound(root,['Fecha','fecha'])
                 monthWord=returnMonthWord(int(fechaFactura.split('-')[1]))
                 lsRow.append(monthWord)
                 continue
