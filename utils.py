@@ -122,7 +122,6 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
             # Recibidos
             result = descarga.solicitar_descarga(token, rfc_solicitante, fecha_inicial, fecha_final, rfc_receptor=rfc_receptor)
         
-        time.sleep(5)
         res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName)
         return res
         
@@ -205,7 +204,12 @@ def readBase64FromZIP(file,folderAndFileName,directory):
 def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
     objControl=cInternalControl()
     #Change / to \\ if neccesary
-    myZip=zipfile.ZipFile(directory+'/'+zipToRead,'r')
+    separationFolder=''
+    if objControl.testingMode:
+        separationFolder='\\'
+    else:
+        separationFolder='/'    
+    myZip=zipfile.ZipFile(directory+separationFolder+zipToRead,'r')
     contDocs=0
     #dicTableFields is a dictionary with the following structura key:table, value: list of fields
     dicTableFields={}
@@ -364,7 +368,12 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
 def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
     objControl=cInternalControl()
     #Change / to \\ if neccesary
-    myZip=zipfile.ZipFile(directory+'/'+zipToRead,'r')
+    separationFolder=''
+    if objControl.testingMode:
+        separationFolder='\\'
+    else:
+        separationFolder='/'    
+    myZip=zipfile.ZipFile(directory+separationFolder+zipToRead,'r')
     #The zip's file name will be the name of excel file name, like the "Database"
     excel_fileName=os.path.splitext(os.path.split(myZip.filename)[1])[0]+'.xlsx'
     #Creating the workbook (database)
@@ -476,6 +485,8 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
                 continue
             if field=='mes':
                 fechaFactura=root.get('Fecha')
+                if fechaFactura is None:
+                    fechaFactura=root.get('fecha')
                 monthWord=returnMonthWord(int(fechaFactura.split('-')[1]))
                 lsRow.append(monthWord)
                 continue

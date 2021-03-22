@@ -43,10 +43,13 @@ if op==3:
 if op==4:
     print('Choose a version 1.EXCEL 2.SQL')
     op=input()
+    directory='C:\\Users\\1098350515\\Documents\\Carpeta_Johnson\\JCB6805038G1_Emisor_1102014_15102014_E738B27F-8C94-47FC-8CF2-01793560AB24_01'
+    zipFile='JCB6805038G1_Emisor_1102014_15102014_E738B27F-8C94-47FC-8CF2-01793560AB24_01.zip'
+    rfc='JCB6805038G1'
     if int(op)==1:    
-        tool.extractAndReadZIP('C:\\Users\\1098350515\\Desktop\\QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01','QCG190521ND3_Emisor_122021_2222021_D4B2864D-52E8-420C-B61F-C2ED5C98191F_01.zip','QCG190521ND3')
+        tool.extractAndReadZIP(directory,zipFile,rfc)
     else:
-        tool.extractAndReadZIP_SQL('C:\\Users\\1098350515\\Desktop\\QCG190521ND3_Receptor_112021_3012021_3E6B3DE6-3C2D-4633-B54E-0A5FC6C6D1B4_01','QCG190521ND3_Receptor_112021_3012021_3E6B3DE6-3C2D-4633-B54E-0A5FC6C6D1B4_01.zip','QCG190521ND3');    
+        tool.extractAndReadZIP_SQL(directory,zipFile,rfc);    
     
   
 

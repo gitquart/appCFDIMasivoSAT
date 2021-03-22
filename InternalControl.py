@@ -3,6 +3,7 @@ class cInternalControl:
     #----Data to change per user----
     #zipToRead is the name of zip that will be created from download
     #and also the one to read to transform to excel
+    testingMode=True
     zipToRead='EC162D98-292A-4673-8085-A1D2CFD725F8_01.zip' 
     #----Program variables----
     prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
