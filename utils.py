@@ -510,7 +510,7 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
                     bTableWithField=False
                     for node in root.findall('.//'+objControl.prefixCFDI+table):
                         if len(node.attrib)>0: 
-                            #If this table has attributes, read it, other wise skip it becase
+                            #If this table has attributes, read it, other wise skip it because
                             #if the column doesn't have fields, it means it holds children
                             addColumnIfFound(node,column,lsRow,0)
                             bTableWithField=True
@@ -537,24 +537,25 @@ addColumnIfFound
 Returns a list with the value added in it if found
 """
 def addColumnIfFound(table,column,lsRow,notFoundValue):
-    if column in table.attrib:
-        #Add all cases here
-        if (column=='SubTotal' or column=='TotalImpuestosRetenidos' or
-            column=='TotalImpuestosTrasladados' or column=='Total'):
-            #Condition if the value is null, then add 0.0
-            if (table.get(column)!=""):
-                lsRow.append(float(table.get(column)))
+    #Add all cases that a column can be called
+    if column=='Fecha':
+        for possibleColumn in ['Fecha','fecha']:
+            if possibleColumn in table.attrib:
+                #Add all cases here
+                if (column=='SubTotal' or column=='TotalImpuestosRetenidos' or
+                    column=='TotalImpuestosTrasladados' or column=='Total'):
+                    #Condition if the value is null, then add 0.0
+                    if (table.get(column)!=""):
+                        lsRow.append(float(table.get(column)))
+                    else:
+                        lsRow.append(0)
+
+                else:
+                    #No special case or string case
+                    lsRow.append(table.get(column))
             else:
-                lsRow.append(0)
-
-        else:
-            #No special case or string case
-            lsRow.append(table.get(column))
-
-
-    else:
-        #Table found, but no column found
-        lsRow.append(notFoundValue) 
+                #Table found, but no column found
+                lsRow.append(notFoundValue) 
 
 """
 ReturnValueColumnIfFound
