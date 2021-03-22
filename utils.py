@@ -6,6 +6,7 @@ from xml.etree import ElementTree as ET
 import openpyxl as excelpy
 from InternalControl import cInternalControl
 import postgresql as bd
+import time
 
 #Important information for this code
 #--------------------------------------------------------------------------
@@ -121,6 +122,7 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
             # Recibidos
             result = descarga.solicitar_descarga(token, rfc_solicitante, fecha_inicial, fecha_final, rfc_receptor=rfc_receptor)
         
+        time.sleep(5)
         res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName)
         return res
         
