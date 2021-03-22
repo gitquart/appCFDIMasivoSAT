@@ -280,13 +280,14 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
             if len(node)>0:
                 rfc_value=node[0].get('Rfc')
                 if rfc_value==rfc_solicitante:
-                    if root.get('TipoDeComprobante')=='I' or root.get('TipoDeComprobante')=='E':
+                    if ((root.get('TipoDeComprobante')=='I' or root.get('TipoDeComprobante')=='Ingreso' or root.get('TipoDeComprobante')=='ingreso' ) or 
+                        (root.get('TipoDeComprobante')=='E') or (root.get('TipoDeComprobante')=='Egreso') or (root.get('TipoDeComprobante')=='egreso') ):
                         tableSQL=item
-                    elif  root.get('TipoDeComprobante')=='P':
+                    elif  (root.get('TipoDeComprobante')=='P' or root.get('TipoDeComprobante')=='Pago' or root.get('TipoDeComprobante')=='pago'):
                         tableSQL='Pago' 
                     else:
                         tableSQL='Pago'
-                    break         
+                    break                
 
         #Start to read the fields from lsFields=[]
         #Example of a field in lsFields : "Comprobante_Version" -> "tableName_Field"
@@ -464,9 +465,10 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
             if len(node)>0:
                 rfc_value=node[0].get('Rfc')
                 if rfc_value==rfc_solicitante:
-                    if root.get('TipoDeComprobante')=='I' or root.get('TipoDeComprobante')=='E':
+                    if ((root.get('TipoDeComprobante')=='I' or root.get('TipoDeComprobante')=='Ingreso' or root.get('TipoDeComprobante')=='ingreso' ) or 
+                        (root.get('TipoDeComprobante')=='E') or (root.get('TipoDeComprobante')=='Egreso') or (root.get('TipoDeComprobante')=='egreso') ):
                         sheetPrint=item
-                    elif  root.get('TipoDeComprobante')=='P':
+                    elif  (root.get('TipoDeComprobante')=='P' or root.get('TipoDeComprobante')=='Pago' or root.get('TipoDeComprobante')=='pago'):
                         sheetPrint='Pago' 
                     else:
                         sheetPrint='Pago'
