@@ -463,8 +463,9 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
         for item in lsRfcTable:
             node=returnFoundNode(root,item)
             if len(node)>0:
-                rfc_value=node[0].get('Rfc')
+                rfc_value=returnValueFromPossibleColumnsIfFound(node[0],['Rfc','rfc'])
                 if rfc_value==rfc_solicitante:
+                    tipoComprobante=returnValueFromPossibleColumnsIfFound(root,['TipoDeComprobante','tipoDeComprobante'])
                     if ((root.get('TipoDeComprobante')=='I' or root.get('TipoDeComprobante')=='Ingreso' or root.get('TipoDeComprobante')=='ingreso' ) or 
                         (root.get('TipoDeComprobante')=='E') or (root.get('TipoDeComprobante')=='Egreso') or (root.get('TipoDeComprobante')=='egreso') ):
                         sheetPrint=item
@@ -530,6 +531,10 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
     print('Files processed in ZIP file:',str(contDocs)) 
 
 
+"""
+addColumnIfFound
+Returns a list with the value added in it if found
+"""
 def addColumnIfFound(table,column,lsRow,notFoundValue):
     if column in table.attrib:
         #Add all cases here
@@ -550,6 +555,21 @@ def addColumnIfFound(table,column,lsRow,notFoundValue):
         #Table found, but no column found
         lsRow.append(notFoundValue) 
 
+"""
+ReturnValueColumnIfFound
+
+"""
+def returnValueFromPossibleColumnsIfFound(table,lsPossibleColumns):
+    value=''
+    for column in lsPossibleColumns:
+        if column in table.attrib:
+            if table.get(column)!="":
+                value=table.get(column)
+            else:
+                value='No value'
+            return value    
+
+              
 def addColumnIfFound_SQL(table,column,lsRow,notFoundValue):
     if column in table.attrib:
         if (table.get(column)!=""):
@@ -561,7 +581,7 @@ def addColumnIfFound_SQL(table,column,lsRow,notFoundValue):
         #Table found, but no column found
         lsRow.append(notFoundValue)            
 
-#returnFoundNode: regresa nodo (tabla) si existe en en XML
+#returnFoundNode: regresa nodo (tabla) si existe en el XML
 def returnFoundNode(root,table):
     lsNode=[]
     result=[]
