@@ -47,7 +47,7 @@ def validateFIELFiles(directory):
                         count+=1
                         continue
                     if count==2:    
-                        FIEL_PAS=line.strip()
+                        FIEL_PAS=line
                         break
 
         if file.endswith('.key'):
