@@ -460,20 +460,21 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
         doc_xml=myZip.open(xml)
         root = ET.parse(doc_xml).getroot()
         lsRfcTable=['Emisor','Receptor']
+        sheetPrint='Nada'
         for item in lsRfcTable:
             node=returnFoundNode(root,item)
             if len(node)>0:
                 rfc_value=returnValueFromPossibleColumnsIfFound(node[0],['Rfc','rfc'])
                 if rfc_value==rfc_solicitante:
                     tipoComprobante=returnValueFromPossibleColumnsIfFound(root,['TipoDeComprobante','tipoDeComprobante'])
-                    if ((root.get('TipoDeComprobante')=='I' or root.get('TipoDeComprobante')=='Ingreso' or root.get('TipoDeComprobante')=='ingreso' ) or 
-                        (root.get('TipoDeComprobante')=='E') or (root.get('TipoDeComprobante')=='Egreso') or (root.get('TipoDeComprobante')=='egreso') ):
-                        sheetPrint=item
-                    elif  (root.get('TipoDeComprobante')=='P' or root.get('TipoDeComprobante')=='Pago' or root.get('TipoDeComprobante')=='pago'):
-                        sheetPrint='Pago' 
-                    else:
-                        sheetPrint='Pago'
-                    break         
+                    for possibleValue in ['Ingreso','ingreso','I','i','E','Egreso','egreso','e']:
+                        if tipoComprobante==possibleValue:
+                            sheetPrint=item
+                    for possibleValue in ['P','p','Pago','pago']:
+                        if tipoComprobante==possibleValue:
+                            sheetPrint='Pago'
+                    if sheetPrint=='Nada': 
+                        sheetPrint='Pago'       
 
         #Start to read the fields from lsFields=[]
         #Example of a field in lsFields : "Comprobante_Version" -> "tableName_Field"
