@@ -46,7 +46,8 @@ def validateFIELFiles(directory):
                         rfc_solicitante=rfcFromFile
                         count+=1
                         continue
-                    if count==2:    
+                    if count==2:  
+                        #Don't strip the line for password, we had a case of "CURP ", which space is needed  
                         FIEL_PAS=line
                         break
 
