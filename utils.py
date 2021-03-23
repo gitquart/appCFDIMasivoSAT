@@ -169,8 +169,7 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
                      '3 - Terminada\n'+
                      '4 - Error\n'+
                      '5 - Rechazada\n'+
-                     '6 - Vencida\n'+
-                     'ID: '+result['paquetes'][0]
+                     '6 - Vencida'
 
                      ]  
     else:
