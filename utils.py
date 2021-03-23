@@ -464,9 +464,9 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
         for item in lsRfcTable:
             node=returnFoundNode(root,item)
             if len(node)>0:
-                rfc_value=returnValueFromPossibleColumnsIfFound(node[0],['Rfc','rfc'])
+                rfc_value=addColumnIfFound(node[0],None,None,'look',['Rfc','rfc'])
                 if rfc_value==rfc_solicitante:
-                    tipoComprobante=returnValueFromPossibleColumnsIfFound(root,['TipoDeComprobante','tipoDeComprobante'])
+                    tipoComprobante=addColumnIfFound(root,None,None,'look',['TipoDeComprobante','tipoDeComprobante'])
                     for possibleValue in ['Ingreso','ingreso','I','i','E','Egreso','egreso','e']:
                         if tipoComprobante==possibleValue:
                             sheetPrint=item
@@ -490,7 +490,7 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
                 lsRow.append(xml)
                 continue
             if field=='mes': 
-                fechaFactura=returnValueFromPossibleColumnsIfFound(root,['Fecha','fecha'])
+                fechaFactura=addColumnIfFound(root,None,None,'look',['Fecha','fecha'])
                 monthWord=returnMonthWord(int(fechaFactura.split('-')[1]))
                 lsRow.append(monthWord)
                 continue
@@ -499,12 +499,12 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
             table=chunks[0]
             column=chunks[1]
             if table=='Comprobante':  
-                addColumnIfFound(root,column,lsRow,0)  
+                addColumnIfFound(root,column,lsRow,'add',None)  
             else:
                 #Find the right prefix for table
                 lsNode=returnFoundNode(root,table)
                 if len(lsNode)==1:
-                    addColumnIfFound(lsNode[0],column,lsRow,0)
+                    addColumnIfFound(lsNode[0],column,lsRow,'add',None)
                 elif len(lsNode)>1:
                     #More than 1 table_column found with the same name in XML
                     bTableWithField=False
@@ -512,7 +512,7 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
                         if len(node.attrib)>0: 
                             #If this table has attributes, read it, other wise skip it because
                             #if the column doesn't have fields, it means it holds children
-                            addColumnIfFound(node,column,lsRow,0)
+                            addColumnIfFound(node,column,lsRow,'add',None)
                             bTableWithField=True
                     if not bTableWithField:
                         lsRow.append(0)    
@@ -532,46 +532,73 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
     print('Files processed in ZIP file:',str(contDocs)) 
 
 
+def getAndTransformValue(table,lsRow,lsPossibleValues,typeOfColumn,notFoundValue):
+    bFieldFound=False
+    for possibleColumn in lsPossibleValues:
+        if possibleColumn in table.attrib:
+            bFieldFound=True
+            if (table.get(possibleColumn)!=""):
+                if typeOfColumn=='float':
+                    lsRow.append(float(table.get(possibleColumn)))
+                else:
+                    lsRow.append(table.get(possibleColumn))
+            else:
+                #Table found, but no column found
+                lsRow.append(notFoundValue)
+    if not bFieldFound:
+        #Table found, but no column found
+        lsRow.append(notFoundValue)
+
+                   
+           
 """
 addColumnIfFound
 Returns a list with the value added in it if found
 """
-def addColumnIfFound(table,column,lsRow,notFoundValue):
+def addColumnIfFound(table,column,lsRow,op,lsPossibleColumns):
     #Add all cases that a column can be called
-    if column=='Fecha':
-        for possibleColumn in ['Fecha','fecha']:
-            if possibleColumn in table.attrib:
-                #Add all cases here
-                if (column=='SubTotal' or column=='TotalImpuestosRetenidos' or
-                    column=='TotalImpuestosTrasladados' or column=='Total'):
-                    #Condition if the value is null, then add 0.0
-                    if (table.get(column)!=""):
-                        lsRow.append(float(table.get(column)))
-                    else:
-                        lsRow.append(0)
-
-                else:
-                    #No special case or string case
-                    lsRow.append(table.get(column))
-            else:
-                #Table found, but no column found
-                lsRow.append(notFoundValue) 
-
-"""
-ReturnValueColumnIfFound
-
-"""
-def returnValueFromPossibleColumnsIfFound(table,lsPossibleColumns):
+    notValueFloat=0
+    notValueString='No value'
     value=''
-    for column in lsPossibleColumns:
-        if column in table.attrib:
-            if table.get(column)!="":
-                value=table.get(column)
-            else:
-                value='No value'
-            return value    
+    if op=='look':
+        for column in lsPossibleColumns:
+            if column in table.attrib:
+                if table.get(column)!="":
+                    value=table.get(column)
+                else:
+                    value='No value'
+                return value    
+    else:
+        #Float cases
+        if column=='Total':
+            getAndTransformValue(table,lsRow,[column,'total'],'float',notValueFloat)
+        elif column=='TotalImpuestosTrasladados':
+            getAndTransformValue(table,lsRow,[column],'float',notValueFloat) 
+        elif column=='TotalImpuestosRetenidos':
+            getAndTransformValue(table,lsRow,[column],'float',notValueFloat) 
+        elif column=='SubTotal':
+            getAndTransformValue(table,lsRow,[column,'subTotal'],'float',notValueFloat)    
+        #End of Float cases
+        elif column=='mes':
+            getAndTransformValue(table,lsRow,[column,'fecha'],'string',notValueString)   
+        #Cases of COMPROBANTE    
+        elif column=='Fecha':
+            getAndTransformValue(table,lsRow,[column,'fecha'],'string',notValueString)
+        elif column=='Serie':
+            getAndTransformValue(table,lsRow,[column,'serie'],'string',notValueString) 
+        elif column=='Folio':
+            getAndTransformValue(table,lsRow,[column,'folio'],'string',notValueString) 
+        elif column=='MetodoPago':
+            getAndTransformValue(table,lsRow,[column,'metodoDePago'],'string',notValueString) 
+        elif column=='TipoDeComprobante':
+            getAndTransformValue(table,lsRow,[column,'tipoDeComprobante'],'string',notValueString)  
+        #End of cases of COMPROBANTE      
+        else:
+            getAndTransformValue(table,lsRow,[column],'string',notValueString)
 
-              
+
+
+                     
 def addColumnIfFound_SQL(table,column,lsRow,notFoundValue):
     if column in table.attrib:
         if (table.get(column)!=""):
