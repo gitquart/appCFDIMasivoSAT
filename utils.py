@@ -580,8 +580,7 @@ def addColumnIfFound(table,column,lsRow,op,lsPossibleColumns):
             getAndTransformValue(table,lsRow,[column,'subTotal'],'float',notValueFloat)    
         #End of Float cases
         elif column=='mes':
-            getAndTransformValue(table,lsRow,[column,'fecha'],'string',notValueString)   
-        #Cases of COMPROBANTE    
+            getAndTransformValue(table,lsRow,[column,'fecha'],'string',notValueString)       
         elif column=='Fecha':
             getAndTransformValue(table,lsRow,[column,'fecha'],'string',notValueString)
         elif column=='Serie':
@@ -591,8 +590,29 @@ def addColumnIfFound(table,column,lsRow,op,lsPossibleColumns):
         elif column=='MetodoPago':
             getAndTransformValue(table,lsRow,[column,'metodoDePago'],'string',notValueString) 
         elif column=='TipoDeComprobante':
-            getAndTransformValue(table,lsRow,[column,'tipoDeComprobante'],'string',notValueString)  
-        #End of cases of COMPROBANTE      
+            getAndTransformValue(table,lsRow,[column,'tipoDeComprobante'],'string',notValueString)           
+        elif column=='UsoCFDI':
+            getAndTransformValue(table,lsRow,[column],'string',notValueString)
+        elif column=='LugarExpedición':
+            getAndTransformValue(table,lsRow,[column],'string',notValueString) 
+        elif column=='Moneda':
+            getAndTransformValue(table,lsRow,[column],'string',notValueString)
+        elif column=='TipoCambio':
+            getAndTransformValue(table,lsRow,[column],'string',notValueString)
+        elif column=='Descuento':
+            getAndTransformValue(table,lsRow,[column],'string',notValueString)
+        elif column=='FormaPago':
+            getAndTransformValue(table,lsRow,[column],'string',notValueString)
+        elif column=='CondicionesDePago':
+            getAndTransformValue(table,lsRow,[column,'condicionesDePago'],'string',notValueString)
+        elif column=='Version':
+            getAndTransformValue(table,lsRow,[column,'version'],'string',notValueString)
+        elif column=='Rfc':
+            getAndTransformValue(table,lsRow,[column,'rfc'],'string',notValueString)
+        elif column=='Nombre':
+            getAndTransformValue(table,lsRow,[column,'nombre'],'string',notValueString)
+        elif column=='UUID':
+            getAndTransformValue(table,lsRow,[column],'string',notValueString)                                        
         else:
             getAndTransformValue(table,lsRow,[column],'string',notValueString)
 
