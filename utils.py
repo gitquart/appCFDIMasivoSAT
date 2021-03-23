@@ -135,6 +135,8 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
         v_descarga = VerificaSolicitudDescarga(fiel)
         token = autenticacion()
         result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
+        time.sleep(4)
+        #I add some seconds before it gets the result for "verificar"
         if (int(result['numero_cfdis'])>0):
             lsFolderName.append(result['paquetes'][0])
             res=descargarPaquete(result['paquetes'],directory,lsFolderName)
@@ -155,12 +157,21 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
                 mensaje='El paquete no trae CFDI, respuesta de web service:'
 
             return [
-                     0,mensaje+':\n'+
+                     0,mensaje+'\n'+
                      'Estado de solicitud:'+result['estado_solicitud']+'\n'+
                      'Código de estado:'+result['cod_estatus']+'\n'+
                      'Número de CFDI:'+result['numero_cfdis']+'\n'+
                      'Código de estado de la solicitud:'+result['codigo_estado_solicitud']+'\n'+
-                     'Mensaje:'+result['mensaje'] 
+                     'Mensaje:'+result['mensaje']+'\n'+
+                     '------Estados de solicitud--------\n'+
+                     '1 - Aceptada\n'+
+                     '2 - En proceso\n'+
+                     '3 - Terminada\n'+
+                     '4 - Error\n'+
+                     '5 - Rechazada\n'+
+                     '6 - Vencida\n'+
+                     'ID: '+result['paquetes'][0]
+
                      ]  
     else:
         return [0,'No se encontró Solicitud'] 
