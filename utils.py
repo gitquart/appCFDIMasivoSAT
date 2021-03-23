@@ -154,7 +154,7 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
                 bd.getQueryOrExecuteTransaction_NoReturning(cmd)
                 mensaje='El paquete no trae CFDI y se ha registrado la operación en base de datos, respuesta de web service:'
             else:
-                mensaje='El paquete no trae CFDI, respuesta de web service:'
+                mensaje='El paquete no trae CFDI, respuesta de web service:\n'
 
             return [
                      0,mensaje+'\n'+
@@ -162,7 +162,7 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
                      'Código de estado:'+result['cod_estatus']+'\n'+
                      'Número de CFDI:'+result['numero_cfdis']+'\n'+
                      'Código de estado de la solicitud:'+result['codigo_estado_solicitud']+'\n'+
-                     'Mensaje:'+result['mensaje']+'\n'+
+                     'Mensaje:'+result['mensaje']+'\n\n'+
                      '------Estados de solicitud--------\n'+
                      '1 - Aceptada\n'+
                      '2 - En proceso\n'+
