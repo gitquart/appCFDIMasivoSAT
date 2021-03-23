@@ -593,7 +593,7 @@ def addColumnIfFound(table,column,lsRow,op,lsPossibleColumns):
             getAndTransformValue(table,lsRow,[column,'tipoDeComprobante'],'string',notValueString)           
         elif column=='UsoCFDI':
             getAndTransformValue(table,lsRow,[column],'string',notValueString)
-        elif column=='LugarExpedición':
+        elif column=='LugarExpedicion':
             getAndTransformValue(table,lsRow,[column],'string',notValueString) 
         elif column=='Moneda':
             getAndTransformValue(table,lsRow,[column],'string',notValueString)
