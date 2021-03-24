@@ -122,6 +122,9 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
             # Recibidos
             result = descarga.solicitar_descarga(token, rfc_solicitante, fecha_inicial, fecha_final, rfc_receptor=rfc_receptor)
         
+        #Here the ID of the request is done, so let's wait 10 minutes lo let SAT set state 3,
+        #after 10 minutes let's chake the state and it should be 3 and correct
+        time.sleep(600) #600 secs = 10 mins, 2400 secs= 40 mins
         res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName)
         return res
         
@@ -135,8 +138,8 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
         v_descarga = VerificaSolicitudDescarga(fiel)
         token = autenticacion()
         result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
-        time.sleep(4)
         #I add some seconds before it gets the result for "verificar"
+        print('Numer of CFDI:',result['numero_cfdis'])
         if (int(result['numero_cfdis'])>0):
             lsFolderName.append(result['paquetes'][0])
             res=descargarPaquete(result['paquetes'],directory,lsFolderName)
@@ -534,8 +537,9 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
             #End of field iteration
 
         #Append the whole xml in a single row            
-        wb[sheetPrint].append(lsRow)                 
+        wb[sheetPrint].append(lsRow)              
         contDocs+=1
+        print('File done:', xml,'...',str(contDocs)) 
         #End of each document (xml) iteration in a zip
         wb.save(directory+'/'+excel_fileName)
 

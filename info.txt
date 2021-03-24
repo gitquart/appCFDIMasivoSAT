@@ -11,4 +11,6 @@ by just "yourfile.exe" Enter and it will show you the problems.
 In my case it was missing "cfdiclient" module, so I just reinstall the requirements.txt in my system and I restarted because the module was already installed but the exe could not read it. Once restarted, it worked.
 
 
-Testing:
+Info about experience with CFDI program (Python API's)
+1. When a request is made it delivers an ID, we wait 10 mins (for example) to wait to verify this ID, in this way
+no test has failed. It failed because we didn't give time to the webservice to process the request (assumption)

@@ -43,8 +43,8 @@ if op==3:
 if op==4:
     print('Choose a version 1.EXCEL 2.SQL')
     op=input()
-    directory='C:\\Users\\1098350515\\Documents\\Carpeta_Johnson\\JCB6805038G1_Emisor_1102014_15102014_E738B27F-8C94-47FC-8CF2-01793560AB24_01'
-    zipFile='JCB6805038G1_Emisor_1102014_15102014_E738B27F-8C94-47FC-8CF2-01793560AB24_01.zip'
+    directory='C:\\Users\\1098350515\\Documents\\Carpeta_Johnson\\JCB6805038G1_Emisor_2122014_3112016_05BA851D-EFFF-4EEA-AC4A-D551F5FF3CCA_01'
+    zipFile='JCB6805038G1_Emisor_2122014_3112016_05BA851D-EFFF-4EEA-AC4A-D551F5FF3CCA_01.zip'
     rfc='JCB6805038G1'
     if int(op)==1:    
         tool.extractAndReadZIP(directory,zipFile,rfc)
