@@ -588,9 +588,9 @@ def addColumnIfFound(table,column,lsRow,op,lsPossibleColumns):
         if column=='Total':
             getAndTransformValue(table,lsRow,[column,'total'],'float',notValueFloat)
         elif column=='TotalImpuestosTrasladados':
-            getAndTransformValue(table,lsRow,[column],'float',notValueFloat) 
+            getAndTransformValue(table,lsRow,[column,'totalImpuestosTrasladados'],'float',notValueFloat) 
         elif column=='TotalImpuestosRetenidos':
-            getAndTransformValue(table,lsRow,[column],'float',notValueFloat) 
+            getAndTransformValue(table,lsRow,[column,'totalImpuestosRetenidos'],'float',notValueFloat) 
         elif column=='SubTotal':
             getAndTransformValue(table,lsRow,[column,'subTotal'],'float',notValueFloat)    
         #End of Float cases
