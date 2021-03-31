@@ -592,12 +592,16 @@ def addColumnIfFound(table,column,lsRow,op,lsPossibleColumns):
         elif column=='TotalImpuestosRetenidos':
             getAndTransformValue(table,lsRow,[column,'totalImpuestosRetenidos'],'float',notValueFloat) 
         elif column=='SubTotal':
-            getAndTransformValue(table,lsRow,[column,'subTotal'],'float',notValueFloat)    
+            getAndTransformValue(table,lsRow,[column,'subTotal'],'float',notValueFloat)  
+        elif column=='Importe':
+            getAndTransformValue(table,lsRow,[column,'importe'],'float',notValueFloat) 
+        elif column=='Impuesto':
+            getAndTransformValue(table,lsRow,[column,'impuesto'],'string',notValueString) 
+        elif column=='Tasa':
+            getAndTransformValue(table,lsRow,[column,'tasa'],'float',notValueFloat)          
         #End of Float cases
-        elif column=='mes':
+        elif column=='mes' or column=='Fecha':
             getAndTransformValue(table,lsRow,[column,'fecha'],'string',notValueString)       
-        elif column=='Fecha':
-            getAndTransformValue(table,lsRow,[column,'fecha'],'string',notValueString)
         elif column=='Serie':
             getAndTransformValue(table,lsRow,[column,'serie'],'string',notValueString) 
         elif column=='Folio':
@@ -627,7 +631,7 @@ def addColumnIfFound(table,column,lsRow,op,lsPossibleColumns):
         elif column=='Nombre':
             getAndTransformValue(table,lsRow,[column,'nombre'],'string',notValueString)
         elif column=='UUID':
-            getAndTransformValue(table,lsRow,[column],'string',notValueString)                                        
+            getAndTransformValue(table,lsRow,[column],'string',notValueString)                                               
         else:
             getAndTransformValue(table,lsRow,[column],'string',notValueString)
 

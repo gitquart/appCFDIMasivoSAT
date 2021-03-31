@@ -43,13 +43,13 @@ if op==3:
 if op==4:
     print('Choose a version 1.EXCEL 2.SQL')
     op=input()
-    directory='C:\\Users\\1098350515\\Documents'
+    directory='C:\\Users\\1098350515\\Documents\\CFDI\\Johnson'
     zipFile='all_xml.zip'
     rfc='JCB6805038G1'
     if int(op)==1:    
         tool.extractAndReadZIP(directory,zipFile,rfc)
     else:
-        tool.extractAndReadZIP_SQL(directory,zipFile,rfc);    
+        tool.extractAndReadZIP_SQL(directory,zipFile,rfc)
     
   
 

@@ -21,6 +21,11 @@ class cInternalControl:
         'Comprobante_SubTotal',
         'Impuestos_TotalImpuestosRetenidos',
         'Impuestos_TotalImpuestosTrasladados',
+        'Retencion_Impuesto',
+        'Retencion_Importe',
+        'Traslado_Impuesto',
+        'Traslado_Importe',
+        'Traslado_Tasa',
         'Comprobante_Total',
         'Comprobante_LugarExpedicion',
         'Comprobante_Moneda',
@@ -52,10 +57,8 @@ class cInternalControl:
              'TimbreFiscalDigital_RfcProvCertif',
               #Traslado
              'Traslado_Base',
-             'Traslado_Impuesto',
              'Traslado_TipoFactor',
              'Traslado_TasaOCuota',
-             'Traslado_Importe',
              #DoctoRelacionado
              'DoctoRelacionado_ImpPagado',
              'DoctoRelacionado_ImpSaldoAnt',
@@ -73,10 +76,8 @@ class cInternalControl:
              'Pago_FechaPago',
              'Pagos_Version',
              #Retención
-             'Retencion_Importe',
              'Retencion_TasaOCuota',
              'Retencion_TipoFactor',
-             'Retencion_Impuesto',
              'Retencion_Base',
              #Concepto
              'Concepto_ClaveProdServ',
