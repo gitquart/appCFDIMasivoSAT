@@ -90,7 +90,12 @@ class cInternalControl:
              'Concepto_Unidad',
              'Concepto_Descuento',
              #Emisor
-             'Emisor_RegimenFiscal'
+             'Emisor_RegimenFiscal',
+             'Retencion_Impuesto',
+             'Retencion_Importe',
+             'Traslado_Impuesto',
+             'Traslado_Importe',
+             'Traslado_Tasa'
               ] 
 
 

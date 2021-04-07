@@ -43,9 +43,9 @@ if op==3:
 if op==4:
     print('Choose a version 1.EXCEL 2.SQL')
     op=input()
-    directory='C:\\Users\\1098350515\\Documents\\CFDI\\Johnson'
-    zipFile='all_xml.zip'
-    rfc='JCB6805038G1'
+    directory='C:\\Users\\1098350515\\Desktop\\'
+    zipFile='Condensado_Xml.zip'
+    rfc='ASS990625E97'
     if int(op)==1:    
         tool.extractAndReadZIP(directory,zipFile,rfc)
     else:

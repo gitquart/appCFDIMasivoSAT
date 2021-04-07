@@ -125,6 +125,7 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
         #Here the ID of the request is done, so let's wait 10 minutes lo let SAT set state 3,
         #after 10 minutes let's chake the state and it should be 3 and correct
         time.sleep(600) #600 secs = 10 mins, 2400 secs= 40 mins
+        #res=verificaSolicitudDescarga('1e9acc5a-7d0a-4669-9a5f-a8650697e41d',directory,lsfolderName)
         res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName)
         return res
         
