@@ -3,7 +3,7 @@ class cInternalControl:
     #----Data to change per user----
     #zipToRead is the name of zip that will be created from download
     #and also the one to read to transform to excel
-    testingMode=True
+    testingMode=False
     #----Program variables----
     prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
     prefixXSI='{http://www.w3.org/2001/XMLSchema-instance}'
@@ -90,12 +90,13 @@ class cInternalControl:
              'Concepto_Unidad',
              'Concepto_Descuento',
              #Emisor
-             'Emisor_RegimenFiscal',
-             'Retencion_Impuesto',
-             'Retencion_Importe',
-             'Traslado_Impuesto',
-             'Traslado_Importe',
-             'Traslado_Tasa'
+             'Emisor_RegimenFiscal'
+             #Campos de algunos clientes
+             #'Retencion_Impuesto',
+             #'Retencion_Importe',
+             #'Traslado_Impuesto',
+             #'Traslado_Importe',
+             #'Traslado_Tasa'
               ] 
 
 
