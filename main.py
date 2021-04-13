@@ -56,7 +56,7 @@ if op==4:
 if op==5:
     print('Validate CFDI...') 
     directory='C:\\Users\\1098350515\\Desktop\\'
-    excel_name='test'
+    excel_name='JCBE_Man_CFDI_1_Dic_2014_a_31_Enero_2016'
     excel=excel_name+'.xlsx'
     completePath=directory+excel
     excelDF=pd.DataFrame()
@@ -81,11 +81,12 @@ if op==5:
                 lsRow.append(row[field])
         #ColumnHeaders: Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total 
         res=tool.validaEstadoDocumento(row['Emisor_Rfc'],row['Receptor_Rfc'],row['TimbreFiscalDigital_UUID'],str(row['Comprobante_Total']))
+        estadoValue=''
         estadoValue=res['estado']
         lsRow.append(estadoValue)
         wb['Sheet'].append(lsRow)
         rowCount+=1
-        print('Processed ',str(rowCount),' record(s)')
+        print('Processed ',str(rowCount),' record(s)...Estatus:',estadoValue)
 
     #Save whole file    
     wb.save(directory+'/'+excel_name+'_withStatus.xlsx') 
