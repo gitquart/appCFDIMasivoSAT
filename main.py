@@ -3,6 +3,7 @@ import utils as tool
 import datetime
 from InternalControl import cInternalControl
 import pandas as pd
+import openpyxl as excelpy
 
 objControl=cInternalControl()
 #Solicitar,Verificar,Descargar
@@ -55,14 +56,40 @@ if op==4:
 if op==5:
     print('Validate CFDI...') 
     directory='C:\\Users\\1098350515\\Desktop\\'
-    excel='test.xlsx'
+    excel_name='test'
+    excel=excel_name+'.xlsx'
     completePath=directory+excel
     excelDF=pd.DataFrame()
     excelDF=pd.read_excel(completePath,sheet_name='Emisor')
+    #Create the excel file where the state with the rest of records will be printed
+    wb=excelpy.Workbook() 
+    wb.save(directory+'/'+excel_name+'_withStatus.xlsx')
+    lsFields=[]
+    #Get columns from dataframe and print into excel
+    for header in excelDF.columns:
+        lsFields.append(header)
+    #Add the status field 
+    fieldEstado='Estado'   
+    lsFields.append(fieldEstado)    
+    wb['Sheet'].append(lsFields) 
+    rowCount=0
     for index,row in excelDF.iterrows():
+        lsRow=[]
+        #Copy current values from spreadsheet
+        for field in lsFields:
+            if field!=fieldEstado:
+                lsRow.append(row[field])
         #ColumnHeaders: Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total 
         res=tool.validaEstadoDocumento(row['Emisor_Rfc'],row['Receptor_Rfc'],row['TimbreFiscalDigital_UUID'],str(row['Comprobante_Total']))
-        print(res['estado'])
+        estadoValue=res['estado']
+        lsRow.append(estadoValue)
+        wb['Sheet'].append(lsRow)
+        rowCount+=1
+        print('Processed ',str(rowCount),' record(s)')
+
+    #Save whole file    
+    wb.save(directory+'/'+excel_name+'_withStatus.xlsx') 
+
            
     
   
