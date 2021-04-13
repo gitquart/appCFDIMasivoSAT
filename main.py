@@ -2,6 +2,7 @@
 import utils as tool
 import datetime
 from InternalControl import cInternalControl
+import pandas as pd
 
 objControl=cInternalControl()
 #Solicitar,Verificar,Descargar
@@ -10,6 +11,7 @@ print('1.Solicitar CFDI')
 print('2.Verificar CFDI')
 print('3.Descargar CFDI en ZIP')
 print('4.Extraer ZIP')
+print('5.Validar estado CFDI')
 
 op=input()
 op=int(op)
@@ -44,12 +46,24 @@ if op==4:
     print('Choose a version 1.EXCEL 2.SQL')
     op=input()
     directory='C:\\Users\\1098350515\\Desktop\\'
-    zipFile='Condensado_Xml.zip'
-    rfc='ASS990625E97'
+    zipFile='Cierre_de_mes_especifico_CONSOLIDADO.zip'
+    rfc='JCB6805038G1'
     if int(op)==1:    
         tool.extractAndReadZIP(directory,zipFile,rfc)
     else:
         tool.extractAndReadZIP_SQL(directory,zipFile,rfc)
+if op==5:
+    print('Validate CFDI...') 
+    directory='C:\\Users\\1098350515\\Desktop\\'
+    excel='test.xlsx'
+    completePath=directory+excel
+    excelDF=pd.DataFrame()
+    excelDF=pd.read_excel(completePath,sheet_name='Emisor')
+    for index,row in excelDF.iterrows():
+        #ColumnHeaders: Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total 
+        res=tool.validaEstadoDocumento(row['Emisor_Rfc'],row['Receptor_Rfc'],row['TimbreFiscalDigital_UUID'],str(row['Comprobante_Total']))
+        print(res['estado'])
+           
     
   
 

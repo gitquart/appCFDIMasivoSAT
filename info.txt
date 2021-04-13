@@ -12,5 +12,7 @@ In my case it was missing "cfdiclient" module, so I just reinstall the requireme
 
 
 Info about experience with CFDI program (Python API's)
+------------------------------------------------------------------------
 1. When a request is made it delivers an ID, we wait 10 mins (for example) to wait to verify this ID, in this way
 no test has failed. It failed because we didn't give time to the webservice to process the request (assumption)
+2. By several tests, we see that Final date is not shown, this means, the request takes record from start date to final date, but not included the final date.

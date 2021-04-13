@@ -1,4 +1,4 @@
-from cfdiclient import Autenticacion,Fiel,SolicitaDescarga,VerificaSolicitudDescarga,DescargaMasiva 
+from cfdiclient import Autenticacion,Fiel,SolicitaDescarga,VerificaSolicitudDescarga,DescargaMasiva,Validacion
 import os
 import base64
 import zipfile
@@ -179,6 +179,16 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
                      ]  
     else:
         return [0,'No se encontró Solicitud'] 
+
+
+"""
+validaEstadoDocumento
+Parms: All input parameters are text
+"""
+def validaEstadoDocumento(rfc_emisor,rfc_receptor,uuid,total):
+    validacion = Validacion()
+    estado = validacion.obtener_estado(rfc_emisor, rfc_receptor, total, uuid)
+    return estado
 
 
 def descargarPaquete(id_paquete,directory,lsFolderName):

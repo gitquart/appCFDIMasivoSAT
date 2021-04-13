@@ -1,9 +1,12 @@
+from tkinter.constants import TRUE
+
+
 class cInternalControl:
     
     #----Data to change per user----
     #zipToRead is the name of zip that will be created from download
     #and also the one to read to transform to excel
-    testingMode=False
+    testingMode=TRUE
     #----Program variables----
     prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
     prefixXSI='{http://www.w3.org/2001/XMLSchema-instance}'
