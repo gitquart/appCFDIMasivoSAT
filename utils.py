@@ -405,10 +405,14 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
     #Creating the workbook (database)
     #Create the sheets: Ingreso_Egreso,Pago,Resto
     wb=excelpy.Workbook() 
-    wb.create_sheet('Emisor')
-    wb.create_sheet('Receptor')
+    #let's create the sheets in this order: Emisor, Receptor, Pago_Emisor,Pago_Receptor
+    #Sheet1 is the first, so rename it.
     pago_sheet = wb['Sheet']
-    pago_sheet.title = 'Pago'
+    pago_sheet.title = 'Emisor'
+    wb.create_sheet('Receptor')
+    wb.create_sheet('Pago_Emisor')
+    wb.create_sheet('Pago_Receptor')
+    
     wb.save(directory+'/'+excel_fileName)
     contDocs=0
     #dicTableFields is a dictionary with the following structura key:table, value: list of fields
@@ -498,10 +502,20 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
                             break
                     for possibleValue in ['P','p','Pago','pago']:
                         if tipoComprobante==possibleValue:
-                            sheetPrint='Pago'
+                            #If "Pago" then it's clear it goes to Pago sheet, so here now divide Pago into
+                            #"Pago_Emisor", "Pago_Receptor"
+                            if item=='Emisor':
+                                sheetPrint='Pago_Emisor'
+                            else:
+                                sheetPrint='Pago_Receptor'    
                             break
                     if sheetPrint=='Nada': 
-                        sheetPrint='Pago'       
+                        #If "Nada" it means it goes to Pago, so here now divide Pago into
+                        #"Pago_Emisor", "Pago_Receptor"
+                        if item=='Emisor':
+                            sheetPrint='Pago_Emisor'
+                        else:
+                            sheetPrint='Pago_Receptor'       
 
         #Start to read the fields from lsFields=[]
         #Example of a field in lsFields : "Comprobante_Version" -> "tableName_Field"
