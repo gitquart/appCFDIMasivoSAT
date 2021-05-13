@@ -56,37 +56,41 @@ if op==4:
 if op==5:
     print('Validate CFDI...') 
     directory='C:\\Users\\1098350515\\Desktop\\'
-    excel_name='JCBE_Man_CFDI_1_Dic_2014_a_31_Enero_2016'
+    excel_name='Consolidado_xml_enero_a_diciembre_2020_CIR0706145CA'
     excel=excel_name+'.xlsx'
     completePath=directory+excel
     excelDF=pd.DataFrame()
-    excelDF=pd.read_excel(completePath,sheet_name='Emisor')
-    #Create the excel file where the state with the rest of records will be printed
+    lsSheetsToRead=['Emisor','Receptor']
     wb=excelpy.Workbook() 
     wb.save(directory+'/'+excel_name+'_withStatus.xlsx')
-    lsFields=[]
-    #Get columns from dataframe and print into excel
-    for header in excelDF.columns:
-        lsFields.append(header)
-    #Add the status field 
-    fieldEstado='Estado'   
-    lsFields.append(fieldEstado)    
-    wb['Sheet'].append(lsFields) 
-    rowCount=0
-    for index,row in excelDF.iterrows():
-        lsRow=[]
-        #Copy current values from spreadsheet
-        for field in lsFields:
-            if field!=fieldEstado:
-                lsRow.append(row[field])
-        #ColumnHeaders: Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total 
-        res=tool.validaEstadoDocumento(row['Emisor_Rfc'],row['Receptor_Rfc'],row['TimbreFiscalDigital_UUID'],str(row['Comprobante_Total']))
-        estadoValue=''
-        estadoValue=res['estado']
-        lsRow.append(estadoValue)
-        wb['Sheet'].append(lsRow)
-        rowCount+=1
-        print('Processed ',str(rowCount),' record(s)...Estatus:',estadoValue)
+    for sheet in lsSheetsToRead:
+        print('-------Reading ',sheet,'-----------')
+        excelDF=pd.read_excel(completePath,sheet_name=sheet)
+        #Create the excel file where the state with the rest of records will be printed
+        lsFields=[]
+        #Get columns from dataframe and print into excel
+        for header in excelDF.columns:
+            lsFields.append(header)
+        #Add the status field 
+        fieldEstado='Estado'   
+        lsFields.append(fieldEstado)
+        wb.create_sheet(sheet+'_estado')    
+        wb[sheet+'_estado'].append(lsFields) 
+        rowCount=0
+        for index,row in excelDF.iterrows():
+            lsRow=[]
+            #Copy current values from spreadsheet
+            for field in lsFields:
+                if field!=fieldEstado:
+                    lsRow.append(row[field])
+            #ColumnHeaders: Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total 
+            res=tool.validaEstadoDocumento(row['Emisor_Rfc'],row['Receptor_Rfc'],row['TimbreFiscalDigital_UUID'],str(row['Comprobante_Total']))
+            estadoValue=''
+            estadoValue=res['estado']
+            lsRow.append(estadoValue)
+            wb[sheet+'_estado'].append(lsRow)
+            rowCount+=1
+            print('Processed ',str(rowCount),' record(s)...Estatus:',estadoValue)
 
     #Save whole file    
     wb.save(directory+'/'+excel_name+'_withStatus.xlsx') 
