@@ -94,7 +94,7 @@ class cInternalControl:
              'Concepto_Descuento',
              #Emisor
              'Emisor_RegimenFiscal',
-             #Campos de algunos clientes (Campor hasta ahora han sido personalizados)
+             #Campos de algunos clientes (Campos hasta ahora han sido personalizados)
              'Retencion_Impuesto',
              'Retencion_Importe',
              'Traslado_Impuesto',

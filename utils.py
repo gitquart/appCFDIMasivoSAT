@@ -10,7 +10,7 @@ import time
 
 #Important information for this code
 #--------------------------------------------------------------------------
-#Folder and file names: RFC_TIPO_FECHAS_ID
+#Folder and file names: [RFC]_[TIPO]_[FECHAS]_[ID]
 #lsFolder elements (by order):[rfc_solicitante,tipo,fechaCompleta,fileName] 
 
 
