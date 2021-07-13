@@ -3,12 +3,12 @@ import psycopg2
 HOST='ec2-52-6-178-202.compute-1.amazonaws.com'
 DBNAME='dfqghadp4uimcj'
 USER='zuifbxljotyqju'
-PORT='5432'
 PASSWORD='145e55d54668fefb4180a3a143799e38f0270dada403009f88841268bd90ae8c'
+PORT='5432'
 
 
-def getQueryOrExecuteTransaction(query):
-    #I also return a result if it exists even if it's INSERT for example in case I want to get the last ID.
+def getQuery(query):
+    
     conn = psycopg2.connect(host=HOST,dbname=DBNAME, user=USER, password=PASSWORD,sslmode='require')
     cursor = conn.cursor()
     cursor.execute(query)
@@ -19,14 +19,15 @@ def getQueryOrExecuteTransaction(query):
 
     return lsResult
 
-def getQueryOrExecuteTransaction_NoReturning(query):
-    #"No Returning" means the command doesn't fetch any value back, like Last Id or whatever
+def executeNonQuery(query):
     conn = psycopg2.connect(host=HOST,dbname=DBNAME, user=USER, password=PASSWORD,sslmode='require')
     cursor = conn.cursor()
     cursor.execute(query)
     conn.commit()
     cursor.close()
     conn.close()
+
+    return True
    
 
 

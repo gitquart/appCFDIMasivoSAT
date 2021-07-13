@@ -1,14 +1,33 @@
 import tkinter as tk
 import tkinter.font as tkFont
 import cfdi_quart_excel_version as win_cfdi
+import tkinter.messagebox as tkMessageBox
+import utils as tool
 
 
 register_window=None
-
+txtNombreR=None
+txtAPR=None
+txtAMR=None
+txtCorreoR=None
+txtPwdR=None
 
 def register_user():
-    login_window.deiconify()
-    register_window.destroy()
+    global txtNombreR,txtAPR,txtAMR,txtCorreoR,txtPwdR
+    name=txtNombreR.get()
+    lastNameFather=txtAPR.get()
+    lastNameMother=txtAMR.get()
+    mail=txtCorreoR.get()
+    pwd=txtPwdR.get()
+    if name=='' or lastNameFather=='' or lastNameMother=='' or mail=='' or pwd=='': 
+        tool.showMessage('Mensaje','Verifica que todos los campos estén llenos')
+    else:    
+        
+        #Insert user in database
+        login_window.deiconify()
+        register_window.destroy()
+        
+        
 
 def exit():
     login_window.destroy()
@@ -22,7 +41,7 @@ def login():
 
 
 def openRegisterWindow(event):
-    global register_window
+    global register_window,txtNombreR,txtAPR,txtAMR,txtCorreoR,txtPwdR
     ft = tkFont.Font(size=10)
     register_window=tk.Toplevel(login_window)
     login_window.withdraw()
@@ -52,12 +71,12 @@ def openRegisterWindow(event):
     lbNombre.place(x=78,y=heightFirstElement,width=150,height=35)
 
     #Caja de texto-User
-    txtNombre=tk.Entry(register_window)
-    txtNombre["borderwidth"] = "1px"
-    txtNombre["font"] = ft
-    txtNombre["fg"] = "#333333"
-    txtNombre["justify"] = "left"
-    txtNombre.place(x=190,y=heightFirstElement,width=200,height=30)
+    txtNombreR=tk.Entry(register_window)
+    txtNombreR["borderwidth"] = "1px"
+    txtNombreR["font"] = ft
+    txtNombreR["fg"] = "#333333"
+    txtNombreR["justify"] = "left"
+    txtNombreR.place(x=190,y=heightFirstElement,width=200,height=30)
 
     #lb Apellido Pat (2nd element)
     lbAP=tk.Label(register_window)
@@ -68,12 +87,12 @@ def openRegisterWindow(event):
     lbAP.place(x=50,y=heightFirstElement+40,width=150,height=35)
 
     #Caja de texto-Apellido Paterno
-    txtAP=tk.Entry(register_window)
-    txtAP["borderwidth"] = "1px"
-    txtAP["font"] = ft
-    txtAP["fg"] = "#333333"
-    txtAP["justify"] = "left"
-    txtAP.place(x=190,y=heightFirstElement+40,width=200,height=30)
+    txtAPR=tk.Entry(register_window)
+    txtAPR["borderwidth"] = "1px"
+    txtAPR["font"] = ft
+    txtAPR["fg"] = "#333333"
+    txtAPR["justify"] = "left"
+    txtAPR.place(x=190,y=heightFirstElement+40,width=200,height=30)
 
     #lb Apellido Materno (3rd element)
     lbAM=tk.Label(register_window)
@@ -84,12 +103,12 @@ def openRegisterWindow(event):
     lbAM.place(x=50,y=heightFirstElement+(2*40),width=150,height=35)
 
     #Caja de texto-Apellido Materno
-    txtAM=tk.Entry(register_window)
-    txtAM["borderwidth"] = "1px"
-    txtAM["font"] = ft
-    txtAM["fg"] = "#333333"
-    txtAM["justify"] = "left"
-    txtAM.place(x=190,y=heightFirstElement+(2*40),width=200,height=30)
+    txtAMR=tk.Entry(register_window)
+    txtAMR["borderwidth"] = "1px"
+    txtAMR["font"] = ft
+    txtAMR["fg"] = "#333333"
+    txtAMR["justify"] = "left"
+    txtAMR.place(x=190,y=heightFirstElement+(2*40),width=200,height=30)
 
     #lb Empresa (4th element)
     lbEmpresa=tk.Label(register_window)
@@ -100,12 +119,12 @@ def openRegisterWindow(event):
     lbEmpresa.place(x=77,y=heightFirstElement+(3*40),width=150,height=35)
 
     #Caja de texto-Empresa
-    txtEmpresa=tk.Entry(register_window)
-    txtEmpresa["borderwidth"] = "1px"
-    txtEmpresa["font"] = ft
-    txtEmpresa["fg"] = "#333333"
-    txtEmpresa["justify"] = "left"
-    txtEmpresa.place(x=190,y=heightFirstElement+(3*40),width=200,height=30)
+    txtEmpresaR=tk.Entry(register_window)
+    txtEmpresaR["borderwidth"] = "1px"
+    txtEmpresaR["font"] = ft
+    txtEmpresaR["fg"] = "#333333"
+    txtEmpresaR["justify"] = "left"
+    txtEmpresaR.place(x=190,y=heightFirstElement+(3*40),width=200,height=30)
 
     #lb Correo (5th element)
     lbCorreo=tk.Label(register_window)
@@ -116,12 +135,12 @@ def openRegisterWindow(event):
     lbCorreo.place(x=82,y=heightFirstElement+(4*40),width=150,height=35)
 
     #Caja de texto-Correo
-    txtCorreo=tk.Entry(register_window)
-    txtCorreo["borderwidth"] = "1px"
-    txtCorreo["font"] = ft
-    txtCorreo["fg"] = "#333333"
-    txtCorreo["justify"] = "left"
-    txtCorreo.place(x=190,y=heightFirstElement+(4*40),width=200,height=30)
+    txtCorreoR=tk.Entry(register_window)
+    txtCorreoR["borderwidth"] = "1px"
+    txtCorreoR["font"] = ft
+    txtCorreoR["fg"] = "#333333"
+    txtCorreoR["justify"] = "left"
+    txtCorreoR.place(x=190,y=heightFirstElement+(4*40),width=200,height=30)
 
     #lb Pwd (6th element)
     lbPwd=tk.Label(register_window)
@@ -132,12 +151,12 @@ def openRegisterWindow(event):
     lbPwd.place(x=69,y=heightFirstElement+(5*40),width=150,height=35)
 
     #Caja de texto-Pwd
-    txtPwd=tk.Entry(register_window)
-    txtPwd["borderwidth"] = "1px"
-    txtPwd["font"] = ft
-    txtPwd["fg"] = "#333333"
-    txtPwd["justify"] = "left"
-    txtPwd.place(x=190,y=heightFirstElement+(5*40),width=200,height=30)
+    txtPwdR=tk.Entry(register_window)
+    txtPwdR["borderwidth"] = "1px"
+    txtPwdR["font"] = ft
+    txtPwdR["fg"] = "#333333"
+    txtPwdR["justify"] = "left"
+    txtPwdR.place(x=190,y=heightFirstElement+(5*40),width=200,height=30)
 
     #*****************FOOTER************************************
     
@@ -152,7 +171,6 @@ def openRegisterWindow(event):
     btnExit['bg']='#FF9966'
     btnExit.place(x=260,y=heightForFooterBtn,width=100,height=25)
 
-    
 
     #End : "User registration"
 

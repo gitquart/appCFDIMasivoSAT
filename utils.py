@@ -7,6 +7,7 @@ import openpyxl as excelpy
 from InternalControl import cInternalControl
 import postgresql as bd
 import time
+import tkinter.messagebox as tkMessageBox
 
 #Important information for this code
 #--------------------------------------------------------------------------
@@ -29,6 +30,8 @@ fiel=''
 VERSION=''
 ID_CURRENT_SOLICITUD=''
  
+def showMessage(title,content):
+    tkMessageBox.showinfo(title=title,message=content) 
 
 def validateFIELFiles(directory):
     global rfcFromFile,rfc_emisor,rfc_receptor,rfc_solicitante,fiel,FIEL_CER,FIEL_KEY,FIEL_PAS

@@ -25,9 +25,6 @@ def returnFolder():
     txtDir.insert(0,folderSelected)
 
 
-def showMessage(title,content):
-    tkMessageBox.showinfo(title=title,message=content)
-
 def preguntaSolicitarCFDI():
     fechaInicio=txtFechaInicio.get()
     fechaFin=txtFechaFin.get()
@@ -37,7 +34,7 @@ def preguntaSolicitarCFDI():
         if res:
             solicitarCFDI()
     else:
-        showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')     
+        tool.showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')     
 
 def solicitarCFDI():
     global var
@@ -57,7 +54,7 @@ def solicitarCFDI():
     strFechaCompleta=strFechaInicial+'_'+strFechaFin
     res=tool.solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,strFechaCompleta,VERSION)
     #lsValor[1]-> ID solicitud returned, could be Emisor or Receptor
-    showMessage('Mensaje',res[1])
+    tool.showMessage('Mensaje',res[1])
 
 def exit_all(main_window):
     main_window.destroy()
