@@ -174,6 +174,7 @@ def openRegisterWindow(event):
     txtPwdR["font"] = ft
     txtPwdR["fg"] = "#333333"
     txtPwdR["justify"] = "left"
+    txtPwdR["show"]='*'
     txtPwdR.place(x=190,y=heightFirstElement+(5*40),width=200,height=30)
 
     #*****************FOOTER************************************
