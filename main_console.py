@@ -90,7 +90,7 @@ if op==5:
             lsRow.append(estadoValue)
             wb[sheet+'_estado'].append(lsRow)
             rowCount+=1
-            print('Processed ',str(rowCount),' record(s)...Estatus:',estadoValue)
+            print(f'Processed {str(rowCount)} record(s).Estatus :{estadoValue}')
 
     #Save whole file    
     wb.save(directory+'/'+excel_name+'_withStatus.xlsx') 
