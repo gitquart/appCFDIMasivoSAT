@@ -1,8 +1,9 @@
 import tkinter as tk
 import tkinter.font as tkFont
 import cfdi_quart_excel_version as win_cfdi
-import tkinter.messagebox as tkMessageBox
+import postgresql as bd
 import utils as tool
+import datetime
 
 
 register_window=None
@@ -11,19 +12,36 @@ txtAPR=None
 txtAMR=None
 txtCorreoR=None
 txtPwdR=None
+txtEmpresaR=None
+formatTimeForPostgreSQL='%Y-%m-%d %H:%M'
 
 def register_user():
-    global txtNombreR,txtAPR,txtAMR,txtCorreoR,txtPwdR
+    global txtNombreR,txtAPR,txtAMR,txtCorreoR,txtPwdR,txtEmpresa
     name=txtNombreR.get()
     lastNameFather=txtAPR.get()
     lastNameMother=txtAMR.get()
     mail=txtCorreoR.get()
     pwd=txtPwdR.get()
-    if name=='' or lastNameFather=='' or lastNameMother=='' or mail=='' or pwd=='': 
+    company =txtEmpresaR.get()
+    if name=='' or lastNameFather=='' or lastNameMother=='' or mail=='' or pwd=='' or company=='': 
         tool.showMessage('Mensaje','Verifica que todos los campos estén llenos')
     else:    
+        #Check if user exists, if it exists then send message saying "User already exists"
+        query=f"select id from usuario where correo='{mail}'"
+        res=None
+        res=bd.getQuery(query)
+        if not res:
+            #Register user
+            st=f"insert into usuario (nombre,apellidopaterno,apellidomaterno,empresa,correo,contrasena,fechacompleta,autorizado)"
+            st+=f"values ('{name}','{lastNameFather}','{lastNameMother}','{company}','{mail}','{pwd}','{datetime.datetime.now().strftime(formatTimeForPostgreSQL)}',False)"
+            resSt=False
+            resSt=bd.executeNonQuery(st)
+            if resSt:
+                tool.showMessage('Registro exitoso','Su usuario ha sido creado exitosamente, cierre este mensaje para acceder al programa de CFDI')
+        else:   
+            #User already exists
+            tool.showMessage('Mensaje','El usuario ya está registrado, favor de acceder a través de Log in') 
         
-        #Insert user in database
         login_window.deiconify()
         register_window.destroy()
         
@@ -41,7 +59,7 @@ def login():
 
 
 def openRegisterWindow(event):
-    global register_window,txtNombreR,txtAPR,txtAMR,txtCorreoR,txtPwdR
+    global register_window,txtNombreR,txtAPR,txtAMR,txtCorreoR,txtPwdR,txtEmpresaR
     ft = tkFont.Font(size=10)
     register_window=tk.Toplevel(login_window)
     login_window.withdraw()
