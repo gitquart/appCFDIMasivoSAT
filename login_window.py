@@ -37,10 +37,10 @@ def register_user():
             resSt=False
             resSt=bd.executeNonQuery(st)
             if resSt:
-                tool.showMessage('Registro exitoso','Su usuario ha sido creado exitosamente, cierre este mensaje para acceder al programa de CFDI')
+                tool.showMessage('Registro exitoso',f'El usuario {mail} ha sido creado exitosamente, cierre este mensaje para acceder al programa de CFDI')
         else:   
             #User already exists
-            tool.showMessage('Mensaje','El usuario ya está registrado, favor de acceder a través de Log in') 
+            tool.showMessage('Mensaje',f'El usuario {mail} ya está registrado, favor de acceder a través de Log in') 
         
         login_window.deiconify()
         register_window.destroy()
