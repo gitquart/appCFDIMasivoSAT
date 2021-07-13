@@ -29,7 +29,7 @@ def openRegisterWindow(event):
     lblTitle["fg"] = "black"
     lblTitle["justify"] = "center"
     lblTitle["text"] = "Registro de Usuario"
-    lblTitle.place(x=170,y=20,width=150,height=35)
+    lblTitle.place(x=177,y=20,width=150,height=35)
 
     #*****************BODY************************************
 
@@ -38,9 +38,36 @@ def openRegisterWindow(event):
     ft = tkFont.Font(size=10,weight=tkFont.BOLD)
     lbNombre["font"] = ft
     lbNombre["fg"] = "black"
-    lbNombre["justify"] = "center"
-    lbNombre["text"] = "Login to Quart CFDI"
-    lbNombre.place(x=125,y=20,width=150,height=35)
+    lbNombre["justify"] = "right"
+    lbNombre["text"] = "Nombre :"
+    lbNombre.place(x=78,y=70,width=150,height=35)
+
+    #Caja de texto-User
+    txtNombre=tk.Entry(register_window)
+    txtNombre["borderwidth"] = "1px"
+    ft = tkFont.Font(size=10)
+    txtNombre["font"] = ft
+    txtNombre["fg"] = "#333333"
+    txtNombre["justify"] = "left"
+    txtNombre.place(x=190,y=70,width=200,height=30)
+
+    #lb Apellido Pat
+    lbAP=tk.Label(register_window)
+    ft = tkFont.Font(size=10,weight=tkFont.BOLD)
+    lbAP["font"] = ft
+    lbAP["fg"] = "black"
+    lbAP["justify"] = "right"
+    lbAP["text"] = "Apellido Paterno :"
+    lbAP.place(x=50,y=110,width=150,height=35)
+
+    #Caja de texto-Apellido Pat
+    txtAP=tk.Entry(register_window)
+    txtAP["borderwidth"] = "1px"
+    ft = tkFont.Font(size=10)
+    txtAP["font"] = ft
+    txtAP["fg"] = "#333333"
+    txtAP["justify"] = "left"
+    txtAP.place(x=190,y=110,width=200,height=30)
 
     #*****************FOOTER************************************
 
@@ -80,7 +107,7 @@ lblUser=tk.Label(login_window)
 ft = tkFont.Font(size=10,weight=tkFont.BOLD)
 lblUser["font"] = ft
 lblUser["fg"] = "black"
-lblUser["justify"] = "center"
+lblUser["justify"] = "right"
 lblUser["text"] = "Usuario :"
 lblUser.place(x=40,y=100,width=100,height=35)
 
@@ -98,8 +125,8 @@ lblPwd=tk.Label(login_window)
 ft = tkFont.Font(size=10,weight=tkFont.BOLD)
 lblPwd["font"] = ft
 lblPwd["fg"] = "black"
-lblPwd["justify"] = "center"
-lblPwd["text"] = "Contraseña: "
+lblPwd["justify"] = "right"
+lblPwd["text"] = "Contraseña :"
 lblPwd.place(x=30,y=150,width=100,height=35)
 
 #Caja de texto-User
