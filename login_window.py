@@ -1,7 +1,10 @@
 import tkinter as tk
 import tkinter.font as tkFont
+import cfdi_quart_excel_version as win_cfdi
+
 
 register_window=None
+
 
 def register_user():
     login_window.deiconify()
@@ -10,6 +13,12 @@ def register_user():
 def exit():
     login_window.destroy()
     
+def login():
+    cfdi_excel_window=tk.Toplevel(login_window)
+    login_window.withdraw()
+    win_cfdi.openWindowCFDI_ExcelVersion(cfdi_excel_window,login_window)
+    
+
 
 
 def openRegisterWindow(event):
@@ -139,7 +148,7 @@ txtPwd["justify"] = "left"
 txtPwd.place(x=130,y=150,width=200,height=30)
 
 #Btn login
-btnLogin=tk.Button(login_window,command='',text='Entrar')
+btnLogin=tk.Button(login_window,command=login,text='Entrar')
 btnLogin['bg']='#F5FFFA'
 btnLogin.place(x=150,y=200,width=100,height=25)
 
