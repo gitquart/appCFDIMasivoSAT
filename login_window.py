@@ -4,6 +4,7 @@ import cfdi_quart_excel_version as win_cfdi
 import postgresql as bd
 import utils as tool
 import datetime
+import threading
 
 
 register_window=None
@@ -26,8 +27,8 @@ def register_user():
     if name=='' or lastNameFather=='' or lastNameMother=='' or mail=='' or pwd=='' or company=='': 
         tool.showMessage('Mensaje','Verifica que todos los campos estén llenos')
     else:    
-        #Check if user exists, if it exists then send message saying "User already exists"
-        query=f"select id from usuario where correo='{mail}'"
+        #Check if user exists and if its AUTHORIZED, if it exists then send message saying "User already exists"
+        query=f"select id,autorizado from usuario where correo='{mail}' "
         res=None
         res=bd.getQuery(query)
         if not res:
@@ -37,10 +38,23 @@ def register_user():
             resSt=False
             resSt=bd.executeNonQuery(st)
             if resSt:
-                tool.showMessage('Registro exitoso',f'El usuario {mail} ha sido creado exitosamente, cierre este mensaje para acceder al programa de CFDI')
+                tool.showMessage('Registro exitoso',f'El usuario {mail} ha sido creado exitosamente, en 24 hrs tu cuenta quedará ACTIVADA')
+                #Send mail
+                sendMail=threading.Thread(target=tool.sendMail,args=[mail])
+                sendMail.start()
+                   
         else:   
-            #User already exists
-            tool.showMessage('Mensaje',f'El usuario {mail} ya está registrado, favor de acceder a través de Log in') 
+            #User already exists, now see if it is authorized
+            auth=None
+            auth=res[0][1]
+            msj=None
+            if auth:
+                msj=f'El usuario {mail} ya está registrado y autorizado, favor de acceder a través de Log in'
+            else:
+                msj=f'El usuario {mail} ya está registrado pero está pendiente de autorización'
+            
+            tool.showMessage('Mensaje',msj)     
+
         
         login_window.deiconify()
         register_window.destroy()
@@ -51,9 +65,27 @@ def exit():
     login_window.destroy()
     
 def login():
-    cfdi_excel_window=tk.Toplevel(login_window)
-    login_window.withdraw()
-    win_cfdi.openWindowCFDI_ExcelVersion(cfdi_excel_window,login_window)
+    #Check user and authorization
+    mail=txtUser.get()
+    query=f"select id,autorizado from usuario where correo='{mail}' "
+    res=None
+    res=bd.getQuery(query)
+    if res:
+        #Case: User exists, check if it is authorized
+        auth=None
+        auth=res[0][1]
+        if auth:
+            #Case: User is authorized
+            cfdi_excel_window=tk.Toplevel(login_window)
+            login_window.withdraw()
+            win_cfdi.openWindowCFDI_ExcelVersion(cfdi_excel_window,login_window)
+        else:
+            tool.showMessage('Mensaje',f'El usuario {mail} está pendiente de autorización')
+
+    else:
+        #Case: User doesn't exist    
+        tool.showMessage('Mensaje',f'El usuario {mail} no existe, favor de registrarse')
+    
     
 
 
@@ -194,7 +226,8 @@ def openRegisterWindow(event):
     #End : "User registration"
 
 
-# window window
+#Start of Login window
+
 login_window = tk.Tk()
 #geometry=widthxheight
 login_window.geometry('400x350')
@@ -244,6 +277,7 @@ ft = tkFont.Font(size=10)
 txtPwd["font"] = ft
 txtPwd["fg"] = "#333333"
 txtPwd["justify"] = "left"
+txtPwd['show']='*'
 txtPwd.place(x=130,y=150,width=200,height=30)
 
 #Btn login

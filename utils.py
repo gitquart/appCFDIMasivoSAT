@@ -8,6 +8,8 @@ from InternalControl import cInternalControl
 import postgresql as bd
 import time
 import tkinter.messagebox as tkMessageBox
+import smtplib,ssl
+from email.message import EmailMessage
 
 #Important information for this code
 #--------------------------------------------------------------------------
@@ -29,6 +31,30 @@ FIEL_CER = ''
 fiel=''
 VERSION=''
 ID_CURRENT_SOLICITUD=''
+
+def sendMail(mailToAuthorize):
+    """
+    To get this data: Go to Quart mail on web, go to Settings, View all outlook settings,Sync email, find smtp....
+    Server name: smtp.office365.com
+    Port: 587
+    Encryption method: STARTTLS
+    """
+    mfrom='ulyses@quart.com.mx'
+    mto='ulyses@quart.com.mx'
+    msg = EmailMessage()
+    msg.set_content(f'Please authorize {mailToAuthorize} in database.')
+    msg['Subject'] = f'Please authorize CFDI user'
+    msg['From'] = mfrom
+    msg['To'] = mto
+    context=ssl.create_default_context()
+    try:
+        server = smtplib.SMTP(host='smtp.office365.com',port=587)
+        server.starttls(context=context)
+        server.login(mfrom,'Feaconfdefoca33')
+        server.send_message(msg)
+        server.quit()
+    except NameError as error:
+        showMessage(f'Su usuario ha sido registrado exitosamente, pero ha ocurrido un error al mandar el correo: {error}. ')   
  
 def showMessage(title,content):
     tkMessageBox.showinfo(title=title,message=content) 
