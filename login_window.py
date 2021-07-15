@@ -39,9 +39,12 @@ def register_user():
             resSt=bd.executeNonQuery(st)
             if resSt:
                 tool.showMessage('Registro exitoso',f'El usuario {mail} ha sido creado exitosamente, en 24 hrs tu cuenta quedará ACTIVADA')
-                #Send mail
+                #Send mail- Asynchronous way to send the mail, if it fails it will show a message
                 sendMail=threading.Thread(target=tool.sendMail,args=[mail])
                 sendMail.start()
+                sendMail.join()
+                if not sendMail.is_alive():
+                    print(f'The mail for {mail} is sent')
                    
         else:   
             #User already exists, now see if it is authorized
