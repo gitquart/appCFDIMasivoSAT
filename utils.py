@@ -489,7 +489,6 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
     #Start - Add extra fields at the end
     lsFields.append('Estatus')
     lsFields.append('Fecha/Hora de Consulta')
-    strDateTimeConsulta=datetime.datetime.now().strftime(formatDateTime)
     #End - Add extra fields at the end 
     
     #Print all lsFields on excel workbook
@@ -561,12 +560,18 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
             if field == 'Estatus':
                 #Look for this fields and save them to validate status:
                 #Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total
+                print(f'Obteniendo estado para {xml}')
                 strStatus=None
                 strStatus=validaEstadoDocumento(vEmisorRfc,vReceptorRfc,vTimbreFiscal,vComprobanteTotal)
-                lsRow.append(strStatus)
+                data=None
+                if strStatus:
+                    data=strStatus['estado']
+                else:
+                    data='No hubo respuesta'
+                lsRow.append(data)    
                 continue
             if field == 'Fecha/Hora de Consulta': 
-                lsRow.append(strDateTimeConsulta)   
+                lsRow.append(datetime.datetime.now().strftime(formatDateTime))   
                 continue       
             #Rest of cases
             chunks=field.split('_')
@@ -598,12 +603,20 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
             #Get values to validate CFDI
             #Look for this fields and save them to validate status:
             #Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total
-            if field=='Comprobante_Total':
-                currentSizeList=len(lsRow)
-                vComprobanteTotal=str(lsRow[currentSizeList-1])   
-            if column == 'UUID':
-                currentSizeList=len(lsRow)
-                vTimbreFiscal=str(lsRow[currentSizeList-1])       
+            currentSizeList=None
+            currentSizeList=len(lsRow)
+            if field=='Emisor_Rfc':
+                vEmisorRfc=str(lsRow[currentSizeList-1]) 
+                continue  
+            if field == 'Receptor_Rfc':
+                vReceptorRfc=str(lsRow[currentSizeList-1]) 
+                continue
+            if field=='TimbreFiscalDigital_UUID':
+                vTimbreFiscal=str(lsRow[currentSizeList-1]) 
+                continue  
+            if field == 'Comprobante_Total':
+                vComprobanteTotal=str(lsRow[currentSizeList-1])
+                continue           
             #End of field iteration
 
         #Append the whole xml in a single row            
