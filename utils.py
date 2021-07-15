@@ -451,6 +451,7 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
             chunk=str(node.tag).split('}')
             tableName=chunk[1] 
             numOfNodes=len(list(node))
+            #some "numOfNodes" are Zero, therefore I compare numOfNodes < 2 so I can get 0 and 1
             if (numOfNodes<2) or (numOfNodes>1 and tableName=='Comprobante'):
                 chunk=str(node.tag).split('}')
                 tableName=chunk[1]  
