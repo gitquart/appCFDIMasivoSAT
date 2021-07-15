@@ -46,8 +46,9 @@ if op==3:
 if op==4:
     print('Choose a version 1.EXCEL 2.SQL')
     op=input()
-    directory='C:\\Users\\1098350515\\Desktop\\'
-    zipFile='Consolidado_xml_enero_a_diciembre_2020.zip'
+    #Do not put \\ at the end of directory if console mode, the code will add it.
+    directory='C:\\Users\\1098350515\\Desktop'
+    zipFile='testing.zip'
     rfc='CIR0706145CA'
     if int(op)==1:    
         tool.extractAndReadZIP(directory,zipFile,rfc)

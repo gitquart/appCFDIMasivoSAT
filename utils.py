@@ -10,6 +10,7 @@ import time
 import tkinter.messagebox as tkMessageBox
 import smtplib,ssl
 from email.message import EmailMessage
+import datetime
 
 #Important information for this code
 #--------------------------------------------------------------------------
@@ -17,6 +18,7 @@ from email.message import EmailMessage
 #lsFolder elements (by order):[rfc_solicitante,tipo,fechaCompleta,fileName] 
 
 objControl=cInternalControl()
+formatDateTime='%Y-%m-%d %H:%M'
 #They are filled wit datos.text
 rfcFromFile=''
 FIEL_PAS = ''
@@ -448,7 +450,7 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
             #If the number of nodes > 1 then not get its fields, we only want 1 row
             chunk=str(node.tag).split('}')
             tableName=chunk[1] 
-            numOfNodes=len(node.getchildren())
+            numOfNodes=len(list(node))
             if (numOfNodes<2) or (numOfNodes>1 and tableName=='Comprobante'):
                 chunk=str(node.tag).split('}')
                 tableName=chunk[1]  
@@ -465,16 +467,18 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
 
     #Second, when got all fields from all xml, print them in spread sheet
     lsFields=[] 
-    #Add extra fields here
+    #Start -  Add extra fields in the beginning
     lsFields.append('nombreArchivo')
     lsFields.append('mes')
+    #End    - Add extra fields in the beginning
+
     lsSource=[]
     if len(objControl.lsCustomFields)==0:
         lsSource=dicTableFields   
     else:
         lsSource=objControl.lsCustomFields    
 
-    #I append insetad of just assign the list, because I need the column "mes" in the very beginning
+    #I append instead of just assign the list, because I need the column "mes" in the very beginning
     for field in lsSource:
         lsFields.append(field)
 
@@ -482,19 +486,15 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
         if field in lsFields:
             lsFields.remove(field)     
 
+    #Start - Add extra fields at the end
+    lsFields.append('Estatus')
+    lsFields.append('Fecha/Hora de Consulta')
+    strDateTimeConsulta=datetime.datetime.now().strftime(formatDateTime)
+    #End - Add extra fields at the end 
+    
+    #Print all lsFields on excel workbook
     for sheet in wb.sheetnames:
-        wb[sheet].append(lsFields)  
-    #Rename columns in excel if necessary
-    #As the excel doesn't have values but the header row, then don't need to add any more logic
-    #Rename the columns you want and that's it.
-    """
-    for sheet in wb.sheetnames:
-        for row in wb[sheet].rows:
-            for cell in row:
-                #Rename any column you want here
-    """            
-
-
+        wb[sheet].append(lsFields)     
     wb.save(directory+'/'+excel_fileName)     
                
   
@@ -503,6 +503,12 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
     # getroot() : Gets the root of the xml, then use getRoot to get "Comprobante"
     # root.find(.//...): gets any node inside the root, use this to any other node except the root
     for xml in myZip.namelist():
+        #I need the status for every xml (each cfdi) hence a declare the following fields:
+        #Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total
+        vEmisorRfc=None
+        vReceptorRfc=None
+        vTimbreFiscal=None
+        vComprobanteTotal=None
         #Get field TipoDeComprobante to knwo where sheet to print
         #"Resto" is the default spread sheet
         doc_xml=myZip.open(xml)
@@ -552,12 +558,22 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
                 monthWord=returnMonthWord(int(fechaFactura.split('-')[1]))
                 lsRow.append(monthWord)
                 continue
+            if field == 'Estatus':
+                #Look for this fields and save them to validate status:
+                #Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total
+                strStatus=None
+                strStatus=validaEstadoDocumento(vEmisorRfc,vReceptorRfc,vTimbreFiscal,vComprobanteTotal)
+                lsRow.append(strStatus)
+                continue
+            if field == 'Fecha/Hora de Consulta': 
+                lsRow.append(strDateTimeConsulta)   
+                continue       
             #Rest of cases
             chunks=field.split('_')
             table=chunks[0]
             column=chunks[1]
             if table=='Comprobante':  
-                addColumnIfFound(root,column,lsRow,'add',None)  
+                addColumnIfFound(root,column,lsRow,'add',None)
             else:
                 #Find the right prefix for table
                 lsNode=returnFoundNode(root,table)
@@ -577,7 +593,17 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
                         
                 else:
                     #No table name found
-                    lsRow.append(0)  
+                    lsRow.append(0)
+
+            #Get values to validate CFDI
+            #Look for this fields and save them to validate status:
+            #Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total
+            if field=='Comprobante_Total':
+                currentSizeList=len(lsRow)
+                vComprobanteTotal=str(lsRow[currentSizeList-1])   
+            if column == 'UUID':
+                currentSizeList=len(lsRow)
+                vTimbreFiscal=str(lsRow[currentSizeList-1])       
             #End of field iteration
 
         #Append the whole xml in a single row            
