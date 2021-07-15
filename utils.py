@@ -16,8 +16,6 @@ from email.message import EmailMessage
 #Folder and file names: [RFC]_[TIPO]_[FECHAS]_[ID]
 #lsFolder elements (by order):[rfc_solicitante,tipo,fechaCompleta,fileName] 
 
-
-
 objControl=cInternalControl()
 #They are filled wit datos.text
 rfcFromFile=''
@@ -93,8 +91,7 @@ def validateFIELFiles(directory):
         fiel = Fiel(cer_der, key_der, FIEL_PAS)
     
     return numFiles
-
-   
+  
 def autenticacion():
     auth = Autenticacion(fiel)
     token = auth.obtener_token()
@@ -161,7 +158,6 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
     else:
         return [0,"El directorio no contiene archivos FIEL"]   
 
-
 def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
     if id_solicitud!='':
         #Ejemplo re respuesta  {'estado_solicitud': '3', 'numero_cfdis': '8', 'cod_estatus': '5000', 'paquetes': ['a4897f62-a279-4f52-bc35-03bde4081627_01'], 'codigo_estado_solicitud': '5000', 'mensaje': 'Solicitud Aceptada'}   
@@ -209,16 +205,14 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
     else:
         return [0,'No se encontró Solicitud'] 
 
-
-"""
-validaEstadoDocumento
-Parms: All input parameters are text
-"""
 def validaEstadoDocumento(rfc_emisor,rfc_receptor,uuid,total):
+    """
+    validaEstadoDocumento
+    Parms: All input parameters are text 
+    """
     validacion = Validacion()
     estado = validacion.obtener_estado(rfc_emisor, rfc_receptor, total, uuid)
     return estado
-
 
 def descargarPaquete(id_paquete,directory,lsFolderName):
     #ejemplo de respuesta # {'cod_estatus': '', 'mensaje': '', 'paquete_b64': 'eyJhbG=='} 
@@ -242,13 +236,11 @@ def descargarPaquete(id_paquete,directory,lsFolderName):
     else:
         return [0,'No se descargó CFDI: '+result['mensaje']]
 
-
-
-"""
-readBase64FromZIP: Reads the package in base64 from SAT and returns the zip file (the zip file is actually)
-created on the go.
-"""
 def readBase64FromZIP(file,folderAndFileName,directory): 
+    """
+    readBase64FromZIP: Reads the package in base64 from SAT and returns the zip file (the zip file is actually)
+    created on the go.
+    """
     if file is not None:
         with open(directory+'/'+folderAndFileName+'.zip', 'wb') as result:
             result.write(base64.b64decode(file))
@@ -417,8 +409,6 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
     cmd="update solicitud set conteo=1 where id="+ID_CURRENT_SOLICITUD+";"
     bd.getQueryOrExecuteTransaction_NoReturning(cmd)
     print('Files processed in ZIP file:',str(contDocs)) 
-
-
 
 def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
     objControl=cInternalControl()
@@ -600,7 +590,6 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
     #All xml processed at this point    
     print('Files processed in ZIP file:',str(contDocs)) 
 
-
 def getAndTransformValue(table,lsRow,lsPossibleValues,typeOfColumn,notFoundValue):
     bFieldFound=False
     for possibleColumn in lsPossibleValues:
@@ -618,13 +607,11 @@ def getAndTransformValue(table,lsRow,lsPossibleValues,typeOfColumn,notFoundValue
         #Table found, but no column found
         lsRow.append(notFoundValue)
 
-                   
-           
-"""
-addColumnIfFound
-Returns a list with the value added in it if found
-"""
 def addColumnIfFound(table,column,lsRow,op,lsPossibleColumns):
+    """
+    addColumnIfFound
+    Returns a list with the value added in it if found
+    """
     #Add all cases that a column can be called
     notValueFloat=0
     notValueString='No value'
@@ -688,10 +675,7 @@ def addColumnIfFound(table,column,lsRow,op,lsPossibleColumns):
             getAndTransformValue(table,lsRow,[column],'string',notValueString)                                               
         else:
             getAndTransformValue(table,lsRow,[column],'string',notValueString)
-
-
-
-                     
+                    
 def addColumnIfFound_SQL(table,column,lsRow,notFoundValue):
     if column in table.attrib:
         if (table.get(column)!=""):
@@ -703,8 +687,8 @@ def addColumnIfFound_SQL(table,column,lsRow,notFoundValue):
         #Table found, but no column found
         lsRow.append(notFoundValue)            
 
-#returnFoundNode: regresa nodo (tabla) si existe en el XML
 def returnFoundNode(root,table):
+    #returnFoundNode: regresa nodo (tabla) si existe en el XML
     lsNode=[]
     result=[]
     for prefix in objControl.lsPrefix:
@@ -723,8 +707,6 @@ def transforValuesToSQLFormat(field,lsFields,lsValuesToTransform):
             newValue="'"+lsValuesToTransform[index]+"'"
             lsValuesToTransform[index]=newValue
             break
-
-
 
 def returnMonthWord(monthNumber):
     monthWord=''
