@@ -70,24 +70,28 @@ def exit():
 def login():
     #Check user and authorization
     mail=txtUser.get()
-    query=f"select id,autorizado from usuario where correo='{mail}' "
-    res=None
-    res=bd.getQuery(query)
-    if res:
-        #Case: User exists, check if it is authorized
-        auth=None
-        auth=res[0][1]
-        if auth:
-            #Case: User is authorized
-            cfdi_excel_window=tk.Toplevel(login_window)
-            login_window.withdraw()
-            win_cfdi.openWindowCFDI_ExcelVersion(cfdi_excel_window,login_window)
-        else:
-            tool.showMessage('Mensaje',f'El usuario {mail} está pendiente de autorización')
+    strPwd=txtPwd.get()
+    if mail=='' or strPwd=='':
+        tool.showMessage('Mensaje','Favor de completar los datos de login')
+    else:    
+        query=f"select id,autorizado from usuario where correo='{mail}' and contrasena='{strPwd}' "
+        res=None
+        res=bd.getQuery(query)
+        if res:
+            #Case: User exists, check if it is authorized
+            auth=None
+            auth=res[0][1]
+            if auth:
+                #Case: User is authorized
+                cfdi_excel_window=tk.Toplevel(login_window)
+                login_window.withdraw()
+                win_cfdi.openWindowCFDI_ExcelVersion(cfdi_excel_window,login_window)
+            else:
+                tool.showMessage('Mensaje',f'El usuario {mail} está pendiente de autorización')
 
-    else:
-        #Case: User doesn't exist    
-        tool.showMessage('Mensaje',f'El usuario {mail} no existe, favor de registrarse')
+        else:
+            #Case: User doesn't exist    
+            tool.showMessage('Mensaje',f'El usuario {mail} no existe, favor de registrarse')
     
     
 
