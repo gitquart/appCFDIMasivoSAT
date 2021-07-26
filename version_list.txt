@@ -1,0 +1,7 @@
+Version: 1.0
+Description: -Generates Excel with the most of fields required
+             -Also an SQL version is on progress but not complete
+
+Version: 2.0
+Description : -Generates Excel with the following columns added: Status and Date/Time of request
+              -User can log in and register (Registration sends an email to us to authorize them, the login is made by user and password)
