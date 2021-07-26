@@ -233,8 +233,9 @@ def openRegisterWindow(event):
     #End : "User registration"
 
 
+#Check for Updates
+print('I check for updates...')
 #Start of Login window
-
 login_window = tk.Tk()
 #geometry=widthxheight
 login_window.geometry('400x350')
