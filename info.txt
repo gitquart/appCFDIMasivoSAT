@@ -15,6 +15,11 @@ If you find any troubles when opening your executable of python, open it in term
 by just "yourfile.exe" or drag exe file in terminal (MS-DOS) and hit Enter and it will show you the problems.
 In my case it was missing "cfdiclient" module, so I just reinstall the requirements.txt in my system and I restarted because the module was already installed but the exe could not read it. Once restarted, it worked.
 
+ERRORS:
+
+1) No module found...
+Solution: Generate again the requirements.txt from environment (pip freeze > requirements.txt)
+
 
 Info about experience with CFDI program (Python API's)
 ------------------------------------------------------------------------
