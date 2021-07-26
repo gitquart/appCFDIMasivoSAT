@@ -16,6 +16,7 @@ txtCorreoR=None
 txtPwdR=None
 txtEmpresaR=None
 formatTimeForPostgreSQL='%Y-%m-%d %H:%M'
+SOFTWARE_VERSION='2.0'
 
 def register_user():
     global txtNombreR,txtAPR,txtAMR,txtCorreoR,txtPwdR,txtEmpresa
@@ -34,8 +35,8 @@ def register_user():
         res=bd.getQuery(query)
         if not res:
             #Register user
-            st=f"insert into usuario (nombre,apellidopaterno,apellidomaterno,empresa,correo,contrasena,fechacompleta,autorizado)"
-            st+=f"values ('{name}','{lastNameFather}','{lastNameMother}','{company}','{mail}','{pwd}','{datetime.datetime.now().strftime(formatTimeForPostgreSQL)}',False)"
+            st=f"insert into usuario (nombre,apellidopaterno,apellidomaterno,empresa,correo,contrasena,fechacompleta,autorizado,softwareversion)"
+            st+=f"values ('{name}','{lastNameFather}','{lastNameMother}','{company}','{mail}','{pwd}','{datetime.datetime.now().strftime(formatTimeForPostgreSQL)}',False,'{SOFTWARE_VERSION}')"
             resSt=False
             resSt=bd.executeNonQuery(st)
             if resSt:

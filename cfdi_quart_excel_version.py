@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter.constants import ACTIVE
 import tkinter.font as tkFont
 from tkinter import ttk,filedialog
 import tkinter.messagebox as tkMessageBox
