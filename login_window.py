@@ -5,6 +5,7 @@ import postgresql as bd
 import utils as tool
 import datetime
 import threading
+from git import Repo
 
 
 register_window=None
@@ -233,8 +234,11 @@ def openRegisterWindow(event):
     #End : "User registration"
 
 
-#Check for Updates
-print('I check for updates...')
+#Start - Check for Updates
+print('Looking for updates...')
+repo=Repo('https://github.com/gitquart/appCFDIMasivoSAT.git')
+print('...')
+#End - Check for Updates
 #Start of Login window
 login_window = tk.Tk()
 #geometry=widthxheight
