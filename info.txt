@@ -20,6 +20,8 @@ ERRORS:
 1) No module found...
 Solution: Generate again the requirements.txt from environment (pip freeze > requirements.txt)
 
+2) Seems that "No module found" error comes when making executable without Environment on.
+
 
 Info about experience with CFDI program (Python API's)
 ------------------------------------------------------------------------
