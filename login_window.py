@@ -4,9 +4,7 @@ import cfdi_quart_excel_version as win_cfdi
 import postgresql as bd
 import utils as tool
 import datetime
-import threading
-from git import Repo
-
+import os
 
 register_window=None
 txtNombreR=None
@@ -95,9 +93,6 @@ def login():
             #Case: User doesn't exist    
             tool.showMessage('Mensaje',f'El usuario {mail} no existe, favor de registrarse')
     
-    
-
-
 
 def openRegisterWindow(event):
     global register_window,txtNombreR,txtAPR,txtAMR,txtCorreoR,txtPwdR,txtEmpresaR
@@ -237,8 +232,8 @@ def openRegisterWindow(event):
 
 #Start - Check for Updates
 print('Looking for updates...')
-repo=Repo('https://github.com/gitquart/appCFDIMasivoSAT.git')
-print('...')
+os.system('cd C:/')
+os.system('dir')
 #End - Check for Updates
 #Start of Login window
 login_window = tk.Tk()
