@@ -2,12 +2,17 @@
 2)Tutorial to create a python executable file: https://datatofish.com/executable-pyinstaller/
 When running the pyinstaller (works very well indeed) it will create in the same folder of the file to convert to exe the following files/folders:
 
+
+Commands: 
+
+pyinstaller --onefile {fileNameOfExe}.py
+       
 /build
 /dist/yourfile.exe
 yourfile.spec
 
 If you find any troubles when opening your executable of python, open it in terminal
-by just "yourfile.exe" Enter and it will show you the problems.
+by just "yourfile.exe" or drag exe file in terminal (MS-DOS) and hit Enter and it will show you the problems.
 In my case it was missing "cfdiclient" module, so I just reinstall the requirements.txt in my system and I restarted because the module was already installed but the exe could not read it. Once restarted, it worked.
 
 
