@@ -1,4 +1,5 @@
 from InternalControl import cInternalControl
+import tkinter.messagebox as tkMessageBox
 import tkinter as tk
 import tkinter.font as tkFont
 import cfdi_quart_excel_version as win_cfdi
@@ -6,6 +7,7 @@ import postgresql as bd
 import utils as tool
 import datetime
 import os
+import threading
 
 objControl= cInternalControl()
 register_window=None
@@ -40,13 +42,14 @@ def register_user():
             resSt=False
             resSt=bd.executeNonQuery(st)
             if resSt:
-                tool.showMessage('Registro exitoso',f'El usuario {mail} ha sido creado exitosamente, en 24 hrs tu cuenta quedará ACTIVADA')
+                tool.showMessage('Registro exitoso',f'El usuario {mail} ha sido creado exitosamente, en 24 hrs tu cuenta quedará ACTIVADA. \n En un momento serás redirigido a la ventana de logueo.')
                 #Send mail- Asynchronous way to send the mail, if it fails it will show a message
                 sendMail=threading.Thread(target=tool.sendMail,args=[mail])
                 sendMail.start()
                 sendMail.join()
                 if not sendMail.is_alive():
                     print(f'The mail for {mail} is sent')
+                    tool.showMessage('Notificación exitosa','Quart ha recibido la notificación para activar tu cuenta, en un momento serás redirigido a la ventana de logueo')
                    
         else:   
             #User already exists, now see if it is authorized
@@ -76,14 +79,34 @@ def login():
     if mail=='' or strPwd=='':
         tool.showMessage('Mensaje','Favor de completar los datos de login')
     else:    
-        query=f"select id,autorizado from usuario where correo='{mail}' and contrasena='{strPwd}' "
+        query=f"select id,autorizado,softwareversion from usuario where correo='{mail}' and contrasena='{strPwd}' "
         res=None
         res=bd.getQuery(query)
         if res:
-            #Case: User exists, check if it is authorized
+            #Case: User exists
+            #Check if it's authorized
             auth=None
+            current_swversion=None
             auth=res[0][1]
+            current_swversion=float(res[0][2])
             if auth:
+                #Check for UPDATES
+                #Start of UPDATING SOFTWARE IF EXISTS
+                #Start - Check for Updates
+                print('Looking for updates...')
+                query=f"select swversion from tballsoftwareversion order by fulldate desc;"
+                res=None
+                res=bd.getQuery(query)
+                topswversion=None
+                topswversion=float(res[0][0])
+                if topswversion > current_swversion:
+                    response=None
+                    response=tkMessageBox.askyesno(f'Actualización disponible Versión {str(topswversion)}',f'Actualmente tienes el software en la versión {str(current_swversion)}, ¿Deseas actualizar a la versión {str(topswversion)}? ')
+                    if response==tkMessageBox.YES:
+                        os.system('git -C C:/ clone https://github.com/gitquart/cfdi_executable_quart.git')
+                        tool.showMessage('Descarga exitosa','El nuevo ejecutable se descargó el el directorio C:/cfdi_executable_quart')
+                #End - Check for Updates
+                #End of UPDATING SOFTWARE IF EXISTS
                 #Case: User is authorized
                 cfdi_excel_window=tk.Toplevel(login_window)
                 login_window.withdraw()
@@ -299,11 +322,5 @@ lblRegister["text"] = "Regístrate aquí"
 lblRegister.place(x=75,y=240,width=250,height=35)
 lblRegister.bind('<1>',openRegisterWindow)
 
-#Start of UPDATING SOFTWARE IF EXISTS
-#Start - Check for Updates
-print('Looking for updates...')
-#os.system('git -C C:/ clone https://github.com/gitquart/cfdi_executable_quart.git')
-#End - Check for Updates
-tool.showMessage('Hey','Hola')
-#End of UPDATING SOFTWARE IF EXISTS
+
 login_window.mainloop()
