@@ -21,6 +21,7 @@ txtEmpresaR=None
 formatTimeForPostgreSQL='%Y-%m-%d %H:%M'
 
 
+
 def register_user():
     global txtNombreR,txtAPR,txtAMR,txtCorreoR,txtPwdR,txtEmpresa
     name=txtNombreR.get()

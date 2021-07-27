@@ -1,5 +1,3 @@
-from tkinter.constants import TRUE
-
 
 class cInternalControl:
     
@@ -7,6 +5,7 @@ class cInternalControl:
     #zipToRead is the name of zip that will be created from download
     #and also the one to read to transform to excel
     testingMode=False
+    #Always set this SOFTWARE VERSION TO THE LATEST FROM DATABASE
     SOFTWARE_VERSION='2.0'
     #----Program variables----
     prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
