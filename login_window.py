@@ -1,3 +1,4 @@
+from InternalControl import cInternalControl
 import tkinter as tk
 import tkinter.font as tkFont
 import cfdi_quart_excel_version as win_cfdi
@@ -6,6 +7,7 @@ import utils as tool
 import datetime
 import os
 
+objControl= cInternalControl()
 register_window=None
 txtNombreR=None
 txtAPR=None
@@ -14,7 +16,7 @@ txtCorreoR=None
 txtPwdR=None
 txtEmpresaR=None
 formatTimeForPostgreSQL='%Y-%m-%d %H:%M'
-SOFTWARE_VERSION='2.0'
+SOFTWARE_VERSION=objControl.SOFTWARE_VERSION
 
 def register_user():
     global txtNombreR,txtAPR,txtAMR,txtCorreoR,txtPwdR,txtEmpresa
@@ -229,12 +231,6 @@ def openRegisterWindow(event):
 
     #End : "User registration"
 
-
-#Start - Check for Updates
-print('Looking for updates...')
-os.system('cd C:/')
-os.system('dir')
-#End - Check for Updates
 #Start of Login window
 login_window = tk.Tk()
 #geometry=widthxheight
@@ -303,4 +299,11 @@ lblRegister["text"] = "Regístrate aquí"
 lblRegister.place(x=75,y=240,width=250,height=35)
 lblRegister.bind('<1>',openRegisterWindow)
 
+#Start of UPDATING SOFTWARE IF EXISTS
+#Start - Check for Updates
+print('Looking for updates...')
+#os.system('git -C C:/ clone https://github.com/gitquart/cfdi_executable_quart.git')
+#End - Check for Updates
+tool.showMessage('Hey','Hola')
+#End of UPDATING SOFTWARE IF EXISTS
 login_window.mainloop()

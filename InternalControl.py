@@ -6,7 +6,8 @@ class cInternalControl:
     #----Data to change per user----
     #zipToRead is the name of zip that will be created from download
     #and also the one to read to transform to excel
-    testingMode=True
+    testingMode=False
+    SOFTWARE_VERSION='2.0'
     #----Program variables----
     prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
     prefixXSI='{http://www.w3.org/2001/XMLSchema-instance}'
