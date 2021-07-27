@@ -65,7 +65,7 @@ def openWindowCFDI_ExcelVersion(window,main_window):
     #geometry=widthxheight
     window.geometry('650x600')
     window.resizable(width=False, height=False)
-    window.title('Quart CFDI Wizard - Excel Version')
+    window.title(F'Quart CFDI Wizard - Excel v{str(objControl.SOFTWARE_VERSION)}')
 
     # create a notebook
     notebook = ttk.Notebook(window)

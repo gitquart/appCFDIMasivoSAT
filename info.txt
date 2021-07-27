@@ -5,7 +5,7 @@ When running the pyinstaller (works very well indeed) it will create in the same
 
 Commands: 
 
-pyinstaller --onefile {fileNameOfExe}.py
+pyinstaller --onefile {fileNameOfExe}.py -n {nameOfExecutable}
        
 /build
 /dist/yourfile.exe

@@ -19,7 +19,7 @@ txtCorreoR=None
 txtPwdR=None
 txtEmpresaR=None
 formatTimeForPostgreSQL='%Y-%m-%d %H:%M'
-SOFTWARE_VERSION=objControl.SOFTWARE_VERSION
+
 
 def register_user():
     global txtNombreR,txtAPR,txtAMR,txtCorreoR,txtPwdR,txtEmpresa
@@ -267,7 +267,7 @@ login_window = tk.Tk()
 #geometry=widthxheight
 login_window.geometry('400x350')
 login_window.resizable(width=False, height=False)
-login_window.title('Bienvenido a Quart CFDI - Login')
+login_window.title(f'Bienvenido a Quart CFDI v{str(objControl.SOFTWARE_VERSION)} - Login ')
 
 #Title
 lblTitle=tk.Label(login_window)
