@@ -109,7 +109,8 @@ def login():
                         tool.showMessage('Aviso','La actualización está en proceso de descarga...')
                         os.system('git -C C:/ clone https://github.com/gitquart/cfdi_executable_quart.git')
                         #Update version of software for this user
-                        st=f'update usuario  set softwareversion={str(topswversion)} where id ={str(idUser)};'
+                        st=f"update usuario set softwareversion='{str(topswversion)}' where id ={str(idUser)} "
+                        bd.executeNonQuery(st)
                         tool.showMessage('Descarga exitosa','El nuevo ejecutable se descargó en el directorio C:/cfdi_executable_quart .\n Puedes borrar la versión antigua y abrir la nueva.')
                         sys.exit(0)
                         
