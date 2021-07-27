@@ -8,6 +8,7 @@ import utils as tool
 import datetime
 import os
 import threading
+import sys
 
 objControl= cInternalControl()
 register_window=None
@@ -85,8 +86,10 @@ def login():
         if res:
             #Case: User exists
             #Check if it's authorized
+            idUser=None
             auth=None
             current_swversion=None
+            idUser=int(res[0][0])
             auth=res[0][1]
             current_swversion=float(res[0][2])
             if auth:
@@ -102,9 +105,14 @@ def login():
                 if topswversion > current_swversion:
                     response=None
                     response=tkMessageBox.askyesno(f'Actualización disponible Versión {str(topswversion)}',f'Actualmente tienes el software en la versión {str(current_swversion)}, ¿Deseas actualizar a la versión {str(topswversion)}? ')
-                    if response==tkMessageBox.YES:
+                    if response:
+                        tool.showMessage('Aviso','La actualización está en proceso de descarga...')
                         os.system('git -C C:/ clone https://github.com/gitquart/cfdi_executable_quart.git')
-                        tool.showMessage('Descarga exitosa','El nuevo ejecutable se descargó el el directorio C:/cfdi_executable_quart')
+                        #Update version of software for this user
+                        st=f'update usuario  set softwareversion={str(topswversion)} where id ={str(idUser)};'
+                        tool.showMessage('Descarga exitosa','El nuevo ejecutable se descargó en el directorio C:/cfdi_executable_quart .\n Puedes borrar la versión antigua y abrir la nueva.')
+                        sys.exit(0)
+                        
                 #End - Check for Updates
                 #End of UPDATING SOFTWARE IF EXISTS
                 #Case: User is authorized
