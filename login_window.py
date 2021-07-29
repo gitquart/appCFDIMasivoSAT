@@ -43,7 +43,7 @@ def register_user():
             resVersion=None
             resVersion=bd.getQuery(query)
             topswversion=None
-            topswversion=float(res[0][0])
+            topswversion=float(resVersion[0][0])
             #Register user
             st=f"insert into usuario (nombre,apellidopaterno,apellidomaterno,empresa,correo,contrasena,fechacompleta,autorizado,softwareversion)"
             st+=f"values ('{name}','{lastNameFather}','{lastNameMother}','{company}','{mail}','{pwd}','{datetime.datetime.now().strftime(formatTimeForPostgreSQL)}',False,'{str(topswversion)}')"
