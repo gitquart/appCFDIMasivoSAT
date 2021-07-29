@@ -38,9 +38,15 @@ def register_user():
         res=None
         res=bd.getQuery(query)
         if not res:
+            #Register user with last version of software
+            query=f"select swversion from tballsoftwareversion order by fulldate desc;"
+            resVersion=None
+            resVersion=bd.getQuery(query)
+            topswversion=None
+            topswversion=float(res[0][0])
             #Register user
             st=f"insert into usuario (nombre,apellidopaterno,apellidomaterno,empresa,correo,contrasena,fechacompleta,autorizado,softwareversion)"
-            st+=f"values ('{name}','{lastNameFather}','{lastNameMother}','{company}','{mail}','{pwd}','{datetime.datetime.now().strftime(formatTimeForPostgreSQL)}',False,'{SOFTWARE_VERSION}')"
+            st+=f"values ('{name}','{lastNameFather}','{lastNameMother}','{company}','{mail}','{pwd}','{datetime.datetime.now().strftime(formatTimeForPostgreSQL)}',False,'{str(topswversion)}')"
             resSt=False
             resSt=bd.executeNonQuery(st)
             if resSt:
