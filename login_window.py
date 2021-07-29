@@ -120,7 +120,7 @@ def login():
                 #Case: User is authorized
                 cfdi_excel_window=tk.Toplevel(login_window)
                 login_window.withdraw()
-                win_cfdi.openWindowCFDI_ExcelVersion(cfdi_excel_window,login_window)
+                win_cfdi.openWindowCFDI_ExcelVersion(cfdi_excel_window,login_window,str(current_swversion))
             else:
                 tool.showMessage('Mensaje',f'El usuario {mail} está pendiente de autorización')
 
@@ -269,7 +269,7 @@ login_window = tk.Tk()
 #geometry=widthxheight
 login_window.geometry('400x350')
 login_window.resizable(width=False, height=False)
-login_window.title(f'Bienvenido a Quart CFDI v{str(objControl.SOFTWARE_VERSION)} - Login ')
+login_window.title(f'Bienvenido a Quart CFDI - Login ')
 
 #Title
 lblTitle=tk.Label(login_window)

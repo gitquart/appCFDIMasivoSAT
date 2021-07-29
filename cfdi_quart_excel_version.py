@@ -59,13 +59,13 @@ def exit_all(main_window):
     main_window.destroy()
                      
     
-def openWindowCFDI_ExcelVersion(window,main_window):
+def openWindowCFDI_ExcelVersion(window,main_window,strCurrentVersion):
     # window window
     #window = tk.Tk()
     #geometry=widthxheight
     window.geometry('650x600')
     window.resizable(width=False, height=False)
-    window.title(F'Quart CFDI Wizard - Excel v{str(objControl.SOFTWARE_VERSION)}')
+    window.title(F'Quart CFDI Wizard - Excel v{strCurrentVersion}')
 
     # create a notebook
     notebook = ttk.Notebook(window)
