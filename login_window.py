@@ -108,13 +108,11 @@ def login():
                 res=bd.getQuery(query)
                 topswversion=None
                 topswversion=float(res[0][0])
-                msj=None
-                if (topswversion > current_swversion) or ((topswversion == current_swversion) and (float(objControl.THIS_SOFTWARE_VERSION))):
-                    msj=f'Actualización disponible Versión {str(topswversion)}',f'Actualmente tienes el software en la versión {str(current_swversion)}, ¿Deseas actualizar a la versión {str(topswversion)}? '
+                if (topswversion > current_swversion) or ((topswversion == current_swversion) and (float(objControl.THIS_SOFTWARE_VERSION))): 
                     #Case: A greater version of software is available, then ask to download or
                     #Case: topversion and currentversion in database are equal, but for some reason the "version of the code" is different from current version in database, then download the version from topversion
                     response=None
-                    response=tkMessageBox.askyesno(msj)
+                    response=tkMessageBox.askyesno(f'Actualización disponible Versión {str(topswversion)}',f'Actualmente tienes el software en la versión {str(current_swversion)}, ¿Deseas actualizar a la versión {str(topswversion)}?')
                     if response:
                         tool.showMessage('Aviso','La actualización está en proceso de descarga...')
                         os.system('git -C C:/ clone https://github.com/gitquart/cfdi_executable_quart.git')
