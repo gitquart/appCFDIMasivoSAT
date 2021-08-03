@@ -204,17 +204,17 @@ def openWindowCFDI_ExcelVersion(window,main_window,strCurrentVersion):
     lblFormatoFechaRango_Contenido=tk.Label(fConfiguración)
     ft = tkFont.Font(size=9,weight=tkFont.NORMAL)
     lblFormatoFechaRango_Contenido['font']=ft
-    texto='i.e: Si el rango a consultar es 1 de mayo 2020 a 31 de mayo 2020, las fechas quedarían : 01/05/2020 a 01/06/2020'
+    texto='i.e: Si el rango a consultar es 1 de mayo 2020 a 31 de mayo 2020,las fechas quedarían:'
     lblFormatoFechaRango_Contenido['text']=texto
-    lblFormatoFechaRango_Contenido.place(x=10,y=396,width=500,height=25)
+    lblFormatoFechaRango_Contenido.place(x=48,y=396,width=500,height=25)
 
     #Contenido de indicación - Formato Rango de fechas 2
     lblFormatoFechaRango_Contenido2=tk.Label(fConfiguración)
     ft = tkFont.Font(size=9,weight=tkFont.NORMAL)
     lblFormatoFechaRango_Contenido2['font']=ft
-    texto='las fechas quedarían : 01/05/2020 a 01/06/2020'
+    texto='01/05/2020 a 01/06/2020'
     lblFormatoFechaRango_Contenido2['text']=texto
-    lblFormatoFechaRango_Contenido2.place(x=10,y=410,width=500,height=25)
+    lblFormatoFechaRango_Contenido2.place(x=150,y=415,width=300,height=25)
 
     #Rango de fechas
     #lbl Inicial
