@@ -108,7 +108,7 @@ def login():
                 res=bd.getQuery(query)
                 topswversion=None
                 topswversion=float(res[0][0])
-                if (topswversion > current_swversion) or ((topswversion == current_swversion) and (float(objControl.THIS_SOFTWARE_VERSION))): 
+                if (topswversion > current_swversion) or ((topswversion == current_swversion) and (float(objControl.THIS_SOFTWARE_VERSION)) < current_swversion ): 
                     #Case: A greater version of software is available, then ask to download or
                     #Case: topversion and currentversion in database are equal, but for some reason the "version of the code" is different from current version in database, then download the version from topversion
                     response=None

@@ -63,7 +63,7 @@ def openWindowCFDI_ExcelVersion(window,main_window,strCurrentVersion):
     # window window
     #window = tk.Tk()
     #geometry=widthxheight
-    window.geometry('650x600')
+    window.geometry('650x700')
     window.resizable(width=False, height=False)
     window.title(F'Quart CFDI Wizard - Excel v{strCurrentVersion}')
 
@@ -73,7 +73,7 @@ def openWindowCFDI_ExcelVersion(window,main_window,strCurrentVersion):
     notebook.pack()
 
     # create frames
-    fConfiguración = ttk.Frame(notebook, width=600, height=590)
+    fConfiguración = ttk.Frame(notebook, width=600, height=690)
     fConfiguración.pack(fill='both', expand=True)
 
     # add frames to notebook
@@ -165,20 +165,61 @@ def openWindowCFDI_ExcelVersion(window,main_window,strCurrentVersion):
 
     #Fin Section- Emisor o Receptor
 
+    #Section - fechas
+
     lblContInst3=tk.Label(fConfiguración)
     ft = tkFont.Font(size=9,weight=tkFont.BOLD)
     lblContInst3["font"] = ft
     lblContInst3["fg"] = "#333333"
     lblContInst3["justify"] = "left"
     texto='3. Introducir el rango de fechas del CFDI a recuperar\n\n'
-    texto+='i.e.: En caso de ser 3 de mayo de 2020, el formato sería de la siguiente manera: 03/05/2020'
     lblContInst3["text"] = texto
-    lblContInst3.place(x=38,y=280,width=540,height=100)
+    lblContInst3.place(x=49,y=280,width=300,height=100)
+    
+    #Indicación - Formato de fechas
+    lblFormatoFecha=tk.Label(fConfiguración)
+    ft = tkFont.Font(size=9,weight=tkFont.BOLD,slant=tkFont.ITALIC)
+    lblFormatoFecha['font']=ft
+    texto='Formato'
+    lblFormatoFecha['text']=texto
+    lblFormatoFecha.place(x=30,y=320,width=100,height=50)
+    
+    #Contenido de indicación - Formato fechas
+    lblFormatoFecha_Contenido=tk.Label(fConfiguración)
+    ft = tkFont.Font(size=9,weight=tkFont.NORMAL)
+    lblFormatoFecha_Contenido['font']=ft
+    texto='i.e.: En caso de ser 3 de mayo de 2020, el formato sería de la siguiente manera: 03/05/2020'
+    lblFormatoFecha_Contenido['text']=texto
+    lblFormatoFecha_Contenido.place(x=10,y=352,width=600,height=25)
 
-    #Section - fechas
+    #Indicación - Formato Rango de fechas
+    lblFormatoRangoFecha=tk.Label(fConfiguración)
+    ft = tkFont.Font(size=9,weight=tkFont.BOLD,slant=tkFont.ITALIC)
+    lblFormatoRangoFecha['font']=ft
+    texto='Rango de fechas'
+    lblFormatoRangoFecha['text']=texto
+    lblFormatoRangoFecha.place(x=53,y=375,width=100,height=25)
+
+    #Contenido de indicación - Formato Rango de fechas 1
+    lblFormatoFechaRango_Contenido=tk.Label(fConfiguración)
+    ft = tkFont.Font(size=9,weight=tkFont.NORMAL)
+    lblFormatoFechaRango_Contenido['font']=ft
+    texto='i.e: Si el rango a consultar es 1 de mayo 2020 a 31 de mayo 2020, las fechas quedarían : 01/05/2020 a 01/06/2020'
+    lblFormatoFechaRango_Contenido['text']=texto
+    lblFormatoFechaRango_Contenido.place(x=10,y=396,width=500,height=25)
+
+    #Contenido de indicación - Formato Rango de fechas 2
+    lblFormatoFechaRango_Contenido2=tk.Label(fConfiguración)
+    ft = tkFont.Font(size=9,weight=tkFont.NORMAL)
+    lblFormatoFechaRango_Contenido2['font']=ft
+    texto='las fechas quedarían : 01/05/2020 a 01/06/2020'
+    lblFormatoFechaRango_Contenido2['text']=texto
+    lblFormatoFechaRango_Contenido2.place(x=10,y=410,width=500,height=25)
+
     #Rango de fechas
     #lbl Inicial
-    posYFechaInicial=370
+    #Diferencia ideal entre componentes : 35 unidades 
+    posYFechaInicial=455
     lblFechaInicio=tk.Label(fConfiguración)
     ft = tkFont.Font(size=10)
     lblFechaInicio["font"] = ft
@@ -198,7 +239,7 @@ def openWindowCFDI_ExcelVersion(window,main_window,strCurrentVersion):
     txtFechaInicio.place(x=150,y=posYFechaInicial,width=100,height=25)
 
     #lbl Final
-    posYFechaFin=400
+    posYFechaFin=490
     lblFechaFin=tk.Label(fConfiguración)
     ft = tkFont.Font(size=10)
     lblFechaFin["font"] = ft
@@ -218,7 +259,8 @@ def openWindowCFDI_ExcelVersion(window,main_window,strCurrentVersion):
     txtFechaFin.place(x=150,y=posYFechaFin,width=100,height=25)
 
     #Fin Section - fechas
-
+    
+    startPos=530
     #Section - Solicitar CFDI
     lblContInst4=tk.Label(fConfiguración)
     ft = tkFont.Font(size=9,weight=tkFont.BOLD)
@@ -227,18 +269,19 @@ def openWindowCFDI_ExcelVersion(window,main_window,strCurrentVersion):
     lblContInst4["justify"] = "left"
     texto='4. Hacer click en el botón "Solicitar CFDI" y sigue los mensajes posteriores\n\n'
     lblContInst4["text"] = texto
-    lblContInst4.place(x=30,y=440,width=470,height=50)
+    lblContInst4.place(x=30,y=startPos,width=470,height=50)
 
+  
     #Btn solicitar
     btnSolicitar=tk.Button(fConfiguración,command=preguntaSolicitarCFDI,text='Solicitar CFDI')
     btnSolicitar['bg']='#66FF00'
-    btnSolicitar.place(x=250,y=480,width=100,height=25)
+    btnSolicitar.place(x=250,y=startPos+35,width=100,height=25)
 
     #Btn Salir
     #A way to send parameters to function: command=lambda: func("See this worked!")
     btnSalir=tk.Button(fConfiguración,command=lambda :exit_all(main_window),text='Salir')
     btnSalir['bg']='#FF9966'
-    btnSalir.place(x=250,y=515,width=100,height=25)
+    btnSalir.place(x=250,y=startPos+(35*2),width=100,height=25)
 
     #Fin Section - Solicitar CFDI
 
