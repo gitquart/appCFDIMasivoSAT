@@ -29,7 +29,7 @@ def preguntaSolicitarCFDI():
     fechaFin=txtFechaFin.get()
     directory=txtDir.get()
     if fechaInicio!='' and fechaFin!='' and directory!='' :
-        res=tkMessageBox.askyesno(title='Advertencia',message='El procedimiento "Solicitar CFDI" sólo se puede hacer una vez.\n ¿Deseas continuar?')
+        res=tkMessageBox.askyesno(title='Advertencia',message='El procedimiento "Solicitar CFDI" sólo se puede hacer una vez y tarda aproximadamente 10 mins por petición.\n ¿Deseas continuar?')
         if res:
             solicitarCFDI()
     else:
