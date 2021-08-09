@@ -151,6 +151,7 @@ def openWindowCFDI_ExcelVersion(window,main_window,strCurrentVersion):
 
     #Emisor Radio button
     ft = tkFont.Font(size=10)
+    global var
     var = tk.StringVar()
     rdbtnEmisor = tk.Radiobutton(fConfiguración, text="Emisor", variable=var, value="Emisor")
     rdbtnEmisor["font"] = ft

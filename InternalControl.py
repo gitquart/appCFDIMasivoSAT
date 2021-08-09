@@ -92,13 +92,13 @@ class cInternalControl:
              'Concepto_Unidad',
              'Concepto_Descuento',
              #Emisor
-             'Emisor_RegimenFiscal',
+             'Emisor_RegimenFiscal'
              #Campos de algunos clientes (Campos hasta ahora han sido personalizados)
-             'Retencion_Impuesto',
-             'Retencion_Importe',
-             'Traslado_Impuesto',
-             'Traslado_Importe',
-             'Traslado_Tasa'
+             #'Retencion_Impuesto',
+             #'Retencion_Importe',
+             #'Traslado_Impuesto',
+             #'Traslado_Importe',
+             #'Traslado_Tasa'
               ] 
 
 
