@@ -24,18 +24,18 @@ def returnFolder():
     txtDir.insert(0,folderSelected)
 
 
-def preguntaSolicitarCFDI():
+def preguntaSolicitarCFDI(window):
     fechaInicio=txtFechaInicio.get()
     fechaFin=txtFechaFin.get()
     directory=txtDir.get()
     if fechaInicio!='' and fechaFin!='' and directory!='' :
         res=tkMessageBox.askyesno(title='Advertencia',message='El procedimiento "Solicitar CFDI" sólo se puede hacer una vez y tarda aproximadamente 10 mins por petición.\n ¿Deseas continuar?')
         if res:
-            solicitarCFDI()
+            solicitarCFDI(window)
     else:
         tool.showMessage('Mensaje','Por favor, verifica que las fechas o el directorio no estén vacíos')     
 
-def solicitarCFDI():
+def solicitarCFDI(window):
     global var
     #Dates on txtDates : dd/mm/yyyy
     #lsFolderName saves importantd data along its way to name the folder where the zip and xls will be saved
@@ -51,7 +51,7 @@ def solicitarCFDI():
     strFechaInicial=str(fecha_inicial.day)+str(fecha_inicial.month)+str(fecha_inicial.year)
     strFechaFin=str(fecha_final.day)+str(fecha_final.month)+str(fecha_final.year)
     strFechaCompleta=strFechaInicial+'_'+strFechaFin
-    res=tool.solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,strFechaCompleta,VERSION)
+    res=tool.solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,strFechaCompleta,VERSION,window)
     #lsValor[1]-> ID solicitud returned, could be Emisor or Receptor
     tool.showMessage('Mensaje',res[1])
 
@@ -274,7 +274,7 @@ def openWindowCFDI_ExcelVersion(window,main_window,strCurrentVersion):
 
   
     #Btn solicitar
-    btnSolicitar=tk.Button(fConfiguración,command=preguntaSolicitarCFDI,text='Solicitar CFDI')
+    btnSolicitar=tk.Button(fConfiguración,command=lambda :preguntaSolicitarCFDI(window),text='Solicitar CFDI')
     btnSolicitar['bg']='#66FF00'
     btnSolicitar.place(x=250,y=startPos+35,width=100,height=25)
 

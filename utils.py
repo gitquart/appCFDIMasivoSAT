@@ -102,7 +102,7 @@ def autenticacion():
 
     return token
 
-def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Version):
+def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Version,window):
     global VERSION,ID_CURRENT_SOLICITUD
     #Get the version so it can be stored in utils.py for the rest of methods
     VERSION=Version
@@ -113,6 +113,10 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
         result=[0,'Hubo un error con los archivos, favor de verificar que los archivos CER,KEY o datos.txt sean los correctos']    
         return result
     if res>0:
+        #Officialy it is processing
+        strTitle=window.title()
+        strTitle+='- Processing'
+        window.title(strTitle)
         if VERSION=='SQL':
             #1)Check if the user is in table usuario
             resultSet=bd.getQueryOrExecuteTransaction("select * from usuario where rfc_solicitante='"+rfc_solicitante+"' ;")
@@ -156,13 +160,13 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
         #after 10 minutes let's chake the state and it should be 3 and correct
         time.sleep(TIME_FOR_REQUEST) #600 secs = 10 mins, 2400 secs= 40 mins
         #res=verificaSolicitudDescarga('1e9acc5a-7d0a-4669-9a5f-a8650697e41d',directory,lsfolderName)
-        res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName)
+        res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName,window)
         return res
         
     else:
         return [0,"El directorio no contiene archivos FIEL"]   
 
-def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
+def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName,window):
     if id_solicitud!='':
         #Ejemplo re respuesta  {'estado_solicitud': '3', 'numero_cfdis': '8', 'cod_estatus': '5000', 'paquetes': ['a4897f62-a279-4f52-bc35-03bde4081627_01'], 'codigo_estado_solicitud': '5000', 'mensaje': 'Solicitud Aceptada'}   
         v_descarga = VerificaSolicitudDescarga(fiel)
@@ -174,10 +178,15 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName):
             lsFolderName.append(result['paquetes'][0])
             res=descargarPaquete(result['paquetes'],directory,lsFolderName)
             if int(res[0])==1:
+                #Change Title again
+                strTitle=window.title() 
+                strTitle=str(strTitle).replace('- Processing','')  
+                window.title(strTitle) 
                 if VERSION=='SQL':
                     return [1,'Procesamiento exitoso, el archivo ZIP con CFDI se descargó en '+directory+'/'+result['paquetes'][0]+' y se cargaron los registros en la base de datos.']
                 else:
                     return [1,'Procesamiento exitoso, el resultado se descargó en '+directory+'/'+result['paquetes'][0]+' (zip y xlsx) ']
+                
             else:
                 return res    
         else:
