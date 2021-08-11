@@ -115,7 +115,7 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
     if res>0:
         #Officialy it is processing
         strTitle=window.title()
-        strTitle+='- Processing'
+        strTitle+='- CFDI request'
         window.title(strTitle)
         if VERSION=='SQL':
             #1)Check if the user is in table usuario
@@ -173,15 +173,15 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName,window):
         token = autenticacion()
         result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
         #I add some seconds before it gets the result for "verificar"
-        print('Numer of CFDI:',result['numero_cfdis'])
+        print('Number of CFDI:',result['numero_cfdis'])
+        #Change Title again
+        strTitle=window.title() 
+        strTitle=str(strTitle).replace('- CFDI request','')  
+        window.title(strTitle)   
         if (int(result['numero_cfdis'])>0):
             lsFolderName.append(result['paquetes'][0])
             res=descargarPaquete(result['paquetes'],directory,lsFolderName)
             if int(res[0])==1:
-                #Change Title again
-                strTitle=window.title() 
-                strTitle=str(strTitle).replace('- Processing','')  
-                window.title(strTitle) 
                 if VERSION=='SQL':
                     return [1,'Procesamiento exitoso, el archivo ZIP con CFDI se descargó en '+directory+'/'+result['paquetes'][0]+' y se cargaron los registros en la base de datos.']
                 else:
@@ -217,6 +217,7 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName,window):
                      ]  
     else:
         return [0,'No se encontró Solicitud'] 
+      
 
 def validaEstadoDocumento(rfc_emisor,rfc_receptor,uuid,total):
     """
