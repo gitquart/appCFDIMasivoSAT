@@ -148,6 +148,7 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
         descarga = SolicitaDescarga(fiel)
         token = autenticacion()
         result=''
+        print('Start - CFDI Webservice request')
         if lsfolderName[1]=='Emisor':
             # Emitidos
             result = descarga.solicitar_descarga(token, rfc_solicitante, fecha_inicial, fecha_final, rfc_emisor=rfc_emisor)
@@ -158,7 +159,6 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
         #Here the ID of the request is done, so let's wait TIME_REQUEST_MINS minutes lo let SAT set state 3,
         #after TIME_REQUEST_MINS minutes let's chake the state and it should be 3 and correct
         time.sleep(objControl.TIME_FOR_REQUEST) #600 secs = 10 mins, 2400 secs= 40 mins
-        #res=verificaSolicitudDescarga('1e9acc5a-7d0a-4669-9a5f-a8650697e41d',directory,lsfolderName)
         res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName,window)
         return res
         
@@ -172,6 +172,7 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName,window):
         token = autenticacion()
         result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
         #I add some seconds before it gets the result for "verificar"
+        print('End of CFDI Web service request')
         print('Number of CFDI:',result['numero_cfdis'],' from ID request :',str(id_solicitud))
         #Change Title again
         strTitle=window.title() 
@@ -240,6 +241,7 @@ def descargarPaquete(id_paquete,directory,lsFolderName):
         if not os.path.isdir(ZipExcelDir):
             os.mkdir(ZipExcelDir)
         readBase64FromZIP(paquete,folderAndFileName,ZipExcelDir)
+        print('Downloading package with CFDI and processing...')
         if VERSION=='EXCEL':
             extractAndReadZIP(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)      
         else:
