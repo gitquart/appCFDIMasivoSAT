@@ -31,8 +31,7 @@ FIEL_CER = ''
 fiel=''
 VERSION=''
 ID_CURRENT_SOLICITUD=''
-#600 secs = 10 mins, 2400 secs= 40 mins
-TIME_FOR_REQUEST=600
+
 
 def sendMail(mailToAuthorize):
     """
@@ -156,9 +155,9 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
             # Recibidos
             result = descarga.solicitar_descarga(token, rfc_solicitante, fecha_inicial, fecha_final, rfc_receptor=rfc_receptor)
         
-        #Here the ID of the request is done, so let's wait 10 minutes lo let SAT set state 3,
-        #after 10 minutes let's chake the state and it should be 3 and correct
-        time.sleep(TIME_FOR_REQUEST) #600 secs = 10 mins, 2400 secs= 40 mins
+        #Here the ID of the request is done, so let's wait TIME_REQUEST_MINS minutes lo let SAT set state 3,
+        #after TIME_REQUEST_MINS minutes let's chake the state and it should be 3 and correct
+        time.sleep(objControl.TIME_FOR_REQUEST) #600 secs = 10 mins, 2400 secs= 40 mins
         #res=verificaSolicitudDescarga('1e9acc5a-7d0a-4669-9a5f-a8650697e41d',directory,lsfolderName)
         res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName,window)
         return res
