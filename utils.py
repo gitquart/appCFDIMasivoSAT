@@ -172,7 +172,7 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName,window):
         token = autenticacion()
         result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
         #I add some seconds before it gets the result for "verificar"
-        print('Number of CFDI:',result['numero_cfdis'])
+        print('Number of CFDI:',result['numero_cfdis'],' from ID request :',str(id_solicitud))
         #Change Title again
         strTitle=window.title() 
         strTitle=str(strTitle).replace('- CFDI request','')  
