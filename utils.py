@@ -790,7 +790,24 @@ def returnMonthWord(monthNumber):
 
     return monthWord       
 
+#MÉTODOS DE CONSOLA
+
+def verificaSolicitudDescarga_Consola(id_solicitud,rfcsolicitante,directory):
+    #Ejemplo re respuesta  {'estado_solicitud': '3', 'numero_cfdis': '8', 'cod_estatus': '5000', 'paquetes': ['a4897f62-a279-4f52-bc35-03bde4081627_01'], 'codigo_estado_solicitud': '5000', 'mensaje': 'Solicitud Aceptada'}   
+    try:
+        res=validateFIELFiles(directory)
+    except:
+        result=[0,'Hubo un error con los archivos, favor de verificar que los archivos CER,KEY o datos.txt sean los correctos']    
+
+    if res>0:    
+        v_descarga = VerificaSolicitudDescarga(fiel)
+        token = autenticacion()
+        #La respuesta tiene "paquetes", esos son ID's
+        result = v_descarga.verificar_descarga(token, rfc_solicitante, id_solicitud)
+
+        return result['paquetes']
         
+
           
              
     

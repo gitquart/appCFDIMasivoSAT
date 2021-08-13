@@ -27,7 +27,9 @@ if op==2:
     #ejemplo :ec162d98-292a-4673-8085-a1d2cfd725f8
     print('Introduce el ID a verificar:')
     strid_v=input()
-    lsvalor=tool.verificaSolicitudDescarga(strid_v)
+    directory='C:\\Users\\1098350515\\Documents\\CFDI\\Claves_Johnson_wfmx801 - Johnson Controls BE Manufactura S de RL de CV'
+    #lsValor=Regresa los ID o ID's de paquetes si es que hay
+    lsvalor=tool.verificaSolicitudDescarga_Consola(strid_v,'JCB6805038G1',directory)
 if op==1 or op==2:
     accion=''
     if op==1:
@@ -35,8 +37,11 @@ if op==1 or op==2:
     if op==2:
         accion='Verificación'    
     print('Imprimiendo IDs de ',accion)
-    for item in lsvalor:
-        print(item)
+    if len(lsvalor)==0:
+        print('No hay paquetes / CFDI')
+    else:    
+        for item in lsvalor:
+            print(item)
 
 if op==3:
     print('Introduce el ID a descargar:')
