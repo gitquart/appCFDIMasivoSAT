@@ -1,0 +1,16 @@
+Info about experience with CFDI program (Python API's)
+------------------------------------------------------------------------
+General testing.
+------------------
+1.The first part is to get a (solicitarDescarga) "ID SOLICITUD", then to "Verificar Solicitud".
+  "VERIFICAR_SOLICITUD" gets the "ID packages" which means it has CFDI to downloadd, if CFDI is zero then NO PACKAGES, NO ZIP TO DONWLOAD.
+2. The "SOLICITUD_ID" is processed maybe after 4 or 5 minutes, the program is set with 8 minutes, if we receiced and ACCEPTED WITH NO CFDI
+answer it doesn't mean after some "X" minutes it will be proccesed, we had this experience with a request with State 5000 (Accepted),
+we waited for 30 mins and it was still in the same state 5000.
+3. For date ranges the last date is EXCLUSIVE, this means, if the range is 1 july 2020 to 1 august 2020, this example will take JULY COMPLETE.
+
+TESTING 13/08/2021
+-------------------
+1. The executable for clients work very good, the problem is still the communcation with service which we suppose it's not well made.
+2. The API wich checks the STATE of each xml works good, tested with 5 K files in a row
+ 
