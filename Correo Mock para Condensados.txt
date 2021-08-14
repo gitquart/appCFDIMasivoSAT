@@ -1,0 +1,24 @@
+Asunto: 
+
+Archivos Excel y Xml consolidados para el periodo <periodo> de la empresa <empresa>
+
+Correo:
+
+Buen día
+
+Esperando estén muy bien, adjunto al correo podrán encontrar los siguientes archivos:
+
+Empresa : <Empresa>
+Periodo : <Periodo>
+
+1) Archivo ZIP con todos los CFDI (XML) del periodo solicitado de la empresa.
+2) Archivo excel con todos los CFDI del archivo ZIP.
+
+Quedamos atentos a sus comentarios y preguntas.
+
+Saludos
+
+
+Para josecarlos.perez@jci.com
+
+Agregar que estamos trabajando en la empresa 802 y que lo enviamos a la brevedad

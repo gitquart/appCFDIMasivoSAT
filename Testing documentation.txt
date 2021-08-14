@@ -12,5 +12,12 @@ we waited for 30 mins and it was still in the same state 5000.
 TESTING 13/08/2021
 -------------------
 1. The executable for clients work very good, the problem is still the communcation with service which we suppose it's not well made.
-2. The API wich checks the STATE of each xml works good, tested with 5 K files in a row
- 
+2. The API wich checks the STATE of each xml works good, tested with 5 K files in a row.
+3. Most of the problems are with touching the RIGHT RANGE OF DATES, i.e., we tested for december 2016 with
+01/12/2016 to 01/01/2017 , we got code 5000 or 5002, with 25/11/2016 to 01/01/2017 , it worked.
+
+GATHERED PRINTING (CONSOLIDADO)
+-----------------------------------
+
+Adding the checking of status to the gatheted print, the system adds 1 second (roughly)
+to print each xml, hence for each 1 K xml it takes 11 mins (estimated)
