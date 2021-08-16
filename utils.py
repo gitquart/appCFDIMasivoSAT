@@ -11,6 +11,7 @@ import tkinter.messagebox as tkMessageBox
 import smtplib,ssl
 from email.message import EmailMessage
 import datetime
+import threading
 
 #Important information for this code
 #--------------------------------------------------------------------------
@@ -218,7 +219,6 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName,window):
     else:
         return [0,'No se encontró Solicitud'] 
       
-
 def validaEstadoDocumento(rfc_emisor,rfc_receptor,uuid,total):
     """
     validaEstadoDocumento
@@ -425,11 +425,9 @@ def extractAndReadZIP_SQL(directory,zipToRead,rfc_solicitante):
     bd.getQueryOrExecuteTransaction_NoReturning(cmd)
     print('Files processed in ZIP file:',str(contDocs)) 
 
-def extractAndReadZIP(directory,zipToRead,rfc_solicitante):
-    objControl=cInternalControl()
-    #Change / to \\ if neccesary
+def extractAndReadZIP(directory,zipToRead,rfc_solicitante,testingMode=False):
     separationFolder=''
-    if objControl.testingMode:
+    if testingMode:
         separationFolder='\\'
     else:
         separationFolder='/'    
@@ -807,6 +805,254 @@ def verificaSolicitudDescarga_Consola(id_solicitud,rfcsolicitante,directory):
 
         return result['paquetes']
         
+#Batch processes (Multi threading)
+
+def extractAndReadZIP_Batch(directory,lszipToRead,rfc_solicitante,excelFileName,testingMode=False):
+    separationFolder=''
+    if testingMode:
+        separationFolder='\\'
+    else:
+        separationFolder='/'   
+
+    #The first ZIP in the list will be the name and structure of all processes     
+    myZip=zipfile.ZipFile(directory+separationFolder+lszipToRead[0],'r')
+    #Start - Rest of the files in ZIP
+    myZip2=zipfile.ZipFile(directory+separationFolder+lszipToRead[1],'r')
+    myZip3=zipfile.ZipFile(directory+separationFolder+lszipToRead[2],'r')
+    #End - Rest of the files in ZIP
+    #START - NOTHING TO CHANGE
+    #The FIRST zip's file name will be the name of excel file name, like the "Database"
+    excel_fileName=excelFileName+'.xlsx'
+    #Creating the workbook (database)
+    #Create the sheets: Ingreso_Egreso,Pago,Resto
+    #START - CREATE WORKBOOK FOR ALL POSSIBLE THREADS
+    wb=excelpy.Workbook() 
+    #let's create the sheets in this order: Emisor, Receptor, Pago_Emisor,Pago_Receptor
+    #Sheet1 is the first, so rename it.
+    pago_sheet = wb['Sheet']
+    pago_sheet.title = 'Emisor'
+    wb.create_sheet('Receptor')
+    wb.create_sheet('Pago_Emisor')
+    wb.create_sheet('Pago_Receptor')
+    wb.save(directory+'/'+excel_fileName)
+    #dicTableFields is a dictionary with the following structura key:table, value: list of fields
+    dicTableFields={}
+    #Dictionaries for every kind of "tipo de comprobante"
+    #First, get all the columns for all the tables
+    for xml in myZip.namelist():
+        doc_xml=myZip.open(xml)
+        root = ET.parse(doc_xml).getroot()
+        for node in root.iter():
+            #Column = attribute , Node= Table
+            #Get attributes (columns) of current Node (table) 
+            #Split the node (table) name because all come as "{something}Node" and {content} is not needed
+            #If the number of nodes > 1 then not get its fields, we only want 1 row
+            chunk=str(node.tag).split('}')
+            tableName=chunk[1] 
+            numOfNodes=len(list(node))
+            #some "numOfNodes" are Zero, therefore I compare numOfNodes < 2 so I can get 0 and 1
+            if (numOfNodes<2) or (numOfNodes>1 and tableName=='Comprobante'):
+                chunk=str(node.tag).split('}')
+                tableName=chunk[1]  
+                #As all the fields will be in one single sheet, it can occur two fields with the same
+                #name ex: Rfc and Rfc (Emisor and recipient), then it's needed to add prefix tableName
+                for attr in node.attrib:
+                    fieldName=tableName+'_'+attr
+                    if tableName not in dicTableFields:
+                        dicTableFields[tableName]=[fieldName]
+                    else:
+                        if fieldName not in dicTableFields[tableName]:
+                            dicTableFields[tableName].append(fieldName)            
+            #End of node iteration 
+
+    #Second, when got all fields from all xml, print them in spread sheet
+    lsFields=[] 
+    #Start -  Add extra fields in the beginning
+    lsFields.append('nombreArchivo')
+    lsFields.append('mes')
+    #End    - Add extra fields in the beginning
+
+    lsSource=[]
+    if len(objControl.lsCustomFields)==0:
+        lsSource=dicTableFields   
+    else:
+        lsSource=objControl.lsCustomFields    
+
+    #I append instead of just assign the list, because I need the column "mes" in the very beginning
+    for field in lsSource:
+        lsFields.append(field)
+
+    for field in objControl.lsRemove:
+        if field in lsFields:
+            lsFields.remove(field)     
+
+    #Start - Add extra fields at the end
+    lsFields.append('Estatus')
+    lsFields.append('Fecha/Hora de Consulta')
+    #End - Add extra fields at the end 
+    
+    #Print all lsFields on excel workbook
+    for sheet in wb.sheetnames:
+        wb[sheet].append(lsFields)     
+    wb.save(directory+'/'+excel_fileName)     
+
+    #END - CREATE WORKBOOK FOR ALL POSSIBLE THREADS 
+    #END- NOTHING TO CHANGE
+
+    lsThreads=[]
+
+    #Start - Create threads
+    process1=threading.Thread(target=transformXML_to_XLS,args=[wb,myZip,directory,excel_fileName,lsFields,rfc_solicitante,'Proceso 1'])
+    lsThreads.append(process1)
+    process2=threading.Thread(target=transformXML_to_XLS,args=[wb,myZip2,directory,excel_fileName,lsFields,rfc_solicitante,'Proceso 2'])
+    lsThreads.append(process2)
+    process3=threading.Thread(target=transformXML_to_XLS,args=[wb,myZip3,directory,excel_fileName,lsFields,rfc_solicitante,'Proceso 3'])
+    lsThreads.append(process3)
+    
+    for process in lsThreads:
+        process.start()
+
+    for process in lsThreads:
+        process.join()   
+
+    #End - Create threads 
+    print('All processes are ready!')    
+  
+    
+
+def transformXML_to_XLS(wb,myZip,directory,excel_fileName,lsFields,rfc_solicitante,nameOfThread):
+    #Third, read information and insert where belongs 
+    # getroot() : Gets the root of the xml, then use getRoot to get "Comprobante"
+    # root.find(.//...): gets any node inside the root, use this to any other node except the root
+    contDocs=0
+    for xml in myZip.namelist():
+        #I need the status for every xml (each cfdi) hence a declare the following fields:
+        #Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total
+        vEmisorRfc=None
+        vReceptorRfc=None
+        vTimbreFiscal=None
+        vComprobanteTotal=None
+        #Get field TipoDeComprobante to knwo where sheet to print
+        #"Resto" is the default spread sheet
+        doc_xml=myZip.open(xml)
+        root = ET.parse(doc_xml).getroot()
+        lsRfcTable=['Emisor','Receptor']
+        sheetPrint='Nada'
+        for item in lsRfcTable:
+            node=returnFoundNode(root,item)
+            if len(node)>0:
+                rfc_value=addColumnIfFound(node[0],None,None,'look',['Rfc','rfc'])
+                if rfc_value==rfc_solicitante:
+                    tipoComprobante=addColumnIfFound(root,None,None,'look',['TipoDeComprobante','tipoDeComprobante'])
+                    for possibleValue in ['Ingreso','ingreso','I','i','E','Egreso','egreso','e']:
+                        if tipoComprobante==possibleValue:
+                            sheetPrint=item
+                            break
+                    for possibleValue in ['P','p','Pago','pago']:
+                        if tipoComprobante==possibleValue:
+                            #If "Pago" then it's clear it goes to Pago sheet, so here now divide Pago into
+                            #"Pago_Emisor", "Pago_Receptor"
+                            if item=='Emisor':
+                                sheetPrint='Pago_Emisor'
+                            else:
+                                sheetPrint='Pago_Receptor'    
+                            break
+                    if sheetPrint=='Nada': 
+                        #If "Nada" it means it goes to Pago, so here now divide Pago into
+                        #"Pago_Emisor", "Pago_Receptor"
+                        if item=='Emisor':
+                            sheetPrint='Pago_Emisor'
+                        else:
+                            sheetPrint='Pago_Receptor'       
+
+        #Start to read the fields from lsFields=[]
+        #Example of a field in lsFields : "Comprobante_Version" -> "tableName_Field"
+        #One row per xml
+        lsRow=[]
+        #The field leads all the insertion
+        #Algorith of reading fields
+        for field in lsFields:
+            #Cases
+            if field=='nombreArchivo':
+                lsRow.append(xml)
+                continue
+            if field=='mes': 
+                fechaFactura=addColumnIfFound(root,None,None,'look',['Fecha','fecha'])
+                monthWord=returnMonthWord(int(fechaFactura.split('-')[1]))
+                lsRow.append(monthWord)
+                continue
+            if field == 'Estatus':
+                #Look for this fields and save them to validate status:
+                #Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total
+                print(f'Obteniendo estado para {xml}')
+                strStatus=None
+                strStatus=validaEstadoDocumento(vEmisorRfc,vReceptorRfc,vTimbreFiscal,vComprobanteTotal)
+                data=None
+                if strStatus:
+                    data=strStatus['estado']
+                else:
+                    data='No hubo respuesta'
+                lsRow.append(data)    
+                continue
+            if field == 'Fecha/Hora de Consulta': 
+                lsRow.append(datetime.datetime.now().strftime(formatDateTime))   
+                continue       
+            #Rest of cases
+            chunks=field.split('_')
+            table=chunks[0]
+            column=chunks[1]
+            if table=='Comprobante':  
+                addColumnIfFound(root,column,lsRow,'add',None)
+            else:
+                #Find the right prefix for table
+                lsNode=returnFoundNode(root,table)
+                if len(lsNode)==1:
+                    addColumnIfFound(lsNode[0],column,lsRow,'add',None)
+                elif len(lsNode)>1:
+                    #More than 1 table_column found with the same name in XML
+                    bTableWithField=False
+                    for node in root.findall('.//'+objControl.prefixCFDI+table):
+                        if len(node.attrib)>0: 
+                            #If this table has attributes, read it, other wise skip it because
+                            #if the column doesn't have fields, it means it holds children
+                            addColumnIfFound(node,column,lsRow,'add',None)
+                            bTableWithField=True
+                    if not bTableWithField:
+                        lsRow.append(0)    
+                        
+                else:
+                    #No table name found
+                    lsRow.append(0)
+
+            #Get values to validate CFDI
+            #Look for this fields and save them to validate status:
+            #Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total
+            currentSizeList=None
+            currentSizeList=len(lsRow)
+            if field=='Emisor_Rfc':
+                vEmisorRfc=str(lsRow[currentSizeList-1]) 
+                continue  
+            if field == 'Receptor_Rfc':
+                vReceptorRfc=str(lsRow[currentSizeList-1]) 
+                continue
+            if field=='TimbreFiscalDigital_UUID':
+                vTimbreFiscal=str(lsRow[currentSizeList-1]) 
+                continue  
+            if field == 'Comprobante_Total':
+                vComprobanteTotal=str(lsRow[currentSizeList-1])
+                continue           
+            #End of field iteration
+
+        #Append the whole xml in a single row            
+        wb[sheetPrint].append(lsRow)              
+        contDocs+=1
+        print(f'{nameOfThread} File done:xml ...{str(contDocs)}') 
+        #End of each document (xml) iteration in a zip
+        wb.save(directory+'/'+excel_fileName)
+
+    #All xml processed at this point    
+    print(f'{nameOfThread} Files processed in ZIP file: {str(contDocs)}') 
+
 
           
              

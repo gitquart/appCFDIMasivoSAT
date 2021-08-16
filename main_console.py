@@ -4,6 +4,7 @@ import datetime
 from InternalControl import cInternalControl
 import pandas as pd
 import openpyxl as excelpy
+import os
 
 objControl=cInternalControl()
 #Solicitar,Verificar,Descargar
@@ -13,6 +14,7 @@ print('2.Verificar CFDI')
 print('3.Descargar CFDI en ZIP')
 print('4.Extraer ZIP')
 print('5.Validar estado CFDI')
+print('6. Extraer ZIP (Batch)')
 
 op=input()
 op=int(op)
@@ -49,16 +51,17 @@ if op==3:
     res=tool.descargarPaquete(strid_d)
     print('ZIP is ready')
 if op==4:
+    print('Extraer ZIP')
     print('Choose a version 1.EXCEL 2.SQL')
     op=input()
     #Do not put \\ at the end of directory if console mode, the code will add it.
-    directory='C:\\Users\\1098350515\\Desktop\\'
-    zipFile='Condensado wfm801 xml.zip'
-    rfc='JCB6805038G1'
+    directory='C:\\Users\\1098350515\\Desktop'
+    zipFile='Condensado wfm 802 xml.zip'
+    rfc='JCB021126K89'
     if int(op)==1:    
-        tool.extractAndReadZIP(directory,zipFile,rfc)
+        tool.extractAndReadZIP(directory,zipFile,rfc,True)
     else:
-        tool.extractAndReadZIP_SQL(directory,zipFile,rfc)
+        tool.extractAndReadZIP_SQL(directory,zipFile,rfc,True)
 if op==5:
     print('Validate CFDI...') 
     directory='C:\\Users\\1098350515\\Desktop\\'
@@ -100,6 +103,21 @@ if op==5:
 
     #Save whole file    
     wb.save(directory+'/'+excel_name+'_withStatus.xlsx') 
+if op==6:
+    print('Extraer ZIP en BATCH ')
+    print('Choose a version 1.EXCEL 2.SQL')
+    op=input()
+    #Do not put \\ at the end of directory if console mode, the code will add it.
+    directory='C:\\Users\\1098350515\\Desktop\\condensado_partes'
+    excelFileName='Johnson_2017_emp125'
+    lszipFile=list()
+    for file in os.listdir(directory):
+        lszipFile.append(file)
+    rfc='JCB100702TQ1'
+    if int(op)==1:    
+        tool.extractAndReadZIP_Batch(directory,lszipFile,rfc,excelFileName,True)
+    else:
+        tool.extractAndReadZIP_SQL(directory,lszipFile,rfc,True)
 
            
     

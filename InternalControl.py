@@ -1,13 +1,11 @@
 
-class cInternalControl:
-    
+class cInternalControl(object):
     #----Data to change per user----
     #zipToRead is the name of zip that will be created from download
     #and also the one to read to transform to excel
     #600 secs = 10 mins, 2400 secs= 40 mins
     TIME_REQUEST_MINS=8
     TIME_FOR_REQUEST=TIME_REQUEST_MINS*60
-    testingMode=True
     THIS_SOFTWARE_VERSION='2.0'
     #----Program variables----
     prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
