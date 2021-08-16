@@ -807,7 +807,7 @@ def verificaSolicitudDescarga_Consola(id_solicitud,rfcsolicitante,directory):
         
 #Batch processes (Multi threading)
 
-def extractAndReadZIP_Batch(directory,lszipToRead,rfc_solicitante,excelFileName,testingMode=False):
+def extractAndReadZIP_Batch(directory,lszipToRead,rfc_solicitante,nameOfThread,testingMode=False):
     separationFolder=''
     if testingMode:
         separationFolder='\\'
@@ -816,13 +816,8 @@ def extractAndReadZIP_Batch(directory,lszipToRead,rfc_solicitante,excelFileName,
 
     #The first ZIP in the list will be the name and structure of all processes     
     myZip=zipfile.ZipFile(directory+separationFolder+lszipToRead[0],'r')
-    #Start - Rest of the files in ZIP
-    myZip2=zipfile.ZipFile(directory+separationFolder+lszipToRead[1],'r')
-    myZip3=zipfile.ZipFile(directory+separationFolder+lszipToRead[2],'r')
-    #End - Rest of the files in ZIP
-    #START - NOTHING TO CHANGE
     #The FIRST zip's file name will be the name of excel file name, like the "Database"
-    excel_fileName=excelFileName+'.xlsx'
+    excel_fileName=excel_fileName=os.path.splitext(os.path.split(myZip.filename)[1])[0]+'.xlsx'
     #Creating the workbook (database)
     #Create the sheets: Ingreso_Egreso,Pago,Resto
     #START - CREATE WORKBOOK FOR ALL POSSIBLE THREADS
@@ -896,29 +891,9 @@ def extractAndReadZIP_Batch(directory,lszipToRead,rfc_solicitante,excelFileName,
         wb[sheet].append(lsFields)     
     wb.save(directory+'/'+excel_fileName)     
 
-    #END - CREATE WORKBOOK FOR ALL POSSIBLE THREADS 
-    #END- NOTHING TO CHANGE
+    transformXML_to_XLS(wb,myZip,directory,excel_fileName,lsFields,rfc_solicitante,nameOfThread)
+   
 
-    lsThreads=[]
-
-    #Start - Create threads
-    process1=threading.Thread(target=transformXML_to_XLS,args=[wb,myZip,directory,excel_fileName,lsFields,rfc_solicitante,'Proceso 1'])
-    lsThreads.append(process1)
-    process2=threading.Thread(target=transformXML_to_XLS,args=[wb,myZip2,directory,excel_fileName,lsFields,rfc_solicitante,'Proceso 2'])
-    lsThreads.append(process2)
-    process3=threading.Thread(target=transformXML_to_XLS,args=[wb,myZip3,directory,excel_fileName,lsFields,rfc_solicitante,'Proceso 3'])
-    lsThreads.append(process3)
-    
-    for process in lsThreads:
-        process.start()
-
-    for process in lsThreads:
-        process.join()   
-
-    #End - Create threads 
-    print('All processes are ready!')    
-  
-    
 
 def transformXML_to_XLS(wb,myZip,directory,excel_fileName,lsFields,rfc_solicitante,nameOfThread):
     #Third, read information and insert where belongs 

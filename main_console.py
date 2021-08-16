@@ -5,6 +5,7 @@ from InternalControl import cInternalControl
 import pandas as pd
 import openpyxl as excelpy
 import os
+import threading
 
 objControl=cInternalControl()
 #Solicitar,Verificar,Descargar
@@ -109,13 +110,28 @@ if op==6:
     op=input()
     #Do not put \\ at the end of directory if console mode, the code will add it.
     directory='C:\\Users\\1098350515\\Desktop\\condensado_partes'
-    excelFileName='Johnson_2017_emp125'
     lszipFile=list()
     for file in os.listdir(directory):
         lszipFile.append(file)
     rfc='JCB100702TQ1'
     if int(op)==1:    
-        tool.extractAndReadZIP_Batch(directory,lszipFile,rfc,excelFileName,True)
+        tool.extractAndReadZIP_Batch(directory,lszipFile,rfc,True)
+        lsThreads=[]
+
+        #Start - Create threads Subprocess per month, per excel
+        process1=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[0],rfc,'Proceso 1',True])
+        lsThreads.append(process1)
+        process2=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[1],rfc,'Proceso 2',True])
+        lsThreads.append(process2)
+    
+        for process in lsThreads:
+            process.start()
+
+        for process in lsThreads:
+            process.join()   
+
+        #End - Create threads 
+        print('All processes are ready!')    
     else:
         tool.extractAndReadZIP_SQL(directory,lszipFile,rfc,True)
 
