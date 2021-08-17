@@ -141,6 +141,9 @@ if op==6:
     
         for process in lsThreads:
             process.start()
+
+        #Join() in another process because if not it won't be parallel
+        for process in lsThreads:    
             process.join()
 
 
