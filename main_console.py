@@ -117,35 +117,16 @@ if op==6:
     if int(op)==1:    
         lsThreads=[]
         #Start - Create threads Subprocess per month, per excel
-        process1=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[0],rfc,True])
-        lsThreads.append(process1)
-        process2=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[1],rfc,True])
-        lsThreads.append(process2)
-        process3=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[2],rfc,True])
-        lsThreads.append(process3)
-        process4=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[3],rfc,True])
-        lsThreads.append(process4)
-        process5=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[4],rfc,True])
-        lsThreads.append(process5)
-        process6=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[5],rfc,True])
-        lsThreads.append(process6)
-        process7=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[6],rfc,True])
-        lsThreads.append(process7)
-        process8=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[7],rfc,True])
-        lsThreads.append(process8)
-        process9=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[8],rfc,True])
-        lsThreads.append(process9)
-        process10=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[9],rfc,True])
-        lsThreads.append(process10)
+        for zipFile in lszipFile:
+            process=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,zipFile,rfc,True])
+            lsThreads.append(process)
 
-    
         for process in lsThreads:
             process.start()
 
         #Join() in another process because if not it won't be parallel
         for process in lsThreads:    
             process.join()
-
 
         #End - Create threads 
         print('All processes are ready!')    
