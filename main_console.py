@@ -109,7 +109,7 @@ if op==6:
     print('Choose a version 1.EXCEL 2.SQL')
     op=input()
     #Do not put \\ at the end of directory if console mode, the code will add it.
-    directory='C:\\Users\\1098350515\\Desktop\\condensado_mes'
+    directory='C:\\Users\\1098350515\\Desktop\\condensado_mes_125_console\\2017'
     lszipFile=list()
     for file in os.listdir(directory):
         lszipFile.append(file)
@@ -141,9 +141,8 @@ if op==6:
     
         for process in lsThreads:
             process.start()
+            process.join()
 
-        for process in lsThreads:
-            process.join()   
 
         #End - Create threads 
         print('All processes are ready!')    
