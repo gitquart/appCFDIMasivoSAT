@@ -1,0 +1,27 @@
+
+Para josecarlos.perez@jci.com
+
+Asunto: 
+
+Archivos Excel y Xml por mes para el periodo <periodo> de la empresa <empresa>
+
+Correo:
+
+Buen día
+
+Esperando estén muy bien, adjunto al correo podrán encontrar los siguientes archivos:
+
+Empresa : <Empresa>
+Periodo : <Periodo>
+
+1) Archivos ZIP con todos los CFDI (XML) del periodo solicitado de la empresa POR MES.
+2) Archivos excel con todos los CFDI de los archivos ZIP POR MES.
+
+Quedamos atentos a sus comentarios y preguntas.
+
+Saludos
+
+
+
+
+
