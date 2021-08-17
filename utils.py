@@ -807,7 +807,7 @@ def verificaSolicitudDescarga_Consola(id_solicitud,rfcsolicitante,directory):
         
 #Batch processes (Multi threading)
 
-def extractAndReadZIP_Batch(directory,lszipToRead,rfc_solicitante,nameOfThread,testingMode=False):
+def extractAndReadZIP_Batch(directory,zipToRead,rfc_solicitante,testingMode=False):
     separationFolder=''
     if testingMode:
         separationFolder='\\'
@@ -815,7 +815,7 @@ def extractAndReadZIP_Batch(directory,lszipToRead,rfc_solicitante,nameOfThread,t
         separationFolder='/'   
 
     #The first ZIP in the list will be the name and structure of all processes     
-    myZip=zipfile.ZipFile(directory+separationFolder+lszipToRead[0],'r')
+    myZip=zipfile.ZipFile(directory+separationFolder+zipToRead,'r')
     #The FIRST zip's file name will be the name of excel file name, like the "Database"
     excel_fileName=excel_fileName=os.path.splitext(os.path.split(myZip.filename)[1])[0]+'.xlsx'
     #Creating the workbook (database)
@@ -891,7 +891,7 @@ def extractAndReadZIP_Batch(directory,lszipToRead,rfc_solicitante,nameOfThread,t
         wb[sheet].append(lsFields)     
     wb.save(directory+'/'+excel_fileName)     
 
-    transformXML_to_XLS(wb,myZip,directory,excel_fileName,lsFields,rfc_solicitante,nameOfThread)
+    transformXML_to_XLS(wb,myZip,directory,excel_fileName,lsFields,rfc_solicitante,zipToRead)
    
 
 

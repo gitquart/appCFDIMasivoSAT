@@ -109,20 +109,35 @@ if op==6:
     print('Choose a version 1.EXCEL 2.SQL')
     op=input()
     #Do not put \\ at the end of directory if console mode, the code will add it.
-    directory='C:\\Users\\1098350515\\Desktop\\condensado_partes'
+    directory='C:\\Users\\1098350515\\Desktop\\condensado_mes'
     lszipFile=list()
     for file in os.listdir(directory):
         lszipFile.append(file)
     rfc='JCB100702TQ1'
     if int(op)==1:    
-        tool.extractAndReadZIP_Batch(directory,lszipFile,rfc,True)
         lsThreads=[]
-
         #Start - Create threads Subprocess per month, per excel
-        process1=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[0],rfc,'Proceso 1',True])
+        process1=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[0],rfc,True])
         lsThreads.append(process1)
-        process2=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[1],rfc,'Proceso 2',True])
+        process2=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[1],rfc,True])
         lsThreads.append(process2)
+        process3=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[2],rfc,True])
+        lsThreads.append(process3)
+        process4=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[3],rfc,True])
+        lsThreads.append(process4)
+        process5=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[4],rfc,True])
+        lsThreads.append(process5)
+        process6=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[5],rfc,True])
+        lsThreads.append(process6)
+        process7=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[6],rfc,True])
+        lsThreads.append(process7)
+        process8=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[7],rfc,True])
+        lsThreads.append(process8)
+        process9=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[8],rfc,True])
+        lsThreads.append(process9)
+        process10=threading.Thread(target=tool.extractAndReadZIP_Batch,args=[directory,lszipFile[9],rfc,True])
+        lsThreads.append(process10)
+
     
         for process in lsThreads:
             process.start()
