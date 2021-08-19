@@ -9,13 +9,18 @@ Correo:
 
 Buen día
 
-Esperando estén muy bien, adjunto al correo podrán encontrar los siguientes archivos:
+Esperando estén muy bien, en la siguiente lista detallamos el contenido de este correo:
 
 Empresa : <Empresa>
 Periodo : <Periodo>
 
-1) Archivos ZIP con todos los CFDI (XML) del periodo solicitado de la empresa POR MES.
-2) Archivos excel con todos los CFDI de los archivos ZIP POR MES.
+1) ZIP Adjunto contiene:
+1.2)Archivos excel con todos los CFDI de los archivos ZIP POR MES.
+
+2) LINK :
+2.1)Archivos excel con todos los CFDI de los archivos ZIP POR MES.
+2.2)Archivo ZIP con todos los CFDI (XML) del periodo solicitado de la empresa POR MES
+
 
 Quedamos atentos a sus comentarios y preguntas.
 
