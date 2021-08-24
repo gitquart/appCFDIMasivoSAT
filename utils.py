@@ -225,7 +225,14 @@ def validaEstadoDocumento(rfc_emisor,rfc_receptor,uuid,total):
     Parms: All input parameters are text 
     """
     validacion = Validacion()
-    estado = validacion.obtener_estado(rfc_emisor, rfc_receptor, total, uuid)
+    estado=''
+    try:
+        estado = validacion.obtener_estado(rfc_emisor, rfc_receptor, total, uuid)
+    except:
+        print('Reconnecting to Valida estado in 5 seconds')
+        time.sleep(5)
+        estado = estado = validacion.obtener_estado(rfc_emisor, rfc_receptor, total, uuid)
+           
     return estado
 
 def descargarPaquete(id_paquete,directory,lsFolderName):
