@@ -232,7 +232,7 @@ def validaEstadoDocumento(rfc_emisor,rfc_receptor,uuid,total):
         print('Reconnecting to Valida estado in 5 seconds')
         time.sleep(5)
         estado = estado = validacion.obtener_estado(rfc_emisor, rfc_receptor, total, uuid)
-           
+
     return estado
 
 def descargarPaquete(id_paquete,directory,lsFolderName):
@@ -966,7 +966,7 @@ def transformXML_to_XLS(wb,myZip,directory,excel_fileName,lsFields,rfc_solicitan
             if field == 'Estatus':
                 #Look for this fields and save them to validate status:
                 #Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total
-                print(f'Obteniendo estado para {xml}')
+                print(f'Obteniendo estado para {vTimbreFiscal}')
                 strStatus=None
                 strStatus=validaEstadoDocumento(vEmisorRfc,vReceptorRfc,vTimbreFiscal,vComprobanteTotal)
                 data=None
