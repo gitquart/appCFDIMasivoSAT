@@ -229,9 +229,18 @@ def validaEstadoDocumento(rfc_emisor,rfc_receptor,uuid,total):
     try:
         estado = validacion.obtener_estado(rfc_emisor, rfc_receptor, total, uuid)
     except:
-        print('Reconnecting to Valida estado in 5 seconds')
-        time.sleep(5)
-        estado = estado = validacion.obtener_estado(rfc_emisor, rfc_receptor, total, uuid)
+        print('First Attempt to Reconnect to Valida estado in 10 seconds')
+        time.sleep(10)
+        try:
+            estado = estado = validacion.obtener_estado(rfc_emisor, rfc_receptor, total, uuid)
+        except:    
+            print('Second Attempt to Reconnect to Valida estado in 10 seconds')
+            time.sleep(10)
+            try:
+                estado = estado = validacion.obtener_estado(rfc_emisor, rfc_receptor, total, uuid)
+            except:
+                print('First and Second to reconnect attempt failed.')    
+            
 
     return estado
 
