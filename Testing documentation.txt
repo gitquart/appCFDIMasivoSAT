@@ -16,6 +16,12 @@ TESTING 13/08/2021
 3. Most of the problems are with touching the RIGHT RANGE OF DATES, i.e., we tested for december 2016 with
 01/12/2016 to 01/01/2017 , we got code 5000 or 5002, with 25/11/2016 to 01/01/2017 , it worked.
 
+TESTING 25/08/2021
+-----------------------
+1.The multi threading works well but too many threads for too many files slow the subprocess.
+1.1) The test for 125 company which was 12 zips with less than 2 K files each, seemed yo work fine
+1.2) The worst case was 370 k + files, which the best move was to set a limit of 3 zips with 5 K files each. 
+
 GATHERED PRINTING (CONSOLIDADO)
 -----------------------------------
 
