@@ -1,4 +1,5 @@
 #Tutorial de descarga CFDI masivamente : https://pypi.org/project/cfdiclient/
+from numpy import source
 import utils as tool
 import datetime
 from InternalControl import cInternalControl
@@ -6,6 +7,7 @@ import pandas as pd
 import openpyxl as excelpy
 import os
 import threading
+import shutil
 
 objControl=cInternalControl()
 #Solicitar,Verificar,Descargar
@@ -16,6 +18,7 @@ print('3.Descargar CFDI en ZIP')
 print('4.Extraer ZIP')
 print('5.Validar estado CFDI')
 print('6. Extraer ZIP (Batch)')
+print('7. Move files')
 
 op=input()
 op=int(op)
@@ -132,6 +135,32 @@ if op==6:
         print('All processes are ready!')    
     else:
         tool.extractAndReadZIP_SQL(directory,lszipFile,rfc,True)
+if op==7:
+    print('Moving files')        
+    sourceDirXml='C:\\Users\\1098350515\\Desktop\\TodosXML_802\\01 Emitidos Enero\\'
+    targetDirXml='C:\\Users\\1098350515\\Desktop\\wfm 802 Nómina , Ingreso_Egreso\Emitidos Tipo Ingreso_Egreso 2018\\enero\\XmlEneroIngresoEgreso\\'
+    directory='C:\\Users\\1098350515\\Desktop\\wfm 802 Nómina , Ingreso_Egreso\\Emitidos Tipo Ingreso_Egreso 2018\\enero\\'
+    excel_name='Emitidos IngresoEgreso enero 2018'
+    excel=excel_name+'.xlsx'
+    completePath=directory+excel
+    excelDF=pd.DataFrame()
+    lsSheetsToRead=['Emisor','Pago_Emisor']
+    for sheet in lsSheetsToRead:
+        excelDF=pd.read_excel(completePath,sheet_name=sheet)
+        filesFound=0
+        for index,row in excelDF.iterrows():
+            nombreArchivo=row['nombreArchivo']
+            nombreArchivo=str(nombreArchivo).split("/")[1]
+            #Look for file in sourceFolderXml
+            found=False
+            found=os.path.isfile(sourceDirXml+nombreArchivo)
+            if found:
+                filesFound+=1
+                shutil.move(sourceDirXml+nombreArchivo,targetDirXml+nombreArchivo)
+            print(f'Total files found for sheet {sheet} : {str(filesFound)}')    
+
+
+
 
            
     
