@@ -136,13 +136,19 @@ if op==6:
     else:
         tool.extractAndReadZIP_SQL(directory,lszipFile,rfc,True)
 if op==7:
-    print('Moving files')        
-    sourceDirXml='C:\\Users\\1098350515\\Desktop\\TodosXML_802\\01 Emitidos Enero\\'
-    targetDirXml='C:\\Users\\1098350515\\Desktop\\wfm 802 Nómina , Ingreso_Egreso\Emitidos Tipo Ingreso_Egreso 2018\\enero\\XmlEneroIngresoEgreso\\'
-    directory='C:\\Users\\1098350515\\Desktop\\wfm 802 Nómina , Ingreso_Egreso\\Emitidos Tipo Ingreso_Egreso 2018\\enero\\'
-    excel_name='Emitidos IngresoEgreso enero 2018'
+    print('Moving files')  
+    print('Escribe el nombre del mes (i.e. Enero,Febrero,...)')
+    res=input()
+    mes=str(res)
+    directory=f'C:\\Users\\1098350515\\Desktop\\wfm 802 Nómina , Ingreso_Egreso\\Emitidos Tipo Ingreso_Egreso 2018\\{mes.lower()}\\'      
+    sourceDirXml=f'C:\\Users\\1098350515\\Desktop\\TodosXML_802\\{mes}\\'
+    targetDirXml=directory+f'Xml{mes}IngresoEgreso\\'
+    #START - Excel to read
+    
+    excel_name=f'{mes} Emitidos IngresoEgreso 2018'
     excel=excel_name+'.xlsx'
     completePath=directory+excel
+    #END - Excel to read
     excelDF=pd.DataFrame()
     lsSheetsToRead=['Emisor','Pago_Emisor']
     for sheet in lsSheetsToRead:
@@ -157,7 +163,11 @@ if op==7:
             if found:
                 filesFound+=1
                 shutil.move(sourceDirXml+nombreArchivo,targetDirXml+nombreArchivo)
-            print(f'Total files found for sheet {sheet} : {str(filesFound)}')    
+        print(f'Total files found for sheet {sheet} : {str(filesFound)}') 
+
+    print('----------------------------------------------')
+    print('DONE')
+    print('----------------------------------------------')           
 
 
 
