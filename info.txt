@@ -1,3 +1,8 @@
+
+
+PYINSTALLER & PYGUBU-DESIGNER
+___________________________________________________________________________________________________________________________________________________________
+
 1)To open pygubu-designer, just type "pygubu-designer" in terminal.
 2)Tutorial to create a python executable file: https://datatofish.com/executable-pyinstaller/
 When running the pyinstaller (works very well indeed) it will create in the same folder of the file to convert to exe the following files/folders:
@@ -20,11 +25,21 @@ ERRORS:
 1) No module found...
 Solution: Generate again the requirements.txt from environment (pip freeze > requirements.txt)
 
-2) Seems that "No module found" error comes when making executable without Environment on.
+2) Seems that "No module found" error comes when making executable without "Virtual Environment" turned on.
 
-Helpful Resources:
+
+
+Helpful Resources
+__________________________________________________________________________________________________________________________________________________________
+
 
 1)Estados de solicitudes: https://conocimiento.blob.core.windows.net/conocimiento/2020/Contables/ContabilidadBancos/CartasTecnicas/CT_Contabilidad_Bancos_1311/modulo_descarga_de_cfdi_print.html
+2)The python wrapper for SAT Massive download works well, take a look on the warnings:
+WARNINGS (Based on chat with Herbert Peña)
+W1) Sometimes SAT Services is DEAD or answers weird things, its A SERVICE PROBLEM, ON THEIR SIDE.
+W2) The PAQ (Such as Compaq) they USE ANOTHER WAY WITH ALREADY A RELATION WITH SAT, THEY HAVE OTHER WAYS TO COMMUNICATE WITH SAT SERVICE (PRIVATE CHANNELS, WITH MORE POWER, BANDWIDTH)
+W3) The steps shown on the video lessons are OLD (10 YEARS OLD).
 
+Conclusion: Normal WEB SERVICE will never work as well as PRIVATE CHANNELS.
 
 
