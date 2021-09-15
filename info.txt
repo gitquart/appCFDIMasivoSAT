@@ -22,5 +22,9 @@ Solution: Generate again the requirements.txt from environment (pip freeze > req
 
 2) Seems that "No module found" error comes when making executable without Environment on.
 
+Helpful Resources:
+
+1)Estados de solicitudes: https://conocimiento.blob.core.windows.net/conocimiento/2020/Contables/ContabilidadBancos/CartasTecnicas/CT_Contabilidad_Bancos_1311/modulo_descarga_de_cfdi_print.html
+
 
 
