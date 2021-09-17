@@ -192,7 +192,7 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName,window):
                     if VERSION=='SQL':
                         return [1,f'Procesamiento exitoso, el archivo ZIP con CFDI se descargó en {directory}/{paquete} y se cargaron los registros en la base de datos.']
                     else:
-                        return [1,f'Procesamiento exitoso, el resultado se descargó en {directory}/{paquete} (zip y xlsx). \n Archivo {lsPaquete.index(paquete)} de {str(len(lsPaquete))} ']
+                        return [1,f'Procesamiento exitoso, el resultado se descargó en {directory}/{paquete} (zip y xlsx). \n Archivo {str(lsPaquete.index(paquete))} de {str(len(lsPaquete))} ']
                 
                 else:
                     return res    
