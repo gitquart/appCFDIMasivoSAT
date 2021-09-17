@@ -609,14 +609,18 @@ def extractAndReadZIP(directory,zipToRead,rfc_solicitante,testingMode=False):
             if field == 'Estatus':
                 #Look for this fields and save them to validate status:
                 #Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total
-                print(f'Obteniendo estado para {vTimbreFiscal}')
-                strStatus=None
-                strStatus=validaEstadoDocumento(vEmisorRfc,vReceptorRfc,vTimbreFiscal,vComprobanteTotal)
                 data=None
-                if strStatus:
-                    data=strStatus['estado']
+                if objControl.bVALIDATE_CFDI:
+                    print(f'Obteniendo estado para {vTimbreFiscal}')
+                    strStatus=None
+                    strStatus=validaEstadoDocumento(vEmisorRfc,vReceptorRfc,vTimbreFiscal,vComprobanteTotal)  
+                    if strStatus:
+                        data=strStatus['estado']
+                    else:
+                        data='No hubo respuesta'
                 else:
-                    data='No hubo respuesta'
+                    print(f'-----ESTADO DE CFDI DESACTIVADO (En caso de reactivar, ir a INTERNAL CONTROL)------')
+                    data='Estado CFDI desactivado'        
                 lsRow.append(data)    
                 continue
             if field == 'Fecha/Hora de Consulta': 

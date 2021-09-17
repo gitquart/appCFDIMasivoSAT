@@ -5,6 +5,7 @@ class cInternalControl(object):
     #and also the one to read to transform to excel
     #600 secs = 10 mins, 2400 secs= 40 mins
     TIME_WAIT_MINS=8
+    bVALIDATE_CFDI=True
     THIS_SOFTWARE_VERSION='2.0'
     #----Program variables----
     prefixCFDI='{http://www.sat.gob.mx/cfd/3}'
