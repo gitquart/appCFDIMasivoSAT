@@ -183,19 +183,25 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName,window):
             #Case : CFDI Number > 0
             # paquetes is an array, hence, if it's greater than zero, check every item in the array
             for paquete in result['paquetes']:
-                lsPaquete=list()
-                lsPaquete=result['paquetes']
                 #For now it is an array of packages, then the package name is independent from lsFolderName 
                 #Note : every "paquete" value is a string : "asasasa-rererere-53453-gfgfgf"
+                lsResult=list()
+                lsPacket=list()
+                lsPacket=result['paquetes']
+                totalPackage=len(lsPacket)
                 res=descargarPaquete(paquete,directory,lsFolderName)
-                if int(res[0])==1:
-                    if VERSION=='SQL':
-                        return [1,f'Procesamiento exitoso, el archivo ZIP con CFDI se descargó en {directory}/{paquete} y se cargaron los registros en la base de datos.']
+                lsResult.append(res[0])
+                #When all the array of packages are DONE, show the message of COMPLETE/ SUCCESFUL PROCESS
+                if len(lsResult)==totalPackage:
+                    if False in lsResult:
+                        return res
                     else:
-                        return [1,f'Procesamiento exitoso, el resultado se descargó en {directory}/{paquete} (zip y xlsx). \n Archivo {str(lsPaquete.index(paquete))} de {str(len(lsPaquete))} ']
-                
-                else:
-                    return res    
+                        #If all are TRUE
+                        if VERSION=='SQL':
+                            return [1,f'Procesamiento exitoso, el archivo ZIP con CFDI se descargó en {directory}/{paquete} y se cargaron los registros en la base de datos.']
+                        else:
+                            return [1,f'Procesamiento exitoso, el resultado se descargó en {directory}/{paquete} (zip y xlsx).']
+                            
         else:
             #Case: CFDI Number is Zero
             mensaje=''
@@ -273,9 +279,9 @@ def descargarPaquete(id_paquete,directory,lsFolderName):
         else:
             extractAndReadZIP_SQL(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
 
-        return [1]
+        return [True]
     else:
-        return [0,'No se descargó CFDI: '+result['mensaje']]
+        return [False,'No se descargó CFDI: '+result['mensaje']]
 
 def readBase64FromZIP(file,folderAndFileName,directory): 
     """

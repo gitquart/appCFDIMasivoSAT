@@ -52,7 +52,6 @@ def solicitarCFDI(window):
     strFechaFin=str(fecha_final.day)+str(fecha_final.month)+str(fecha_final.year)
     strFechaCompleta=strFechaInicial+'_'+strFechaFin
     res=tool.solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,strFechaCompleta,VERSION,window)
-    #lsValor[1]-> ID solicitud returned, could be Emisor or Receptor
     tool.showMessage('Mensaje',res[1])
 
 def exit_all(main_window):
