@@ -142,7 +142,7 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
             else:
                 #If the "solicitud" already exists, then return a message "La solicitud sólo puede ser ejecutada 1 vez"
                 return [1,'Mensaje de base de datos: La petición de este CFDI ya ha sido solicitada 1 vez']    
-        lsfolderName=[]
+        lsfolderName=list()
         lsfolderName.append(rfc_solicitante)
         lsfolderName.append(tipo)
         lsfolderName.append(fechaCompleta)
@@ -159,7 +159,7 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
         
         #Here the ID of the request is done, so let's wait TIME_REQUEST_MINS minutes lo let SAT set state 3,
         #after TIME_REQUEST_MINS minutes let's chake the state and it should be 3 and correct
-        time.sleep(objControl.TIME_FOR_REQUEST) #600 secs = 10 mins, 2400 secs= 40 mins
+        time.sleep(objControl.TIME_WAIT_MINS*60) #600 secs = 10 mins, 2400 secs= 40 mins
         res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName,window)
         return res
         
@@ -180,17 +180,22 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName,window):
         strTitle=str(strTitle).replace('- CFDI request','')  
         window.title(strTitle)   
         if (int(result['numero_cfdis'])>0):
-            lsFolderName.append(result['paquetes'][0])
-            res=descargarPaquete(result['paquetes'],directory,lsFolderName)
-            if int(res[0])==1:
-                if VERSION=='SQL':
-                    return [1,'Procesamiento exitoso, el archivo ZIP con CFDI se descargó en '+directory+'/'+result['paquetes'][0]+' y se cargaron los registros en la base de datos.']
-                else:
-                    return [1,'Procesamiento exitoso, el resultado se descargó en '+directory+'/'+result['paquetes'][0]+' (zip y xlsx) ']
+            #Case : CFDI Number > 0
+            # paquetes is an array, hence, if it's greater than zero, check every item in the array
+            for paquete in result['paquetes']:
+                #For now it is an array of packages, then the package name is independent from lsFolderName 
+                #Note : every "paquete" value is a string : "asasasa-rererere-53453-gfgfgf"
+                res=descargarPaquete(paquete,directory,lsFolderName)
+                if int(res[0])==1:
+                    if VERSION=='SQL':
+                        return [1,'Procesamiento exitoso, el archivo ZIP con CFDI se descargó en '+directory+'/'+paquete+' y se cargaron los registros en la base de datos.']
+                    else:
+                        return [1,'Procesamiento exitoso, el resultado se descargó en '+directory+'/'+paquete+' (zip y xlsx) ']
                 
-            else:
-                return res    
+                else:
+                    return res    
         else:
+            #Case: CFDI Number is Zero
             mensaje=''
             if VERSION=='SQL':
                 cmd="update solicitud set conteo=1 where id="+ID_CURRENT_SOLICITUD+";"
@@ -246,14 +251,17 @@ def validaEstadoDocumento(rfc_emisor,rfc_receptor,uuid,total):
 
 def descargarPaquete(id_paquete,directory,lsFolderName):
     #ejemplo de respuesta # {'cod_estatus': '', 'mensaje': '', 'paquete_b64': 'eyJhbG=='} 
+    #lsFolderName DOES NOT have the name of the pakage anymore, because the "paquetes" values comes
+    #from an array
     descarga = DescargaMasiva(fiel)
     token = autenticacion()
-    result = descarga.descargar_paquete(token, rfc_solicitante, id_paquete[0])
+    result = descarga.descargar_paquete(token, rfc_solicitante, id_paquete)
     paquete=result['paquete_b64']
     if paquete is not None:
         #if paquete is not None, the create the folder where zip and xls will be saved
+        #lsFolderName so far = Rfc_solicitante_tipo_fechaCompleta
         folderAndFileName='_'.join(lsFolderName)
-        ZipExcelDir=directory+'/'+folderAndFileName
+        ZipExcelDir=directory+'/'+folderAndFileName+'_'+id_paquete
         if not os.path.isdir(ZipExcelDir):
             os.mkdir(ZipExcelDir)
         readBase64FromZIP(paquete,folderAndFileName,ZipExcelDir)
