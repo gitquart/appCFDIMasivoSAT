@@ -160,7 +160,9 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
         #Here the ID of the request is done, so let's wait TIME_REQUEST_MINS minutes lo let SAT set state 3,
         #after TIME_REQUEST_MINS minutes let's chake the state and it should be 3 and correct
         time.sleep(objControl.TIME_WAIT_MINS*60) #600 secs = 10 mins, 2400 secs= 40 mins
-        res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName,window)
+        #res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName,window)
+        #Test a particular "ID SOLICITUD"
+        res=verificaSolicitudDescarga('d9c6ec40-000b-4dee-92bb-c6788790e3e2',directory,lsfolderName,window)
         return res
         
     else:
@@ -182,25 +184,28 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName,window):
         if (int(result['numero_cfdis'])>0):
             #Case : CFDI Number > 0
             # paquetes is an array, hence, if it's greater than zero, check every item in the array
+            lsResult=list()
+            lsPacket=list()
+            lsPacket=result['paquetes']
+            totalPackage=len(lsPacket)
             for paquete in result['paquetes']:
                 #For now it is an array of packages, then the package name is independent from lsFolderName 
                 #Note : every "paquete" value is a string : "asasasa-rererere-53453-gfgfgf"
-                lsResult=list()
-                lsPacket=list()
-                lsPacket=result['paquetes']
-                totalPackage=len(lsPacket)
                 res=descargarPaquete(paquete,directory,lsFolderName)
                 lsResult.append(res[0])
                 #When all the array of packages are DONE, show the message of COMPLETE/ SUCCESFUL PROCESS
                 if len(lsResult)==totalPackage:
-                    if False in lsResult:
-                        return res
+                    #All packages ready, then say how many were processed sucessfully (res=True)
+                    PackageProcessed=0
+                    for res in lsResult:
+                        if res:
+                            PackageProcessed+=1
+                    msgSuccess=f'Procesamiento exitoso, el resultado se descargó en {directory}/{paquete}.'    
+                    msgZIPProcessed=f'Archivos ZIP procesados: {str(PackageProcessed)} de {str(totalPackage)}'   
+                    if VERSION=='SQL':
+                        return [1,f'{msgSuccess} y se cargaron los registros en la base de datos.\n {msgZIPProcessed}']
                     else:
-                        #If all are TRUE
-                        if VERSION=='SQL':
-                            return [1,f'Procesamiento exitoso, el archivo ZIP con CFDI se descargó en {directory}/{paquete} y se cargaron los registros en la base de datos.']
-                        else:
-                            return [1,f'Procesamiento exitoso, el resultado se descargó en {directory}/{paquete} (zip y xlsx).']
+                        return [1,f'{msgSuccess} (zip y xlsx).\n {msgZIPProcessed}']
                             
         else:
             #Case: CFDI Number is Zero
