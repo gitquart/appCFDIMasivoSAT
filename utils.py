@@ -208,9 +208,9 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName,window):
             if VERSION=='SQL':
                 cmd="update solicitud set conteo=1 where id="+ID_CURRENT_SOLICITUD+";"
                 bd.getQueryOrExecuteTransaction_NoReturning(cmd)
-                mensaje='El paquete no trae CFDI y se ha registrado la operación en base de datos, respuesta de web service:'
+                mensaje='La petición no trae CFDI y se ha registrado la operación en base de datos, respuesta de web service:'
             else:
-                mensaje='El paquete no trae CFDI, respuesta de web service:\n'
+                mensaje='La petición no trae CFDI, respuesta de web service:\n'
 
             return [
                      0,str(mensaje)+'\n'+
