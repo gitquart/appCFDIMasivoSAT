@@ -183,14 +183,16 @@ def verificaSolicitudDescarga(id_solicitud,directory,lsFolderName,window):
             #Case : CFDI Number > 0
             # paquetes is an array, hence, if it's greater than zero, check every item in the array
             for paquete in result['paquetes']:
+                lsPaquete=list()
+                lsPaquete=result['paquetes']
                 #For now it is an array of packages, then the package name is independent from lsFolderName 
                 #Note : every "paquete" value is a string : "asasasa-rererere-53453-gfgfgf"
                 res=descargarPaquete(paquete,directory,lsFolderName)
                 if int(res[0])==1:
                     if VERSION=='SQL':
-                        return [1,'Procesamiento exitoso, el archivo ZIP con CFDI se descargó en '+directory+'/'+paquete+' y se cargaron los registros en la base de datos.']
+                        return [1,f'Procesamiento exitoso, el archivo ZIP con CFDI se descargó en {directory}/{paquete} y se cargaron los registros en la base de datos.']
                     else:
-                        return [1,'Procesamiento exitoso, el resultado se descargó en '+directory+'/'+paquete+' (zip y xlsx) ']
+                        return [1,f'Procesamiento exitoso, el resultado se descargó en {directory}/{paquete} (zip y xlsx). \n Archivo {lsPaquete.index(paquete)} de {str(len(lsPaquete))} ']
                 
                 else:
                     return res    
