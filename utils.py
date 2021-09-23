@@ -160,9 +160,9 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
         #Here the ID of the request is done, so let's wait TIME_REQUEST_MINS minutes lo let SAT set state 3,
         #after TIME_REQUEST_MINS minutes let's chake the state and it should be 3 and correct
         time.sleep(objControl.TIME_WAIT_MINS*60) #600 secs = 10 mins, 2400 secs= 40 mins
-        #res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName,window)
+        res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName,window)
         #Test a particular "ID SOLICITUD"
-        res=verificaSolicitudDescarga('d9c6ec40-000b-4dee-92bb-c6788790e3e2',directory,lsfolderName,window)
+        #res=verificaSolicitudDescarga('d9c6ec40-000b-4dee-92bb-c6788790e3e2',directory,lsfolderName,window)
         return res
         
     else:
@@ -277,12 +277,15 @@ def descargarPaquete(id_paquete,directory,lsFolderName):
         ZipExcelDir=directory+'/'+folderAndFileName+'_'+id_paquete
         if not os.path.isdir(ZipExcelDir):
             os.mkdir(ZipExcelDir)
+        print('Downloading package...')    
         readBase64FromZIP(paquete,folderAndFileName,ZipExcelDir)
-        print('Downloading package with CFDI and processing...')
-        if VERSION=='EXCEL':
-            extractAndReadZIP(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)      
-        else:
-            extractAndReadZIP_SQL(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
+        if not objControl.bONLY_DOWNLOAD_XML:
+            if VERSION=='EXCEL':
+                print('Processing excel...')
+                extractAndReadZIP(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)      
+            else:
+                print('Processing SQL...')
+                extractAndReadZIP_SQL(ZipExcelDir,folderAndFileName+'.zip',rfc_solicitante)
 
         return [True]
     else:
