@@ -3,8 +3,9 @@ class cInternalControl(object):
     #----Data to change per user----
     #zipToRead is the name of zip that will be created from download
     #and also the one to read to transform to excel
-    #600 secs = 10 mins, 2400 secs= 40 mins
+    bREQUEST_ID_TESTING=False
     bONLY_DOWNLOAD_XML=True
+    #600 secs = 10 mins, 2400 secs= 40 mins
     TIME_WAIT_MINS=8
     bVALIDATE_CFDI=True
     THIS_SOFTWARE_VERSION='2.0'

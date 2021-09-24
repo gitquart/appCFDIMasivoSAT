@@ -160,9 +160,15 @@ def solicitaDescarga(fecha_inicial,fecha_final,directory,tipo,fechaCompleta,Vers
         #Here the ID of the request is done, so let's wait TIME_REQUEST_MINS minutes lo let SAT set state 3,
         #after TIME_REQUEST_MINS minutes let's chake the state and it should be 3 and correct
         time.sleep(objControl.TIME_WAIT_MINS*60) #600 secs = 10 mins, 2400 secs= 40 mins
-        res=verificaSolicitudDescarga(result['id_solicitud'],directory,lsfolderName,window)
-        #Test a particular "ID SOLICITUD"
-        #res=verificaSolicitudDescarga('d9c6ec40-000b-4dee-92bb-c6788790e3e2',directory,lsfolderName,window)
+        Id_request=None
+        if objControl.bREQUEST_ID_TESTING:
+            #Test a particular "ID SOLICITUD"
+            Id_request='SASASAS-SASASAAS-SASASAS-SASASAS'
+        else:    
+            Id_request=result['id_solicitud']
+            
+        res=verificaSolicitudDescarga(Id_request,directory,lsfolderName,window)    
+        
         return res
         
     else:
