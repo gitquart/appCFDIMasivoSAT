@@ -1009,17 +1009,19 @@ def transformXML_to_XLS(wb,myZip,directory,excel_fileName,lsFields,rfc_solicitan
             if field == 'Estatus':
                 #Look for this fields and save them to validate status:
                 #Emisor_Rfc,Receptor_Rfc,TimbreFiscalDigital_UUID,Comprobante_Total
-                #print(f'Obteniendo estado para {vTimbreFiscal}')
-                #strStatus=None
-                #strStatus=validaEstadoDocumento(vEmisorRfc,vReceptorRfc,vTimbreFiscal,vComprobanteTotal)
-                #data=None
-                #if strStatus:
-                #    data=strStatus['estado']
-                #else:
-                #    data='No hubo respuesta'
-                #Original:
-                #lsRow: lsRow.append(data)
-                lsRow.append('No status for 802')    
+                data=None
+                if objControl.bVALIDATE_CFDI:
+                    print(f'Obteniendo estado para {vTimbreFiscal}')
+                    strStatus=None
+                    strStatus=validaEstadoDocumento(vEmisorRfc,vReceptorRfc,vTimbreFiscal,vComprobanteTotal)  
+                    if strStatus:
+                        data=strStatus['estado']
+                    else:
+                        data='No hubo respuesta'
+                else:
+                    print(f'-----ESTADO DE CFDI DESACTIVADO (En caso de reactivar, ir a INTERNAL CONTROL)------')
+                    data='Estado CFDI desactivado'        
+                lsRow.append(data)    
                 continue
             if field == 'Fecha/Hora de Consulta': 
                 lsRow.append(datetime.datetime.now().strftime(formatDateTime))   
