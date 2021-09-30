@@ -178,7 +178,7 @@ if op==8:
     totalAmount=int(amount)
     directory=f'C:\\Users\\1098350515\\Desktop\\wfm465 2017 en cola\\2017'      
     sourceDirXml=f'{directory}\\01 Enero banco'
-    targetDirXml=f'{directory}\\01 Enero 1'
+    targetDirXml=f'{directory}\\01 Enero 4'
     countFile=0
     #Read each file from source directory
     for file in os.listdir(sourceDirXml):
