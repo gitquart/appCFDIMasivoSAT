@@ -18,7 +18,9 @@ print('3.Descargar CFDI en ZIP')
 print('4.Extraer ZIP')
 print('5.Validar estado CFDI')
 print('6. Extraer ZIP (Batch)')
-print('7. Move files')
+print('7. Move files based on Spreadsheet')
+print('8. Move any amoutn of files')
+
 
 op=input()
 op=int(op)
@@ -116,7 +118,7 @@ if op==6:
     lszipFile=list()
     for file in os.listdir(directory):
         lszipFile.append(file)
-    rfc='HAC190522RK9'
+    rfc='JCA100604EF4'
     if int(op)==1:    
         lsThreads=[]
         #Start - Create threads Subprocess per month, per excel
@@ -136,7 +138,7 @@ if op==6:
     else:
         tool.extractAndReadZIP_SQL(directory,lszipFile,rfc,True)
 if op==7:
-    print('Moving files')  
+    print('Moving files based on Spreadsheet')  
     print('Escribe el nombre del mes (i.e. Enero,Febrero,...)')
     res=input()
     mes=str(res)
@@ -167,7 +169,29 @@ if op==7:
 
     print('----------------------------------------------')
     print('DONE')
-    print('----------------------------------------------')           
+    print('----------------------------------------------') 
+if op==8:
+    print('Moving any amount of files...')  
+    print('How many files do you want to move?')
+    res=input()
+    amount=str(res)
+    totalAmount=int(amount)
+    directory=f'C:\\Users\\1098350515\\Desktop\\wfm465 2017 en cola\\2017'      
+    sourceDirXml=f'{directory}\\01 Enero banco'
+    targetDirXml=f'{directory}\\01 Enero 1'
+    countFile=0
+    #Read each file from source directory
+    for file in os.listdir(sourceDirXml):
+        shutil.move(sourceDirXml+'\\'+file,targetDirXml+'\\'+file)
+        countFile+=1
+        if countFile==totalAmount:
+            break
+    print(f'Total moved: {str(countFile)}') 
+
+    print('----------------------------------------------')
+    print('DONE')
+    print('----------------------------------------------')      
+
 
 
 
