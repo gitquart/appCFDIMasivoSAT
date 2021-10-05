@@ -116,7 +116,7 @@ if op==6:
     lszipFile=list()
     for file in os.listdir(directory):
         lszipFile.append(file)
-    rfc='HAC190522RK9'
+    rfc='JCA100604EF4'
     if int(op)==1:    
         lsThreads=[]
         #Start - Create threads Subprocess per month, per excel
