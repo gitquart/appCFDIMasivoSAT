@@ -114,11 +114,15 @@ if op==6:
     print('Choose a version 1.EXCEL 2.SQL')
     op=input()
     #Do not put \\ at the end of directory if console mode, the code will add it.
-    directory='C:\\Users\\1098350515\\Desktop\\archivos_procesar'
+    directory='C:\\Users\\1098350515\\Desktop\\abrilmayo'
     lszipFile=list()
     for file in os.listdir(directory):
         lszipFile.append(file)
-    rfc='JCA100604EF4'
+    print('Type RFC please:') 
+    res_rfc=None   
+    res_rfc=input()
+    rfc=str(res_rfc)
+    print(f'RFC typed:{rfc}')
     if int(op)==1:    
         lsThreads=[]
         #Start - Create threads Subprocess per month, per excel
